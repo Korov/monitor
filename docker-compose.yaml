@@ -1,0 +1,34 @@
+version: '3'
+services:
+  mysql:
+    image: mysql:8.0.26
+    container_name: monitor_mysql
+    ports:
+      - "3309:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: monitor
+      MYSQL_PASSWORD: monitor
+      MYSQL_DATABASE: monitor
+    hostname: monitor_mysql.org
+  zookeeper:
+    container_name: monitor_zookeeper
+    image: zookeeper:3.7.0
+    ports:
+      - "2183:2181"
+    hostname: monitor_zookeeper.org
+  kafka:
+    container_name: monitor_kafka
+    image: wurstmeister/kafka:2.13-2.7.0
+    hostname: monitor_kafka.org
+    ports:
+      - 9095:9095
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://localhost:9095
+      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9095
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_ZOOKEEPER_CONNECT: monitor_zookeeper.org:2181
+      KAFKA_CREATE_TOPICS: "monitor_topic:6:1"
+    depends_on:
+      - zookeeper
