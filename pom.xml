@@ -7,6 +7,7 @@
     <artifactId>monitor</artifactId>
     <version>1.0-SNAPSHOT</version>
     <properties>
+        <quarkus-reactive-messaging-http.version>1.0.0</quarkus-reactive-messaging-http.version>
         <compiler-plugin.version>3.8.1</compiler-plugin.version>
         <maven.compiler.release>11</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -55,6 +56,11 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-smallrye-reactive-messaging-kafka</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkiverse.reactivemessaging.http</groupId>
+            <artifactId>quarkus-reactive-messaging-http</artifactId>
+            <version>${quarkus-reactive-messaging-http.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
