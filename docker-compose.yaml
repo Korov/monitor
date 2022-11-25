@@ -19,16 +19,19 @@ services:
     hostname: monitor_zookeeper.org
   kafka:
     container_name: monitor_kafka
-    image: wurstmeister/kafka:2.13-2.7.0
+    image: bitnami/kafka:3.2.1
     hostname: monitor_kafka.org
     ports:
       - 9095:9095
+      - 9096:9096
     environment:
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://localhost:9095
-      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9095
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
-      KAFKA_ZOOKEEPER_CONNECT: monitor_zookeeper.org:2181
-      KAFKA_CREATE_TOPICS: "monitor_topic:6:1"
-    depends_on:
-      - zookeeper
+      KAFKA_ENABLE_KRAFT: yes
+      KAFKA_CFG_PROCESS_ROLES: broker,controller
+      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9095,CONTROLLER://:9096
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9095
+      KAFKA_BROKER_ID: 1
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@127.0.0.1:9096
+      ALLOW_PLAINTEXT_LISTENER: yes
+      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: yes
