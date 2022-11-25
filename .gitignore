@@ -33,3 +33,7 @@ build/
 .vscode/
 
 logs/**
+
+
+web/node_modules/**
+web/package-lock.json
