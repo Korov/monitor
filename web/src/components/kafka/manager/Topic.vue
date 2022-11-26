@@ -1,7 +1,7 @@
 <template>
   <div>
     <div style="display: flex">
-      <kafkaSelect @kafkaChange="kafkaChange"></kafkaSelect>
+      <kafkaSelect @kafka_change="kafkaChange"></kafkaSelect>
       <el-select
         class="topicSelect"
         v-model="keyword"
@@ -193,9 +193,17 @@ import { defineComponent } from 'vue'
 import { ElMessage } from 'element-plus'
 import apiClient from '@/http-common'
 import Topic from '@/types'
+import KafkaSelect from '@cp/kafka/KafkaSelect.vue'
+import DataTag from '@cp/kafka/DataTag.vue'
+import GroupTable from '@cp/kafka/GroupTable.vue'
 
 export default defineComponent({
   name: 'Topic',
+  components: {
+    KafkaSelect,
+    DataTag,
+    GroupTable,
+  },
   setup() {
     let keyword = ''
     let sourceId: number = 0
@@ -206,6 +214,14 @@ export default defineComponent({
       replica: 0,
     }
     let topics: Topic[] = []
+    let selectedTopic: string = ''
+    let partitions: any[] = []
+    let dialogTableVisible: boolean = false
+    let topicDetail: any = undefined
+    let groups: any[] = []
+    let groupVisible: boolean = true
+    let groupDetail = undefined
+
     function setKeyword(value: string) {
       keyword = value
     }
@@ -285,6 +301,88 @@ export default defineComponent({
         })
     }
 
+    function deleteConfirm(name: string) {
+      if (sourceId == null) {
+        ElMessage.error('请选择Kafka环境')
+        return
+      }
+      apiClient
+        .delete(`/kafka/topic/delete?sourceId=${sourceId}&topic=${name}`)
+        .then((response) => {
+          if (response.data.code) {
+            ElMessage.success('删除topic成功')
+            getTopics()
+          } else {
+            ElMessage.success('删除topic失败' + response)
+            getTopics()
+          }
+        })
+        .catch((error) => {
+          ElMessage.error('删除topic失败' + error.message)
+        })
+    }
+
+    function getTopicDetail(topic: string) {
+      selectedTopic = topic
+      apiClient
+        .get(
+          `/kafka/topic/detail/query?sourceId=${sourceId}&topic=${selectedTopic}`
+        )
+        .then((response) => {
+          partitions = response.data.data.partitions
+          topicDetail = response.data.data
+          dialogTableVisible = true
+        })
+        .catch((error) => {
+          ElMessage.error('查询topic分区详情失败' + error.message)
+        })
+    }
+
+    function getGroupByTopic(value: string) {
+      if (sourceId == null) {
+        ElMessage.error('请选择Kafka环境')
+        return
+      }
+      if (value == null) {
+        ElMessage.error('请选择输入Topic名称')
+        return
+      }
+      selectedTopic = value
+      apiClient
+        .get(
+          `/kafka/consumer/query?sourceId=${sourceId}&topic=${selectedTopic}`
+        )
+        .then((response) => {
+          groups = response.data.data
+          groupVisible = true
+        })
+        .catch((error) => {
+          ElMessage.error('失败' + error.message)
+        })
+    }
+
+    function handleChange(group: string) {
+      if (sourceId == null) {
+        ElMessage.error('请选择Kafka环境')
+        return
+      }
+      if (group == null) {
+        ElMessage.error('请选择输入Topic名称')
+        return
+      }
+
+      apiClient
+        .get(`/kafka/consumer/detail?sourceId=${sourceId}&group=${group}`)
+        .then((response) => {
+          if (response.data.code) {
+            groupDetail = response.data.data
+          }
+        })
+        .catch((error) => {
+          ElMessage.error('查询group详情失败' + error.message)
+        })
+    }
+
     return {
       keyword,
       setKeyword,
@@ -296,6 +394,17 @@ export default defineComponent({
       getAllTopics,
       kafkaChange,
       addTopic,
+      deleteConfirm,
+      selectedTopic,
+      partitions,
+      dialogTableVisible,
+      topicDetail,
+      getTopicDetail,
+      groups,
+      groupVisible,
+      getGroupByTopic,
+      groupDetail,
+      handleChange,
     }
   },
 })
