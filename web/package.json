@@ -22,7 +22,8 @@
     "pinia": "^2.0.14",
     "vue": "^3.2.37",
     "vue-axios": "^3.5.2",
-    "vue-router": "^4.0.16"
+    "vue-router": "^4.0.16",
+    "vxe-table": "^4.3.6"
   },
   "devDependencies": {
     "@types/node": "^18.0.1",
