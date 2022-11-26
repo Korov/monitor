@@ -189,7 +189,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import apiClient from '@/http-common'
 import Topic from '@/types'
@@ -216,7 +216,7 @@ export default defineComponent({
     let topics: Topic[] = []
     let selectedTopic: string = ''
     let partitions: any[] = []
-    let dialogTableVisible: boolean = false
+    let dialogTableVisible = ref(false)
     let topicDetail: any = undefined
     let groups: any[] = []
     let groupVisible: boolean = true
@@ -331,7 +331,7 @@ export default defineComponent({
         .then((response) => {
           partitions = response.data.data.partitions
           topicDetail = response.data.data
-          dialogTableVisible = true
+          dialogTableVisible.value = true
         })
         .catch((error) => {
           ElMessage.error('查询topic分区详情失败' + error.message)

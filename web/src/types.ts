@@ -4,4 +4,10 @@ interface Topic {
   replica: number
 }
 
-export default Topic
+interface Config {
+  id: number
+  name: string
+  broker: string
+}
+
+export { Topic, Config }

@@ -14,15 +14,14 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-button style="margin-top: 5px" type="primary" @click="showDialog(true)"
+    <el-button
+      style="margin-top: 5px"
+      type="primary"
+      @click="dialogFormVisible = true"
       >添加环境</el-button
     >
 
-    <el-dialog
-      v-model:visible="dialogFormVisible"
-      title="添加kafka地址"
-      width="600px"
-    >
+    <el-dialog v-model="dialogFormVisible" title="添加kafka地址" width="600px">
       <el-form label-width="80px">
         <el-form-item label="名称">
           <el-input clearable v-model="configName"></el-input>
@@ -40,25 +39,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import apiClient from '@/http-common'
 import { ElMessage } from 'element-plus'
+import { Config } from '@/types'
 
 export default defineComponent({
   name: 'ConfigPage',
   setup() {
-    let sources: never[] = []
-    let configBroker = '127.0.0.1:9092'
-    let configName = ''
-    let dialogFormVisible = false
+    let sources: Config[] = ref<Config[]>([])
+    let configBroker = ref('127.0.0.1:9092')
+    let configName = ref('')
+    let dialogFormVisible = ref(false)
     let warning = false
 
     function getAllSource() {
       apiClient
         .get('/kafka/query')
         .then((response) => {
-          sources = response.data.data
-          console.log(sources)
+          sources.value = response.data.data
+          console.log(sources.value)
         })
         .catch((error) => {
           ElMessage(`查询所有kafka环境失败，${error.message}`)
@@ -86,20 +86,20 @@ export default defineComponent({
 
     function add() {
       apiClient
-        .post('/kafka/add', { name: configName, broker: configBroker })
+        .post('/kafka/add', {
+          name: configName.value,
+          broker: configBroker.value,
+        })
         .then((response) => {
           console.log(response)
           warning = true
+          ElMessage.success('添加kafka环境成功')
           getAllSource()
+          dialogFormVisible.value = false
         })
         .catch((error) => {
           ElMessage.error('添加kafka环境失败' + error.message)
         })
-    }
-
-    function showDialog(value: boolean) {
-      dialogFormVisible = value
-      console.log(`click show dialog ${dialogFormVisible}`)
     }
 
     return {
@@ -110,7 +110,6 @@ export default defineComponent({
       configName,
       dialogFormVisible,
       warning,
-      showDialog,
     }
   },
 })
