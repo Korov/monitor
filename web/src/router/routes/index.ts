@@ -11,19 +11,29 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'home',
-    component: () => import(/* webpackChunkName: "home" */ '@views/home.vue'),
+    component: () => import('@/components/kafka/Config.vue'),
     meta: {
       title: 'Home',
     },
+    redirect: {
+      name: 'config',
+    },
+    children: [
+      {
+        path: 'kafka/config',
+        name: 'config',
+        component: () => import('@/components/kafka/Config.vue'),
+      },
+    ],
   },
   /**
    * 子路由示例
    */
-  {
+  /*{
     path: '/foo',
     name: 'foo',
     component: () =>
-      import(/* webpackChunkName: "foo" */ '@cp/TransferStation.vue'),
+      import(/!* webpackChunkName: "foo" *!/ '@cp/TransferStation.vue'),
     meta: {
       title: 'Foo',
     },
@@ -35,13 +45,13 @@ const routes: RouteRecordRaw[] = [
         path: 'bar',
         name: 'bar',
         component: () =>
-          import(/* webpackChunkName: "bar" */ '@views/foo/bar.vue'),
+          import(/!* webpackChunkName: "bar" *!/ '@views/foo/bar.vue'),
         meta: {
           title: 'Bar',
         },
       },
     ],
-  },
+  },*/
 ]
 
 export default routes
