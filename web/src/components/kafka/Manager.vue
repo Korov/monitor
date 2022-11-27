@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import Topic from '@cp/kafka/manager/Topic.vue'
 import Cluster from '@cp/kafka/manager/Cluster.vue'
 import Group from '@cp/kafka/manager/Group.vue'
@@ -26,6 +26,13 @@ export default defineComponent({
     Topic,
     Cluster,
     Group,
+  },
+  setup() {
+    let activeName = ref<string>('topic')
+
+    return {
+      activeName,
+    }
   },
 })
 </script>

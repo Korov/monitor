@@ -8,7 +8,7 @@
         v-model="keyword"
         style="width: 250px; margin-left: 5px"
         clearable
-        @keyup.enter.native="searchGroup"
+        @change="searchGroup"
       >
         <el-button icon="el-icon-search" @click="searchGroup"></el-button>
       </el-input>
@@ -37,10 +37,48 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
+import GroupTable from '@cp/kafka/GroupTable.vue'
+import KafkaSelect from '@cp/kafka/KafkaSelect.vue'
 
 export default defineComponent({
   name: 'Group',
+  emits: ['kafka_change'],
+  components: {
+    GroupTable,
+    KafkaSelect,
+  },
+  setup() {
+    let detail = ref()
+    let dialogTableVisible = ref(false)
+    let keyword = ref('')
+    let tableData = ref([])
+    let auth = ref()
+
+    function searchGroup() {}
+
+    function kafkaChange() {}
+
+    function getGroupDetail(value: string) {
+      console.log(value)
+    }
+
+    function deleteConfirm(value: string) {
+      console.log(value)
+    }
+
+    return {
+      detail,
+      dialogTableVisible,
+      keyword,
+      searchGroup,
+      kafkaChange,
+      tableData,
+      getGroupDetail,
+      deleteConfirm,
+      auth,
+    }
+  },
 })
 </script>
 

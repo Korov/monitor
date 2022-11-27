@@ -29,13 +29,13 @@
         </el-table-column>
         <el-table-column label="操作">
           <template #default="scope">
-            <el-button round size="mini" type="info" @click="getTopicDetail(scope.row.name)"> TopicDetail </el-button>
+            <el-button round size="small" type="info" @click="getTopicDetail(scope.row.name)"> TopicDetail </el-button>
             <el-popconfirm v-if="!scope.row.internal" title="确定删除吗？" @confirm="deleteConfirm(scope.row.name)">
               <template #reference>
-                <el-button round size="mini" type="danger">Delete</el-button>
+                <el-button round size="small" type="danger">Delete</el-button>
               </template>
             </el-popconfirm>
-            <el-button round size="mini" type="info" @click="getGroupByTopic(scope.row.name)"> Consumer </el-button>
+            <el-button round size="small" type="info" @click="getGroupByTopic(scope.row.name)"> Consumer </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -55,14 +55,7 @@
       </el-form>
       <div class="dialogFooter">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="
-            dialogFormVisible = false
-            addTopic()
-          "
-          >确 定</el-button
-        >
+        <el-button type="primary" @click="addTopic()">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -233,6 +226,7 @@ export default defineComponent({
         .catch((error) => {
           ElMessage.error('查询topic分区详情失败' + error.message)
         })
+      dialogFormVisible.value = false
     }
 
     function deleteConfirm(name: string) {

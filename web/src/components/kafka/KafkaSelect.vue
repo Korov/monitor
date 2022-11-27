@@ -5,27 +5,30 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import apiClient from '@/http-common'
 import { ElMessage } from 'element-plus'
+import { Config } from '@/types'
 
 export default defineComponent({
   name: 'KafkaSelect',
   emits: ['kafka_change'],
   setup(props, { emit }) {
     let sourceId: number = 0
-    let sources: any[] = []
+    let sources = ref<Config[]>([])
 
     function getAllSource() {
       apiClient
         .get('/kafka/query')
         .then((response) => {
-          sources = response.data.data
+          console.log('all sources' + response.data.data)
+          sources.value = response.data.data
         })
         .catch((error) => {
           ElMessage.error('查询所有kafka环境失败' + error.message)
         })
     }
+    getAllSource()
 
     function selectKafka() {
       if (sourceId != null) {
@@ -33,7 +36,6 @@ export default defineComponent({
       }
     }
 
-    getAllSource()
     return {
       sourceId,
       sources,
