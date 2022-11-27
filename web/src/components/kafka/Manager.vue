@@ -16,9 +16,17 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import Topic from '@cp/kafka/manager/Topic.vue'
+import Cluster from '@cp/kafka/manager/Cluster.vue'
+import Group from '@cp/kafka/manager/Group.vue'
 
 export default defineComponent({
   name: 'Manager',
+  components: {
+    Topic,
+    Cluster,
+    Group,
+  },
 })
 </script>
 

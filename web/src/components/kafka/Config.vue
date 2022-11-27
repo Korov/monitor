@@ -5,21 +5,11 @@
       <el-table-column label="地址" prop="broker"></el-table-column>
       <el-table-column label="操作">
         <template #default="scope">
-          <el-button
-            size="small"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)"
-            >删除
-          </el-button>
+          <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除 </el-button>
         </template>
       </el-table-column>
     </el-table>
-    <el-button
-      style="margin-top: 5px"
-      type="primary"
-      @click="dialogFormVisible = true"
-      >添加环境</el-button
-    >
+    <el-button style="margin-top: 5px" type="primary" @click="dialogFormVisible = true">添加环境</el-button>
 
     <el-dialog v-model="dialogFormVisible" title="添加kafka地址" width="600px">
       <el-form label-width="80px">
