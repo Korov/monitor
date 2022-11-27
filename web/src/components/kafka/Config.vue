@@ -6,7 +6,7 @@
       <el-table-column label="操作">
         <template #default="scope">
           <el-button
-            size="mini"
+            size="small"
             type="danger"
             @click="handleDelete(scope.$index, scope.row)"
             >删除
@@ -47,7 +47,7 @@ import { Config } from '@/types'
 export default defineComponent({
   name: 'ConfigPage',
   setup() {
-    let sources: Config[] = ref<Config[]>([])
+    let sources = ref<Config[]>([])
     let configBroker = ref('127.0.0.1:9092')
     let configName = ref('')
     let dialogFormVisible = ref(false)

@@ -12,30 +12,14 @@
         @change="getTopics"
         @focus="getAllTopics"
       >
-        <el-option
-          v-for="item in topics"
-          :key="item.name"
-          :label="item.name"
-          :value="item.name"
-        ></el-option>
+        <el-option v-for="item in topics" :key="item.name" :label="item.name" :value="item.name"></el-option>
       </el-select>
-      <el-button
-        size="small"
-        style="margin-bottom: 5px"
-        type="primary"
-        @click="dialogFormVisible = true"
+      <el-button size="small" style="margin-bottom: 5px" type="primary" @click="dialogFormVisible = true"
         >创建topic
       </el-button>
     </div>
     <div>
-      <el-table
-        :data="tableData"
-        border
-        max-height="650"
-        size="small"
-        stripe
-        class="tableData"
-      >
+      <el-table :data="tableData" border max-height="650" size="small" stripe class="tableData">
         <el-table-column label="topic名称" prop="name"></el-table-column>
         <el-table-column label="类型">
           <template #default="scope">
@@ -45,31 +29,13 @@
         </el-table-column>
         <el-table-column label="操作">
           <template #default="scope">
-            <el-button
-              round
-              size="mini"
-              type="info"
-              @click="getTopicDetail(scope.row.name)"
-            >
-              TopicDetail
-            </el-button>
-            <el-popconfirm
-              v-if="!scope.row.internal"
-              title="确定删除吗？"
-              @confirm="deleteConfirm(scope.row.name)"
-            >
+            <el-button round size="mini" type="info" @click="getTopicDetail(scope.row.name)"> TopicDetail </el-button>
+            <el-popconfirm v-if="!scope.row.internal" title="确定删除吗？" @confirm="deleteConfirm(scope.row.name)">
               <template #reference>
                 <el-button round size="mini" type="danger">Delete</el-button>
               </template>
             </el-popconfirm>
-            <el-button
-              round
-              size="mini"
-              type="info"
-              @click="getGroupByTopic(scope.row.name)"
-            >
-              Consumer
-            </el-button>
+            <el-button round size="mini" type="info" @click="getGroupByTopic(scope.row.name)"> Consumer </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -78,25 +44,13 @@
     <el-dialog v-model="dialogFormVisible" title="创建topic" width="500px">
       <el-form label-width="80px">
         <el-form-item label="topic名称">
-          <el-input
-            v-model="topic.name"
-            clearable
-            placeholder="请输入topic名称"
-          ></el-input>
+          <el-input v-model="topic.name" clearable placeholder="请输入topic名称"></el-input>
         </el-form-item>
         <el-form-item label="分区数量">
-          <el-input-number
-            v-model="topic.partition"
-            :min="1"
-            label="请输入分区数量"
-          ></el-input-number>
+          <el-input-number v-model="topic.partition" :min="1" label="请输入分区数量"></el-input-number>
         </el-form-item>
         <el-form-item label="副本数量">
-          <el-input-number
-            v-model="topic.replica"
-            :min="1"
-            label="请输入分区数量"
-          ></el-input-number>
+          <el-input-number v-model="topic.replica" :min="1" label="请输入分区数量"></el-input-number>
         </el-form-item>
       </el-form>
       <div class="dialogFooter">
@@ -112,33 +66,18 @@
       </div>
     </el-dialog>
 
-    <el-dialog
-      v-model="groupVisible"
-      :title="'消费 ' + selectedTopic + ' 的group'"
-    >
+    <el-dialog v-model="groupVisible" :title="'消费 ' + selectedTopic + ' 的group'">
       <div v-if="groups.length === 0">暂无数据</div>
       <el-collapse accordion @change="handleChange">
-        <el-collapse-item
-          v-for="item in groups"
-          :key="item.value"
-          :name="item.value"
-          :title="item.value"
-        >
+        <el-collapse-item v-for="item in groups" :key="item.value" :name="item.value" :title="item.value">
           <group-table :data="groupDetail"></group-table>
         </el-collapse-item>
       </el-collapse>
     </el-dialog>
 
-    <el-dialog
-      v-model="dialogTableVisible"
-      :title="selectedTopic + ' 分区详情'"
-    >
+    <el-dialog v-model="dialogTableVisible" :title="selectedTopic + ' 分区详情'">
       <el-table :data="partitions" border max-height="500" size="small" stripe>
-        <el-table-column
-          label="分区号"
-          property="partition"
-          width="80"
-        ></el-table-column>
+        <el-table-column label="分区号" property="partition" width="80"></el-table-column>
         <el-table-column label="leader分区" property="leader">
           <template #default="scope">
             <data-tag
@@ -170,14 +109,8 @@
             ></data-tag>
           </template>
         </el-table-column>
-        <el-table-column
-          label="最小偏移量"
-          property="beginningOffset"
-        ></el-table-column>
-        <el-table-column
-          label="最大偏移量"
-          property="endOffset"
-        ></el-table-column>
+        <el-table-column label="最小偏移量" property="beginningOffset"></el-table-column>
+        <el-table-column label="最大偏移量" property="endOffset"></el-table-column>
         <el-table-column label="消息数量" width="80">
           <template #default="scope">
             <span>{{ scope.row.endOffset - scope.row.beginningOffset }}</span>
@@ -192,7 +125,7 @@
 import { defineComponent, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import apiClient from '@/http-common'
-import Topic from '@/types'
+import { Topic } from '@/types'
 import KafkaSelect from '@cp/kafka/KafkaSelect.vue'
 import DataTag from '@cp/kafka/DataTag.vue'
 import GroupTable from '@cp/kafka/GroupTable.vue'
@@ -217,6 +150,7 @@ export default defineComponent({
     let selectedTopic: string = ''
     let partitions: any[] = []
     let dialogTableVisible = ref(false)
+    let dialogFormVisible = ref(false)
     let topicDetail: any = undefined
     let groups: any[] = []
     let groupVisible: boolean = true
@@ -325,9 +259,7 @@ export default defineComponent({
     function getTopicDetail(topic: string) {
       selectedTopic = topic
       apiClient
-        .get(
-          `/kafka/topic/detail/query?sourceId=${sourceId}&topic=${selectedTopic}`
-        )
+        .get(`/kafka/topic/detail/query?sourceId=${sourceId}&topic=${selectedTopic}`)
         .then((response) => {
           partitions = response.data.data.partitions
           topicDetail = response.data.data
@@ -349,9 +281,7 @@ export default defineComponent({
       }
       selectedTopic = value
       apiClient
-        .get(
-          `/kafka/consumer/query?sourceId=${sourceId}&topic=${selectedTopic}`
-        )
+        .get(`/kafka/consumer/query?sourceId=${sourceId}&topic=${selectedTopic}`)
         .then((response) => {
           groups = response.data.data
           groupVisible = true
@@ -405,6 +335,7 @@ export default defineComponent({
       getGroupByTopic,
       groupDetail,
       handleChange,
+      dialogFormVisible,
     }
   },
 })
