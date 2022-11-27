@@ -2,8 +2,11 @@ import { defineConfig } from 'vite'
 import path from 'path'
 import vue from '@vitejs/plugin-vue'
 import components from 'unplugin-vue-components/vite'
+import AutoImport from 'unplugin-auto-import/vite'
 import banner from 'vite-plugin-banner'
 import pkg from './package.json'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+
 const resolve = (dir: string): string => path.resolve(__dirname, dir)
 
 // https://vitejs.dev/config/
@@ -62,6 +65,10 @@ export default defineConfig({
   //     },
   //   },
   // },
+
+  build: {
+    chunkSizeWarningLimit: 2048,
+  },
 
   resolve: {
     /**
@@ -124,6 +131,10 @@ export default defineConfig({
   plugins: [
     vue(),
 
+    AutoImport({
+      resolvers: [ElementPlusResolver()],
+    }),
+
     /**
      * 自动导入组件，不用每次都 import
      * @see https://github.com/antfu/unplugin-vue-components#configuration
@@ -133,6 +144,7 @@ export default defineConfig({
       extensions: ['vue', 'ts'],
       deep: true,
       dts: false,
+      resolvers: [ElementPlusResolver()],
     }),
 
     /**
