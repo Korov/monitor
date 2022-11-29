@@ -14,14 +14,13 @@ export default defineComponent({
   name: 'KafkaSelect',
   emits: ['kafka_change'],
   setup(props, { emit }) {
-    let sourceId: number = 0
+    let sourceId = ref<number>()
     let sources = ref<Config[]>([])
 
     function getAllSource() {
       apiClient
         .get('/kafka/query')
         .then((response) => {
-          console.log('all sources' + response.data.data)
           sources.value = response.data.data
         })
         .catch((error) => {

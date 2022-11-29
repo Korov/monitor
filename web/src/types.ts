@@ -2,6 +2,7 @@ interface Topic {
   name: string
   partition: number
   replica: number
+  internal: boolean
 }
 
 interface Config {

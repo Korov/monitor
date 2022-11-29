@@ -11,7 +11,6 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'home',
-    component: () => import('@/components/kafka/Config.vue'),
     meta: {
       title: 'Home',
     },

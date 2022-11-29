@@ -115,7 +115,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, Ref, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import apiClient from '@/http-common'
 import { Topic } from '@/types'
@@ -131,26 +131,27 @@ export default defineComponent({
     GroupTable,
   },
   setup() {
-    let keyword = ''
-    let sourceId: number = 0
-    let tableData: any = null
-    let topic: Topic = {
+    let keyword = ref<string>('')
+    let sourceId = ref<number>()
+    let tableData = ref<Topic[]>([])
+    let topic = ref<Topic>({
       name: '',
       partition: 0,
       replica: 0,
-    }
-    let topics: Topic[] = []
+      internal: false,
+    })
+    let topics = ref<Topic[]>([])
     let selectedTopic: string = ''
     let partitions: any[] = []
     let dialogTableVisible = ref(false)
     let dialogFormVisible = ref(false)
     let topicDetail: any = undefined
     let groups: any[] = []
-    let groupVisible: boolean = true
+    let groupVisible = ref(false)
     let groupDetail = undefined
 
     function setKeyword(value: string) {
-      keyword = value
+      keyword.value = value
     }
 
     function getTopics() {
@@ -158,15 +159,15 @@ export default defineComponent({
         ElMessage.error('请选择Kafka环境')
         return
       }
-      let url = `/kafka/topic/query?sourceId=${sourceId}`
-      if (keyword != null) {
-        url = `${url}&keyword=${keyword}`
+      let url = `/kafka/topic/query?sourceId=${sourceId.value}`
+      if (keyword.value != null && keyword.value != '') {
+        url = `${url}&keyword=${keyword.value}`
       }
       apiClient
         .get(url)
         .then((response) => {
           if (response.data.code) {
-            tableData = response.data.data
+            tableData.value = response.data.data
           } else {
             ElMessage.error(response.data.message)
           }
@@ -182,11 +183,10 @@ export default defineComponent({
         return
       }
       apiClient
-        .get(`/kafka/topic/query?sourceId=${sourceId}`)
+        .get(`/kafka/topic/query?sourceId=${sourceId.value}`)
         .then((response) => {
           if (response.data.code) {
-            topics = response.data.data
-            console.log(tableData)
+            topics.value = response.data.data
           } else {
             ElMessage.error(response.data.message)
           }
@@ -196,26 +196,26 @@ export default defineComponent({
         })
     }
 
-    function kafkaChange(value: number) {
-      sourceId = value
+    function kafkaChange(value: Ref<number>) {
+      sourceId.value = value.value
       getTopics()
     }
 
     function addTopic() {
-      if (sourceId == null) {
+      if (sourceId.value == null || sourceId.value <= 0) {
         ElMessage.error('请选择Kafka环境')
         return
       }
-      if (topic.name === null) {
+      if (topic.value.name == null) {
         ElMessage.error('请选择输入Topic名称')
         return
       }
       apiClient
         .post(`/kafka/topic/create`, {
-          sourceId: sourceId,
-          topic: topic.name,
-          partition: topic.partition,
-          replica: topic.replica,
+          sourceId: sourceId.value,
+          topic: topic.value.name,
+          partition: topic.value.partition,
+          replica: topic.value.replica,
         })
         .then((response) => {
           if (response.data.code) {
@@ -273,14 +273,16 @@ export default defineComponent({
         ElMessage.error('请选择输入Topic名称')
         return
       }
+      console.log(`query source id:${sourceId.value}, value:${value}`)
       selectedTopic = value
       apiClient
         .get(`/kafka/consumer/query?sourceId=${sourceId}&topic=${selectedTopic}`)
         .then((response) => {
           groups = response.data.data
-          groupVisible = true
+          groupVisible.value = true
         })
         .catch((error) => {
+          groupVisible.value = false
           ElMessage.error('失败' + error.message)
         })
     }

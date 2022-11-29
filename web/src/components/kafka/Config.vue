@@ -48,7 +48,6 @@ export default defineComponent({
         .get('/kafka/query')
         .then((response) => {
           sources.value = response.data.data
-          console.log(sources.value)
         })
         .catch((error) => {
           ElMessage(`查询所有kafka环境失败，${error.message}`)
@@ -86,6 +85,7 @@ export default defineComponent({
           ElMessage.success('添加kafka环境成功')
           getAllSource()
           dialogFormVisible.value = false
+          configName.value = ''
         })
         .catch((error) => {
           ElMessage.error('添加kafka环境失败' + error.message)

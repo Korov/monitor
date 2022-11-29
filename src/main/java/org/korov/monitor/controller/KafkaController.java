@@ -10,6 +10,8 @@ import org.korov.monitor.utils.KafkaUtils;
 import org.korov.monitor.vo.Result;
 import org.korov.monitor.vo.TopicDescriptionVO;
 import org.korov.monitor.vo.TopicVO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -27,6 +29,8 @@ import java.util.concurrent.ExecutionException;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class KafkaController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaController.class);
+
     @Path("/kafka/add")
     @POST
     public Uni<Result> addKafkaSource(KafkaSource kafkaSource) {
@@ -53,6 +57,7 @@ public class KafkaController {
                                        @QueryParam(value = "keyword") String keyword) {
         return KafkaSource.findById(sourceId)
                 .onItem().transform(source -> {
+                    LOGGER.info("get value from source id:{}, value:{}", sourceId, source);
                     KafkaSource kafkaSource = (KafkaSource) source;
                     List<TopicVO> topics = KafkaUtils.queryTopics(kafkaSource.getBroker(), keyword);
                     return new Result(Result.SUCCESS_CODE, null, topics);

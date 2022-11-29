@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, Ref, ref } from 'vue'
 import apiClient from '@/http-common'
 import { ElMessage } from 'element-plus'
 import KafkaSelect from '@cp/kafka/KafkaSelect.vue'
@@ -29,21 +29,22 @@ export default defineComponent({
   setup() {
     let tableData = ref(null)
 
-    function getCluster(value: number) {
+    function kafkaChange(sourceId: Ref<number>) {
+      console.log('source id:' + sourceId.value)
+      getCluster(sourceId)
+    }
+
+    function getCluster(value: Ref<number>) {
       apiClient
-        .post('/kafka/cluster/info', { sourceId: value })
+        .post('/kafka/cluster/info', { sourceId: value.value })
         .then((response) => {
+          console.log(response.data.data)
           if (response.data.success) tableData.value = response.data.data
           else ElMessage.error(response.data.message)
         })
         .catch((error) => {
           ElMessage.error('查询集群信息失败' + error.message)
         })
-    }
-
-    function kafkaChange(sourceId: number) {
-      console.log('source id:' + sourceId)
-      getCluster(sourceId)
     }
 
     return {
