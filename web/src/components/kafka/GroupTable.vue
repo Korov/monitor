@@ -3,6 +3,7 @@
     <vxe-table border resizable :span-method="mergeRowMethod" :data="data">
       <vxe-column field="topic" title="topic" align="center"></vxe-column>
       <vxe-column field="partition" title="分区号" align="center"></vxe-column>
+      <vxe-column field="endOffset" title="末尾offset" align="center"></vxe-column>
       <vxe-column field="offset" title="消费偏移量" align="center"></vxe-column>
       <vxe-column field="lag" title="未消费消息条数" align="center"></vxe-column>
     </vxe-table>

@@ -62,7 +62,7 @@
     <el-dialog v-model="groupVisible" :title="'消费 ' + selectedTopic + ' 的group'">
       <div v-if="groups.length === 0">暂无数据</div>
       <el-collapse accordion @change="handleChange">
-        <el-collapse-item v-for="item in groups" :key="item.value" :name="item.value" :title="item.value">
+        <el-collapse-item v-for="item in groups" :key="item" :name="item" :title="item">
           <group-table :data="groupDetail"></group-table>
         </el-collapse-item>
       </el-collapse>
@@ -118,7 +118,7 @@
 import { defineComponent, Ref, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import apiClient from '@/http-common'
-import { Partition, Topic } from '@/types'
+import { Consumer, Partition, Topic } from '@/types'
 import KafkaSelect from '@cp/kafka/KafkaSelect.vue'
 import DataTag from '@cp/kafka/DataTag.vue'
 import GroupTable from '@cp/kafka/GroupTable.vue'
@@ -146,9 +146,9 @@ export default defineComponent({
     let dialogTableVisible = ref(false)
     let dialogFormVisible = ref(false)
     let topicDetail = ref<Topic>()
-    let groups: any[] = []
+    let groups = ref<string[]>([])
     let groupVisible = ref(false)
-    let groupDetail = undefined
+    let groupDetail = ref<Consumer[]>([])
 
     function setKeyword(value: string) {
       keyword.value = value
@@ -286,8 +286,7 @@ export default defineComponent({
       apiClient
         .get(`/kafka/consumer/query?sourceId=${sourceId.value}&topic=${selectedTopic.value}`)
         .then((response) => {
-          console.log(response.data.data)
-          groups = response.data.data
+          groups.value = response.data.data
           groupVisible.value = true
         })
         .catch((error) => {
@@ -297,20 +296,21 @@ export default defineComponent({
     }
 
     function handleChange(group: string) {
-      if (sourceId == null) {
+      if (sourceId.value == null || sourceId.value <= 0) {
         ElMessage.error('请选择Kafka环境')
         return
       }
-      if (group == null) {
+      if (group == null || group == '') {
         ElMessage.error('请选择输入Topic名称')
         return
       }
 
       apiClient
-        .get(`/kafka/consumer/detail?sourceId=${sourceId}&group=${group}`)
+        .get(`/kafka/consumer/detail?sourceId=${sourceId.value}&group=${group}`)
         .then((response) => {
           if (response.data.code) {
-            groupDetail = response.data.data
+            groupDetail.value = response.data.data
+            console.log(groupDetail)
           }
         })
         .catch((error) => {

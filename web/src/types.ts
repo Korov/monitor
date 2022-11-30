@@ -26,4 +26,12 @@ interface Partition {
   partition: number
 }
 
-export { Topic, Config, Partition, Broker }
+interface Consumer {
+  endOffset: number
+  lag: number
+  offset: number
+  partition: number
+  topic: string
+}
+
+export { Topic, Config, Partition, Broker, Consumer }

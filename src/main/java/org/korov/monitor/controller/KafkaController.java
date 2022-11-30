@@ -107,7 +107,7 @@ public class KafkaController {
                                        @QueryParam(value = "topic") String topic) {
         return KafkaSource.findById(sourceId).onItem().transform(source -> {
             KafkaSource kafkaSource = (KafkaSource) source;
-            List<Map<String, Object>> consumers = KafkaUtils.getConsumers(kafkaSource.getBroker(), topic);
+            List<String> consumers = KafkaUtils.getConsumers(kafkaSource.getBroker(), topic);
             return new Result(Result.SUCCESS_CODE, null, consumers);
         });
     }

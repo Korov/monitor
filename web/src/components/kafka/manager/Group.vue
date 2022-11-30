@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, Ref, ref } from 'vue'
 import GroupTable from '@cp/kafka/GroupTable.vue'
 import KafkaSelect from '@cp/kafka/KafkaSelect.vue'
 
@@ -55,9 +55,11 @@ export default defineComponent({
     let tableData = ref([])
     let auth = ref()
 
-    function searchGroup() {}
+    function searchGroup(sourceId: Ref<number>) {}
 
-    function kafkaChange() {}
+    function kafkaChange(sourceId: Ref<number>) {
+      searchGroup(sourceId)
+    }
 
     function getGroupDetail(value: string) {
       console.log(value)

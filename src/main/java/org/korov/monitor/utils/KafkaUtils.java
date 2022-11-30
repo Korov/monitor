@@ -137,7 +137,7 @@ public class KafkaUtils {
         }
     }
 
-    public static List<Map<String, Object>> getConsumers(String broker, String topic) {
+    public static List<String> getConsumers(String broker, String topic) {
         try (AdminClient adminClient = getClient(broker)) {
             return adminClient.listConsumerGroups().all().get().parallelStream().map(ConsumerGroupListing::groupId).filter(groupId -> {
                 try {
@@ -146,10 +146,6 @@ public class KafkaUtils {
                     e.printStackTrace();
                 }
                 return false;
-            }).map(consumerName -> {
-                Map<String, Object> map = new HashMap<>();
-                map.put("value", consumerName);
-                return map;
             }).collect(Collectors.toList());
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
@@ -194,7 +190,7 @@ public class KafkaUtils {
         return (Integer) jo.get("partition");
     }
 
-    private static AdminClient getClient(String broker) {
+    public static AdminClient getClient(String broker) {
         Properties prop = new Properties();
 
         prop.setProperty(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, broker);
