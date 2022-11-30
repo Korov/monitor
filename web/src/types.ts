@@ -11,4 +11,19 @@ interface Config {
   broker: string
 }
 
-export { Topic, Config }
+interface Broker {
+  id: number
+  host: string
+  port: number
+}
+
+interface Partition {
+  beginningOffset: number
+  endOffset: number
+  isr: Broker[]
+  leader: Broker[]
+  replicas: Broker[]
+  partition: number
+}
+
+export { Topic, Config, Partition, Broker }

@@ -118,7 +118,7 @@
 import { defineComponent, Ref, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import apiClient from '@/http-common'
-import { Topic } from '@/types'
+import { Partition, Topic } from '@/types'
 import KafkaSelect from '@cp/kafka/KafkaSelect.vue'
 import DataTag from '@cp/kafka/DataTag.vue'
 import GroupTable from '@cp/kafka/GroupTable.vue'
@@ -141,11 +141,11 @@ export default defineComponent({
       internal: false,
     })
     let topics = ref<Topic[]>([])
-    let selectedTopic: string = ''
-    let partitions: any[] = []
+    let selectedTopic = ref('')
+    let partitions = ref<Partition[]>()
     let dialogTableVisible = ref(false)
     let dialogFormVisible = ref(false)
-    let topicDetail: any = undefined
+    let topicDetail = ref<Topic>()
     let groups: any[] = []
     let groupVisible = ref(false)
     let groupDetail = undefined
@@ -230,7 +230,7 @@ export default defineComponent({
     }
 
     function deleteConfirm(name: string) {
-      if (sourceId == null) {
+      if (sourceId.value == null || sourceId.value <= 0) {
         ElMessage.error('请选择Kafka环境')
         return
       }
@@ -251,12 +251,17 @@ export default defineComponent({
     }
 
     function getTopicDetail(topic: string) {
-      selectedTopic = topic
+      if (sourceId.value == null || sourceId.value <= 0) {
+        ElMessage.error('请选择Kafka环境')
+        return
+      }
+      selectedTopic.value = topic
       apiClient
-        .get(`/kafka/topic/detail/query?sourceId=${sourceId}&topic=${selectedTopic}`)
+        .get(`/kafka/topic/detail/query?sourceId=${sourceId.value}&topic=${selectedTopic.value}`)
         .then((response) => {
-          partitions = response.data.data.partitions
-          topicDetail = response.data.data
+          console.log(response.data.data)
+          partitions.value = response.data.data.partitions
+          topicDetail.value = response.data.data
           dialogTableVisible.value = true
         })
         .catch((error) => {
@@ -274,9 +279,9 @@ export default defineComponent({
         return
       }
       console.log(`query source id:${sourceId.value}, value:${value}`)
-      selectedTopic = value
+      selectedTopic.value = value
       apiClient
-        .get(`/kafka/consumer/query?sourceId=${sourceId}&topic=${selectedTopic}`)
+        .get(`/kafka/consumer/query?sourceId=${sourceId.value}&topic=${selectedTopic.value}`)
         .then((response) => {
           groups = response.data.data
           groupVisible.value = true
