@@ -1,6 +1,10 @@
 package org.korov.monitor.vo;
 
 
+import com.google.common.base.MoreObjects;
+
+import javax.persistence.Entity;
+
 /**
  * @author korov
  */
@@ -22,5 +26,13 @@ public class TopicVO {
 
     public void setInternal(boolean internal) {
         isInternal = internal;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("name", name)
+                .add("isInternal", isInternal)
+                .toString();
     }
 }

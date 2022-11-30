@@ -2,7 +2,7 @@
   <div>
     <kafkaSelect @kafka_change="kafkaChange"></kafkaSelect>
 
-    <el-table :data="tableData" border stripe class="tableData">
+    <el-table :data="brokers" border stripe class="brokers">
       <el-table-column label="broker id" prop="id">
         <template #default="scope">
           <span style="margin-right: 5px">{{ scope.row.id }}</span>
@@ -20,6 +20,7 @@ import { defineComponent, Ref, ref } from 'vue'
 import apiClient from '@/http-common'
 import { ElMessage } from 'element-plus'
 import KafkaSelect from '@cp/kafka/KafkaSelect.vue'
+import { Broker } from '@/types'
 
 export default defineComponent({
   name: 'Cluster',
@@ -27,7 +28,7 @@ export default defineComponent({
     KafkaSelect,
   },
   setup() {
-    let tableData = ref(null)
+    let brokers = ref<Broker[]>([])
 
     function kafkaChange(sourceId: Ref<number>) {
       console.log('source id:' + sourceId.value)
@@ -38,9 +39,12 @@ export default defineComponent({
       apiClient
         .post('/kafka/cluster/info', { sourceId: value.value })
         .then((response) => {
-          console.log(response.data.data)
-          if (response.data.success) tableData.value = response.data.data
-          else ElMessage.error(response.data.message)
+          if (response.data.code == 1) {
+            brokers.value = response.data.data
+            console.log(brokers)
+          } else{
+            ElMessage.error(response.data.message)
+          }
         })
         .catch((error) => {
           ElMessage.error('查询集群信息失败' + error.message)
@@ -48,7 +52,7 @@ export default defineComponent({
     }
 
     return {
-      tableData,
+      brokers,
       kafkaChange,
     }
   },
@@ -56,7 +60,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-.tableData {
+.brokers {
   padding: 5px 5px 0 5px;
 }
 </style>

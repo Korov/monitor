@@ -7,6 +7,7 @@ import org.korov.monitor.controller.request.KafkaMessageRequest;
 import org.korov.monitor.controller.request.TopicRequest;
 import org.korov.monitor.entity.KafkaSource;
 import org.korov.monitor.utils.KafkaUtils;
+import org.korov.monitor.vo.Broker;
 import org.korov.monitor.vo.Result;
 import org.korov.monitor.vo.TopicDescriptionVO;
 import org.korov.monitor.vo.TopicVO;
@@ -136,6 +137,16 @@ public class KafkaController {
             KafkaSource kafkaSource = (KafkaSource) source;
             KafkaUtils.produceMessage(kafkaSource.getBroker(), request);
             return new Result(Result.SUCCESS_CODE, null, null);
+        });
+    }
+
+    @Path("/kafka/cluster/info")
+    @POST
+    public Uni<Result> getClusterInfo(KafkaMessageRequest request) {
+        return KafkaSource.findById(request.getSourceId()).onItem().transform(source -> {
+            KafkaSource kafkaSource = (KafkaSource) source;
+            List<Broker> brokers = KafkaUtils.getClusterInfo(kafkaSource.getBroker());
+            return new Result(Result.SUCCESS_CODE, null, brokers);
         });
     }
 }
