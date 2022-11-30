@@ -234,8 +234,12 @@ export default defineComponent({
         ElMessage.error('请选择Kafka环境')
         return
       }
+      if (name == null || name == '') {
+        ElMessage.error('请选择输入Topic')
+        return
+      }
       apiClient
-        .delete(`/kafka/topic/delete?sourceId=${sourceId}&topic=${name}`)
+        .delete(`/kafka/topic/delete?sourceId=${sourceId.value}&topic=${name}`)
         .then((response) => {
           if (response.data.code) {
             ElMessage.success('删除topic成功')
@@ -259,7 +263,6 @@ export default defineComponent({
       apiClient
         .get(`/kafka/topic/detail/query?sourceId=${sourceId.value}&topic=${selectedTopic.value}`)
         .then((response) => {
-          console.log(response.data.data)
           partitions.value = response.data.data.partitions
           topicDetail.value = response.data.data
           dialogTableVisible.value = true
@@ -270,11 +273,11 @@ export default defineComponent({
     }
 
     function getGroupByTopic(value: string) {
-      if (sourceId == null) {
+      if (sourceId.value == null || sourceId.value <= 0) {
         ElMessage.error('请选择Kafka环境')
         return
       }
-      if (value == null) {
+      if (value == null || value == '') {
         ElMessage.error('请选择输入Topic名称')
         return
       }
@@ -283,6 +286,7 @@ export default defineComponent({
       apiClient
         .get(`/kafka/consumer/query?sourceId=${sourceId.value}&topic=${selectedTopic.value}`)
         .then((response) => {
+          console.log(response.data.data)
           groups = response.data.data
           groupVisible.value = true
         })
