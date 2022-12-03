@@ -6,6 +6,7 @@ import org.apache.kafka.clients.admin.ConsumerGroupListing;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.korov.monitor.vo.TopicVO;
 import org.slf4j.Logger;
@@ -44,9 +45,9 @@ class KafkaUtilsTest {
         }
     }
 
-    @Test
+    @RepeatedTest(5)
     void produceMessage() {
-        KafkaUtils.produceMessage("localhost:9095", "tp1", "key2", "message");
+        KafkaUtils.produceMessage("localhost:9095", "tp1", "key2", "message2");
     }
 
     @Test
