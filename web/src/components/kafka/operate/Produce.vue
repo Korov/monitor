@@ -73,7 +73,6 @@ export default defineComponent({
           for (const partitionsKey in response.data.data.partitions) {
             partitions.value.push(response.data.data.partitions[partitionsKey].partition)
           }
-          console.log(partitions.value)
         })
         .catch((error) => {
           ElMessage.error('查询topic分区详情失败' + error.message)
@@ -102,5 +101,6 @@ export default defineComponent({
 .keyInput {
   margin: 0 5px 0 5px;
   width: 200px;
+  height: 30px;
 }
 </style>

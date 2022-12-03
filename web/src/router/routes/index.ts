@@ -33,6 +33,11 @@ const routes: RouteRecordRaw[] = [
         name: 'producer',
         component: () => import('@/components/kafka/operate/Produce.vue'),
       },
+      {
+        path: 'kafka/consumer',
+        name: 'consumer',
+        component: () => import('@/components/kafka/operate/Consume.vue'),
+      },
     ],
   },
   /**

@@ -70,7 +70,6 @@ export default defineComponent({
       if (props.partition != null) {
         data['partition'] = props.partition
       }
-      console.log(data)
       apiClient
         .post('/kafka/message/produce', data)
         .then((response) => {
