@@ -30,7 +30,7 @@ export default defineComponent({
     getAllSource()
 
     function selectKafka() {
-      if (sourceId != null) {
+      if (sourceId.value != null) {
         emit('kafka_change', sourceId)
       }
     }

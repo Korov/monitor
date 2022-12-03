@@ -28,6 +28,11 @@ const routes: RouteRecordRaw[] = [
         name: 'manager',
         component: () => import('@/components/kafka/Manager.vue'),
       },
+      {
+        path: 'kafka/producer',
+        name: 'producer',
+        component: () => import('@/components/kafka/Producer.vue'),
+      },
     ],
   },
   /**
