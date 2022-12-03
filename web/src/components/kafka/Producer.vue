@@ -37,10 +37,18 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
+import { ElMessage } from 'element-plus'
+import apiClient from '@/http-common'
 
 export default defineComponent({
   name: 'Producer',
-  setup() {
+  props: {
+    topic: String,
+    sourceId: Number,
+    partition: Number,
+    messageKey: String,
+  },
+  setup(props) {
     let message = ref('')
     let messages = ref<string[]>([])
     let historyMessages = ref<string[]>([])
@@ -49,6 +57,30 @@ export default defineComponent({
     let batch = ref(false)
 
     function produce() {
+      if (props.sourceId == null || props.sourceId <= 0 || props.topic == '') {
+        ElMessage.error('请先选择kafka和topic')
+      }
+      if (message.value == '') {
+        ElMessage.error('请输入消息')
+      }
+      const data = { sourceId: props.sourceId, topic: props.topic, message: message.value }
+      if (props.messageKey != null && props.messageKey != '') {
+        data['key'] = props.messageKey
+      }
+      if (props.partition != null) {
+        data['partition'] = props.partition
+      }
+      console.log(data)
+      apiClient
+        .post('/kafka/message/produce', data)
+        .then((response) => {
+          if (response.data.code) {
+            ElMessage.success('消息发送成功')
+          }
+        })
+        .catch((error) => {
+          ElMessage.error('发送失败' + error.message)
+        })
       messages.value.push(message.value)
       historyMessages.value.push(message.value)
       cursor.value++
