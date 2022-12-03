@@ -155,7 +155,7 @@ export default defineComponent({
     }
 
     function getTopics() {
-      if (sourceId == null) {
+      if (sourceId.value == null) {
         ElMessage.error('请选择Kafka环境')
         return
       }
@@ -178,7 +178,7 @@ export default defineComponent({
     }
 
     function getAllTopics() {
-      if (sourceId == null) {
+      if (sourceId.value == null) {
         ElMessage.error('请选择Kafka环境')
         return
       }

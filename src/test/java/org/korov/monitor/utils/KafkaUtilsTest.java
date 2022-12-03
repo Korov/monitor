@@ -61,4 +61,14 @@ class KafkaUtilsTest {
             consumer.commitAsync();
         }
     }
+
+    @Test
+    void getConsumers() throws ExecutionException, InterruptedException {
+        List<String>  consumers = KafkaUtils.getConsumers("localhost:9095", null);
+        System.out.println(consumers);
+
+        AdminClient adminClient = KafkaUtils.getClient("localhost:9095");
+        Collection<ConsumerGroupListing> groupListings = adminClient.listConsumerGroups().all().get();
+        System.out.println("debug");
+    }
 }

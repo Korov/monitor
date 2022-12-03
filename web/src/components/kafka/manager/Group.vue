@@ -18,14 +18,10 @@
 
       <el-table-column label="操作">
         <template #default="scope">
-          <el-button size="small" circle type="primary" @click="getGroupDetail(scope.row.name)">
-            <i class="iconfont icon-detail"></i>
-          </el-button>
-          <el-popconfirm title="确定删除吗？" @onConfirm="deleteConfirm(scope.row.name)" v-if="!scope.row.internal">
-            <el-button size="small" circle type="danger" style="margin-left: 5px" :disabled="!auth.remove">
-              <i class="el-icon-delete"></i>
-            </el-button>
-          </el-popconfirm>
+          <el-button type="primary" @click="getGroupDetail(scope.row.name)">详情</el-button>
+          <!--          <el-popconfirm title="确定删除吗？" @confirm="deleteConfirm(scope.row.name)">-->
+          <el-button type="danger" @click="getGroupDetail(scope.row.name)" style="margin-left: 5px">删除</el-button>
+          <!--          </el-popconfirm>-->
         </template>
       </el-table-column>
     </el-table>
@@ -40,6 +36,8 @@
 import { defineComponent, Ref, ref } from 'vue'
 import GroupTable from '@cp/kafka/GroupTable.vue'
 import KafkaSelect from '@cp/kafka/KafkaSelect.vue'
+import { ElMessage } from 'element-plus'
+import apiClient from '@/http-common'
 
 export default defineComponent({
   name: 'Group',
@@ -49,13 +47,36 @@ export default defineComponent({
     KafkaSelect,
   },
   setup() {
+    interface Group {
+      name: string
+      internal: boolean
+    }
+
     let detail = ref()
     let dialogTableVisible = ref(false)
     let keyword = ref('')
-    let tableData = ref([])
-    let auth = ref()
+    let tableData = ref<Group[]>([])
 
-    function searchGroup(sourceId: Ref<number>) {}
+    function searchGroup(sourceId: Ref<number>) {
+      if (sourceId.value == null) {
+        ElMessage.error('请选择Kafka环境')
+      }
+      apiClient
+        .get(`/kafka/consumer/query?sourceId=${sourceId.value}`)
+        .then((response) => {
+          let groupNames: string[] = response.data.data
+          for (let i = 0; i < groupNames.length; i++) {
+            tableData.value.push({
+              name: groupNames[i],
+              internal: false,
+            })
+          }
+          console.info(tableData.value)
+        })
+        .catch((error) => {
+          ElMessage.error('失败' + error.message)
+        })
+    }
 
     function kafkaChange(sourceId: Ref<number>) {
       searchGroup(sourceId)
@@ -78,7 +99,6 @@ export default defineComponent({
       tableData,
       getGroupDetail,
       deleteConfirm,
-      auth,
     }
   },
 })

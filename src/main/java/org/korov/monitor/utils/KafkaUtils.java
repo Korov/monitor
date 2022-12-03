@@ -141,7 +141,14 @@ public class KafkaUtils {
         try (AdminClient adminClient = getClient(broker)) {
             return adminClient.listConsumerGroups().all().get().parallelStream().map(ConsumerGroupListing::groupId).filter(groupId -> {
                 try {
-                    return adminClient.listConsumerGroupOffsets(groupId).partitionsToOffsetAndMetadata().get().keySet().stream().anyMatch(p -> p.topic().equals(topic));
+                    return adminClient.listConsumerGroupOffsets(groupId).partitionsToOffsetAndMetadata().get().keySet()
+                            .stream().anyMatch(p -> {
+                                if (topic == null || topic.isEmpty()) {
+                                    return true;
+                                } else {
+                                    return p.topic().equals(topic);
+                                }
+                            });
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
