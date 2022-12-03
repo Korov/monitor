@@ -235,6 +235,22 @@ public class KafkaUtils {
         }
     }
 
+    public static void produceMessage(String broker, String topic, String key, String message) {
+        Properties props = new Properties();
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, broker);
+        props.put(ProducerConfig.ACKS_CONFIG, "all");
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        StringSerializer stringSerializer = new StringSerializer();
+
+        try (Producer<String, String> producer = new KafkaProducer<>(props, stringSerializer, stringSerializer)) {
+            Future<RecordMetadata> send = producer.send(new ProducerRecord<>(topic, key, message));
+            send.get(3, TimeUnit.SECONDS);
+        } catch (ExecutionException | InterruptedException | TimeoutException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static List<Broker> getClusterInfo(String broker) {
         try (AdminClient adminClient = getClient(broker)) {
             Collection<Node> clusters = adminClient.describeCluster().nodes().get();
