@@ -64,9 +64,9 @@ public class WebSockets {
         try (Session session1 = sessionMap.remove(remoteAddress)) {
             String remoteAddress1 = ((UndertowSession) session1).getChannel().remoteAddress().toString();
             if (remoteAddress.equals(remoteAddress1)) {
-                LOGGER.info("error session:{} closed", remoteAddress);
+                LOGGER.info("error session:{} closed, error:{}", remoteAddress, throwable);
             } else {
-                LOGGER.error("error session:{}, session1:{}", remoteAddress, remoteAddress1);
+                LOGGER.error("error session:{}, session1:{}, error:{}", remoteAddress, remoteAddress1, throwable);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

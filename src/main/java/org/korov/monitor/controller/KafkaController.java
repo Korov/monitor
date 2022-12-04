@@ -6,6 +6,7 @@ import io.smallrye.mutiny.Uni;
 import org.korov.monitor.controller.request.KafkaMessageRequest;
 import org.korov.monitor.controller.request.TopicRequest;
 import org.korov.monitor.entity.KafkaSource;
+import org.korov.monitor.utils.JsonUtils;
 import org.korov.monitor.utils.KafkaUtils;
 import org.korov.monitor.vo.Broker;
 import org.korov.monitor.vo.Result;
@@ -48,7 +49,13 @@ public class KafkaController {
 
     @Path(value = "/kafka/query")
     @GET
-    public Uni<Result> queryKafkaSource() {
+    public Uni<Result> queryKafkaSource(@QueryParam("id") Long id) {
+        if (id != null) {
+            return KafkaSource.findById(id).onItem().transform(source -> {
+                LOGGER.info("get source:{}", JsonUtils.objectToJson(source));
+                return new Result(Result.SUCCESS_CODE, null, source);
+            });
+        }
         return KafkaSource.listAll().onItem().transform(list -> new Result(Result.SUCCESS_CODE, null, list));
     }
 
@@ -126,7 +133,7 @@ public class KafkaController {
     @Path(value = "/kafka/addr")
     @GET
     public Uni<String> getAddr(@Context UriInfo uriInfo) {
-        //获取浏览器访问地址中的ip和端口，防止容器运行时候产生问题
+        // 获取浏览器访问地址中的ip和端口，防止容器运行时候产生问题
         return Uni.createFrom().item(uriInfo.getBaseUri().getHost() + ":" + uriInfo.getBaseUri().getPort());
     }
 

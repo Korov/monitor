@@ -71,7 +71,6 @@ export default defineComponent({
               internal: false,
             })
           }
-          console.info(tableData.value)
         })
         .catch((error) => {
           ElMessage.error('失败' + error.message)

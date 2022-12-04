@@ -129,7 +129,7 @@ public class WebSocketServer {
                                 log.error("Unable to send message, ", result.getException());
                             }
                         });*/
-                        this.session.getBasicRemote().sendText(JsonUtils.jsonString(text));
+                        this.session.getBasicRemote().sendText(JsonUtils.objectToJson(text));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

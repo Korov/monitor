@@ -57,7 +57,7 @@ class KafkaUtilsTest {
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(Duration.of(1, ChronoUnit.SECONDS));
             for (ConsumerRecord<String, String> record : records) {
-                System.out.println(String.format("key:%s, message:%s", record.key(), record.value()));
+                System.out.printf("key:%s, message:%s%n", record.key(), record.value());
             }
             consumer.commitAsync();
         }

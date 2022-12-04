@@ -16,12 +16,16 @@ export default defineComponent({
   setup(props, { emit }) {
     let sourceId = ref<number>()
     let sources = ref<Config[]>([])
+    let sourceMap: Map<number, Config> = new Map<number, Config>()
 
     function getAllSource() {
       apiClient
         .get('/kafka/query')
         .then((response) => {
           sources.value = response.data.data
+          for (let index in sources.value) {
+            sourceMap.set(sources.value[index].id, sources.value[index])
+          }
         })
         .catch((error) => {
           ElMessage.error('查询所有kafka环境失败' + error.message)
@@ -31,7 +35,14 @@ export default defineComponent({
 
     function selectKafka() {
       if (sourceId.value != null) {
-        emit('kafka_change', sourceId)
+        let source = sourceMap.get(sourceId.value)
+        console.log(`select kafka:`)
+        if (source?.broker == undefined) {
+          emit('kafka_change', sourceId, '')
+        } else {
+          console.log(source.broker)
+          emit('kafka_change', sourceId, source.broker)
+        }
       }
     }
 

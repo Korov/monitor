@@ -16,6 +16,7 @@
     "up": "npx npm-check-updates -u"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.0.10",
     "axios": "^1.2.0",
     "core-js": "^3.26.1",
     "element-plus": "^2.2.25",

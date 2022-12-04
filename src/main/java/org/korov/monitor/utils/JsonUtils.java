@@ -27,8 +27,13 @@ public class JsonUtils {
         SNAKE_CASE_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    public static String jsonString(Object object) throws JsonProcessingException {
-        return DEFAULT_MAPPER.writeValueAsString(object);
+    public static String objectToJson(Object object) {
+        try {
+            return DEFAULT_MAPPER.writeValueAsString(object);
+        } catch (Exception e) {
+            LOGGER.error("parse object to json failed");
+        }
+        return null;
     }
 
     public static <T> T jsonToObject(String json, Class<T> valueType) {

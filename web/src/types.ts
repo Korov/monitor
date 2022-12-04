@@ -34,4 +34,12 @@ interface Consumer {
   topic: string
 }
 
-export { Topic, Config, Partition, Broker, Consumer }
+interface Message {
+  topic: string
+  partition: number
+  offset: number
+  key: string
+  value: string
+}
+
+export { Topic, Config, Partition, Broker, Consumer, Message }

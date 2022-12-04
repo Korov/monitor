@@ -10,7 +10,7 @@
       </el-select>
     </div>
 
-    <!--    <consumer :broker="broker" :sourceId="sourceId" :topic="topic"></consumer>-->
+    <consumer :broker="broker" :sourceId="sourceId" :topic="topic"></consumer>
   </div>
 </template>
 
@@ -20,10 +20,12 @@ import KafkaSelect from '@cp/kafka/KafkaSelect.vue'
 import { Topic } from '@/types'
 import apiClient from '@/http-common'
 import { ElMessage } from 'element-plus'
+import Consumer from '@cp/kafka/Consumer.vue'
 
 export default defineComponent({
   name: 'Consume',
   components: {
+    Consumer,
     KafkaSelect,
   },
   setup() {
@@ -33,8 +35,11 @@ export default defineComponent({
     let partition = ref<number>()
     let partitions = ref<number[]>([])
     let messageKey = ref('')
+    let broker = ref('')
 
-    function getTopics(value: Ref<number>) {
+    function getTopics(value: Ref<number>, host: string) {
+      sourceId.value = value.value
+      broker.value = host
       apiClient
         .get(`/kafka/topic/query?sourceId=${value.value}`)
         .then((response) => {
@@ -57,6 +62,7 @@ export default defineComponent({
       partitions,
       messageKey,
       getTopics,
+      broker,
     }
   },
 })
