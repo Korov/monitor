@@ -1,0 +1,24 @@
+logging:
+  config: classpath:logback.xml
+
+server:
+  port: 8091
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3309/monitor?useSSL=false&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
+    username: monitor
+    password: monitor
+  flyway:
+    baseline-description: monitor migration
+    baseline-on-migrate: true
+    url: jdbc:mysql://localhost:3309/monitor?useSSL=false&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
+    user: monitor
+    password: monitor
+    locations: classpath:dev/migration/mysql,classpath:db/migration/mysql
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+
