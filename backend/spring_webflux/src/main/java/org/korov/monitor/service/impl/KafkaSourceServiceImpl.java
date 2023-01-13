@@ -14,7 +14,10 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -48,12 +51,20 @@ public class KafkaSourceServiceImpl implements KafkaSourceService {
     @Override
     public Flux<TopicVO> queryTopics(Long sourceId, String keyword) {
         Mono<KafkaSource> kafkaSource = kafkaSourceRepository.findById(sourceId);
-        return kafkaSource.map(source -> KafkaUtils.queryTopics(source.getBroker(), keyword));
+        Flux<TopicVO> result = Flux.fromIterable(Collections.emptyList());
+        kafkaSource.map(source -> {
+            List<TopicVO> topics = KafkaUtils.queryTopics(source.getBroker(), keyword);
+            for (TopicVO topic : topics) {
+                result.concatWithValues(topic);
+            }
+            return Mono.empty();
+        });
+        return result;
     }
 
     @Override
     public TopicDescriptionVO queryTopicDetail(Long sourceId, String topic) {
-        Optional<KafkaSource> optionalKafkaSource = kafkaSourceRepository.findById(sourceId);
+        Mono<KafkaSource> optionalKafkaSource = kafkaSourceRepository.findById(sourceId);
         return optionalKafkaSource.map(kafkaSource -> KafkaUtils.getTopicDetail(kafkaSource.getBroker(), topic)).orElse(null);
     }
 

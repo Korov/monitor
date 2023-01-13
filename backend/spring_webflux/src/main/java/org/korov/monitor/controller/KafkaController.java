@@ -57,7 +57,7 @@ public class KafkaController {
     }
 
     @GetMapping(value = "/kafka/topic/detail/query")
-    public Result<TopicDescriptionVO> queryKafkaTopicDetail(@RequestParam(value = "sourceId") Long sourceId,
+    public Result<Mono<TopicDescriptionVO>> queryKafkaTopicDetail(@RequestParam(value = "sourceId") Long sourceId,
                                                             @RequestParam(value = "topic") String topic) throws JsonProcessingException {
         TopicDescriptionVO description = kafkaSourceService.queryTopicDetail(sourceId, topic);
         return new Result<>(Result.SUCCESS_CODE, null, description);
