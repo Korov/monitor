@@ -85,10 +85,10 @@ public class KafkaController {
     }
 
     @GetMapping("/kafka/consumer/detail")
-    public Result<?> getGroupDetail(@RequestParam(value = "sourceId") Long sourceId,
-                                    @RequestParam(value = "group") String group) {
-        List<Map<String, Object>> consumers = kafkaSourceService.getConsumerDetail(sourceId, group);
-        return new Result<>(Result.SUCCESS_CODE, null, consumers);
+    public Mono<Result<List<Map<String, Object>>>> getGroupDetail(@RequestParam(value = "sourceId") Long sourceId,
+                                                                  @RequestParam(value = "group") String group) {
+        Mono<List<Map<String, Object>>> consumers = kafkaSourceService.getConsumerDetail(sourceId, group);
+        return consumers.map(values -> new Result<>(Result.SUCCESS_CODE, null, values));
     }
 
     @GetMapping(value = "/kafka/addr")

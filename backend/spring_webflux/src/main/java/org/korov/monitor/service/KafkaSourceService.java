@@ -32,7 +32,7 @@ public interface KafkaSourceService {
 
     Mono<List<String>> getConsumers(Long sourceId, String topic);
 
-    List<Map<String, Object>> getConsumerDetail(Long sourceId, String group);
+    Mono<List<Map<String, Object>>> getConsumerDetail(Long sourceId, String group);
 
     void produceMessage(KafkaMessageRequest request);
 }

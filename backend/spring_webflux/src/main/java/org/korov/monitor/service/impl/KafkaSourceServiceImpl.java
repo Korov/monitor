@@ -17,7 +17,6 @@ import reactor.core.publisher.Mono;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -97,20 +96,17 @@ public class KafkaSourceServiceImpl implements KafkaSourceService {
     }
 
     @Override
-    public List<Map<String, Object>> getConsumerDetail(Long sourceId, String group) {
-        Optional<KafkaSource> optional = kafkaSourceRepository.findById(sourceId);
-        if (optional.isPresent()) {
-            return KafkaUtils.getConsumerDetail(optional.get().getBroker(), group);
-        } else {
-            return Collections.emptyList();
-        }
+    public Mono<List<Map<String, Object>>> getConsumerDetail(Long sourceId, String group) {
+        Mono<KafkaSource> optional = kafkaSourceRepository.findById(sourceId);
+        return optional.map(source -> KafkaUtils.getConsumerDetail(source.getBroker(), group));
     }
 
     @Override
     public void produceMessage(KafkaMessageRequest request) {
-        Optional<KafkaSource> optional = kafkaSourceRepository.findById(request.getSourceId());
-        if (optional.isPresent()) {
-            KafkaUtils.produceMessage(optional.get().getBroker(), request);
-        }
+        Mono<KafkaSource> optional = kafkaSourceRepository.findById(request.getSourceId());
+        optional.map(source -> {
+            KafkaUtils.produceMessage(source.getBroker(), request);
+            return Mono.empty();
+        });
     }
 }
