@@ -64,7 +64,7 @@ public class KafkaUtils {
         try (AdminClient adminClient = getClient(broker)) {
             DescribeTopicsResult topicsResult = adminClient.describeTopics(Collections.singleton(topic));
             List<TopicPartition> topicPartitions = new ArrayList<>();
-            for (Map.Entry<String, TopicDescription> entry : topicsResult.all().get().entrySet()) {
+            for (Map.Entry<String, TopicDescription> entry : topicsResult.allTopicNames().get().entrySet()) {
                 for (TopicPartitionInfo partitionInfo : entry.getValue().partitions()) {
                     topicPartitions.add(new TopicPartition(topic, partitionInfo.partition()));
                 }
@@ -81,7 +81,7 @@ public class KafkaUtils {
             DescribeTopicsResult topicsResult = adminClient.describeTopics(topics);
             Map<String, TopicDescriptionVO> map = new HashMap<>();
             try {
-                for (Map.Entry<String, TopicDescription> entry : topicsResult.all().get().entrySet()) {
+                for (Map.Entry<String, TopicDescription> entry : topicsResult.allTopicNames().get().entrySet()) {
                     map.put(entry.getKey(), new TopicDescriptionVO(entry.getValue()));
                 }
             } catch (InterruptedException | ExecutionException e) {

@@ -42,9 +42,9 @@ class KafkaUtilsTest {
 
     @Test
     void getConsumers() {
-        List<Map<String, Object>> result = KafkaUtils.getConsumers("linux.korov.org:9095", "monitor_topic");
-        for (Map<String, Object> map : result) {
-            log.info(map.toString());
+        List<String> result = KafkaUtils.getConsumers("linux.korov.org:9095", "monitor_topic");
+        for (String map : result) {
+            log.info(map);
         }
     }
 
