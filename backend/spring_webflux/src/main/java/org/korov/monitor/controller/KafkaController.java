@@ -57,10 +57,10 @@ public class KafkaController {
     }
 
     @GetMapping(value = "/kafka/topic/detail/query")
-    public Result<Mono<TopicDescriptionVO>> queryKafkaTopicDetail(@RequestParam(value = "sourceId") Long sourceId,
-                                                            @RequestParam(value = "topic") String topic) throws JsonProcessingException {
-        TopicDescriptionVO description = kafkaSourceService.queryTopicDetail(sourceId, topic);
-        return new Result<>(Result.SUCCESS_CODE, null, description);
+    public Mono<Result<TopicDescriptionVO>> queryKafkaTopicDetail(@RequestParam(value = "sourceId") Long sourceId,
+                                                                  @RequestParam(value = "topic") String topic) throws JsonProcessingException {
+        Mono<TopicDescriptionVO> description = kafkaSourceService.queryTopicDetail(sourceId, topic);
+        return description.map(value -> new Result<>(Result.SUCCESS_CODE, null, value));
     }
 
     @PostMapping(value = "/kafka/topic/create")
@@ -78,10 +78,10 @@ public class KafkaController {
     }
 
     @GetMapping("/kafka/consumer/query")
-    public Result<?> getGroupByTopic(@RequestParam(value = "sourceId") Long sourceId,
-                                     @RequestParam(value = "topic") String topic) {
-        List<Map<String, Object>> consumers = kafkaSourceService.getConsumers(sourceId, topic);
-        return new Result<>(Result.SUCCESS_CODE, null, consumers);
+    public Mono<Result<List<String>>> getGroupByTopic(@RequestParam(value = "sourceId") Long sourceId,
+                                                      @RequestParam(value = "topic") String topic) {
+        Mono<List<String>> consumers = kafkaSourceService.getConsumers(sourceId, topic);
+        return consumers.map(values -> new Result<>(Result.SUCCESS_CODE, null, values));
     }
 
     @GetMapping("/kafka/consumer/detail")
@@ -93,7 +93,7 @@ public class KafkaController {
 
     @GetMapping(value = "/kafka/addr")
     public String getAddr(ServerWebExchange chain) {
-        //获取浏览器访问地址中的ip和端口，防止容器运行时候产生问题
+        // 获取浏览器访问地址中的ip和端口，防止容器运行时候产生问题
         return chain.getRequest().getURI().getHost() + ":" + chain.getRequest().getURI().getPort();
     }
 

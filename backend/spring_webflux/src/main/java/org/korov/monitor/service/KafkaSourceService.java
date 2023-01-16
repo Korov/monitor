@@ -24,13 +24,13 @@ public interface KafkaSourceService {
 
     Flux<TopicVO> queryTopics(Long sourceId, String keyword);
 
-    TopicDescriptionVO queryTopicDetail(Long sourceId, String topic);
+    Mono<TopicDescriptionVO> queryTopicDetail(Long sourceId, String topic);
 
     void createTopic(TopicRequest request) throws ExecutionException, InterruptedException;
 
     void deleteTopic(Long sourceId, String topic);
 
-    List<Map<String, Object>> getConsumers(Long sourceId, String topic);
+    Mono<List<String>> getConsumers(Long sourceId, String topic);
 
     List<Map<String, Object>> getConsumerDetail(Long sourceId, String group);
 

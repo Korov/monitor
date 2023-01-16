@@ -133,19 +133,22 @@ public class KafkaUtils {
         }
     }
 
-    public static List<Map<String, Object>> getConsumers(String broker, String topic) {
+    public static List<String> getConsumers(String broker, String topic) {
         try (AdminClient adminClient = getClient(broker)) {
             return adminClient.listConsumerGroups().all().get().parallelStream().map(ConsumerGroupListing::groupId).filter(groupId -> {
                 try {
-                    return adminClient.listConsumerGroupOffsets(groupId).partitionsToOffsetAndMetadata().get().keySet().stream().anyMatch(p -> p.topic().equals(topic));
+                    return adminClient.listConsumerGroupOffsets(groupId).partitionsToOffsetAndMetadata().get().keySet()
+                            .stream().anyMatch(p -> {
+                                if (topic == null || topic.isEmpty()) {
+                                    return true;
+                                } else {
+                                    return p.topic().equals(topic);
+                                }
+                            });
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
                 return false;
-            }).map(consumerName -> {
-                Map<String, Object> map = new HashMap<>();
-                map.put("value", consumerName);
-                return map;
             }).collect(Collectors.toList());
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();

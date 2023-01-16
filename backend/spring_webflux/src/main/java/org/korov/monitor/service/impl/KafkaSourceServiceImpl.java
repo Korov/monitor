@@ -63,33 +63,37 @@ public class KafkaSourceServiceImpl implements KafkaSourceService {
     }
 
     @Override
-    public TopicDescriptionVO queryTopicDetail(Long sourceId, String topic) {
+    public Mono<TopicDescriptionVO> queryTopicDetail(Long sourceId, String topic) {
         Mono<KafkaSource> optionalKafkaSource = kafkaSourceRepository.findById(sourceId);
-        return optionalKafkaSource.map(kafkaSource -> KafkaUtils.getTopicDetail(kafkaSource.getBroker(), topic)).orElse(null);
+        return optionalKafkaSource.map(kafkaSource -> KafkaUtils.getTopicDetail(kafkaSource.getBroker(), topic));
     }
 
     @Override
-    public void createTopic(TopicRequest request) throws ExecutionException, InterruptedException {
-        Optional<KafkaSource> optional = kafkaSourceRepository.findById(request.getSourceId());
-        if (optional.isPresent()) {
-            KafkaUtils.createTopic(optional.get().getBroker(), request.getTopic(), request.getPartition(), request.getReplica());
-        }
+    public void createTopic(TopicRequest request) {
+        Mono<KafkaSource> optional = kafkaSourceRepository.findById(request.getSourceId());
+        optional.map(source -> {
+            try {
+                KafkaUtils.createTopic(source.getBroker(), request.getTopic(), request.getPartition(), request.getReplica());
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+            return Mono.empty();
+        });
     }
 
     @Override
     public void deleteTopic(Long sourceId, String topic) {
-        Optional<KafkaSource> optional = kafkaSourceRepository.findById(sourceId);
-        optional.ifPresent(kafkaSource -> KafkaUtils.deleteTopic(kafkaSource.getBroker(), topic));
+        Mono<KafkaSource> optional = kafkaSourceRepository.findById(sourceId);
+        optional.map(value -> {
+            KafkaUtils.deleteTopic(value.getBroker(), topic);
+            return Mono.empty();
+        });
     }
 
     @Override
-    public List<Map<String, Object>> getConsumers(Long sourceId, String topic) {
-        Optional<KafkaSource> optional = kafkaSourceRepository.findById(sourceId);
-        if (optional.isPresent()) {
-            return KafkaUtils.getConsumers(optional.get().getBroker(), topic);
-        } else {
-            return Collections.emptyList();
-        }
+    public Mono<List<String>> getConsumers(Long sourceId, String topic) {
+        Mono<KafkaSource> optional = kafkaSourceRepository.findById(sourceId);
+        return optional.map(source -> KafkaUtils.getConsumers(source.getBroker(), topic));
     }
 
     @Override
