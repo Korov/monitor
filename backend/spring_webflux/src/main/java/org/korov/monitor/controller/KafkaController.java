@@ -5,7 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.korov.monitor.controller.request.KafkaMessageRequest;
 import org.korov.monitor.controller.request.TopicRequest;
 import org.korov.monitor.entity.KafkaSource;
+import org.korov.monitor.repository.KafkaSourceRepository;
 import org.korov.monitor.service.KafkaSourceService;
+import org.korov.monitor.utils.KafkaUtils;
+import org.korov.monitor.vo.Broker;
 import org.korov.monitor.vo.Result;
 import org.korov.monitor.vo.TopicDescriptionVO;
 import org.korov.monitor.vo.TopicVO;
@@ -26,6 +29,14 @@ import java.util.concurrent.ExecutionException;
 @Slf4j
 @RestController
 public class KafkaController {
+
+    private KafkaSourceRepository kafkaSourceRepository;
+
+    @Autowired
+    public void setKafkaSourceRepository(KafkaSourceRepository kafkaSourceRepository) {
+        this.kafkaSourceRepository = kafkaSourceRepository;
+    }
+
     private KafkaSourceService kafkaSourceService;
 
     @Autowired
@@ -52,8 +63,7 @@ public class KafkaController {
     @GetMapping(value = "/kafka/topic/query")
     public Mono<Result<List<TopicVO>>> queryKafkaTopic(@RequestParam(value = "sourceId") Long sourceId,
                                                  @RequestParam(value = "keyword", required = false) String keyword) {
-        Flux<TopicVO> topics = kafkaSourceService.queryTopics(sourceId, keyword);
-        return topics.collectSortedList(Comparator.comparing(TopicVO::isInternal)).map(list -> new Result<>(Result.SUCCESS_CODE, null, list));
+        return kafkaSourceService.queryTopics(sourceId, keyword).map(list -> new Result<>(Result.SUCCESS_CODE, null, list));
     }
 
     @GetMapping(value = "/kafka/topic/detail/query")
@@ -76,7 +86,7 @@ public class KafkaController {
 
     @GetMapping("/kafka/consumer/query")
     public Mono<Result<List<String>>> getGroupByTopic(@RequestParam(value = "sourceId") Long sourceId,
-                                                      @RequestParam(value = "topic") String topic) {
+                                                      @RequestParam(value = "topic", required = false) String topic) {
         Mono<List<String>> consumers = kafkaSourceService.getConsumers(sourceId, topic);
         return consumers.map(values -> new Result<>(Result.SUCCESS_CODE, null, values));
     }
@@ -86,6 +96,14 @@ public class KafkaController {
                                                                   @RequestParam(value = "group") String group) {
         Mono<List<Map<String, Object>>> consumers = kafkaSourceService.getConsumerDetail(sourceId, group);
         return consumers.map(values -> new Result<>(Result.SUCCESS_CODE, null, values));
+    }
+
+    @PostMapping("/kafka/cluster/info")
+    public Mono<Result<List<Broker>>> getClusterInfo(@RequestBody KafkaMessageRequest request) {
+        return kafkaSourceRepository.findById(request.getSourceId()).map(source -> {
+            List<Broker> brokers = KafkaUtils.getClusterInfo(source.getBroker());
+            return new Result<>(Result.SUCCESS_CODE, null, brokers);
+        });
     }
 
     @GetMapping(value = "/kafka/addr")

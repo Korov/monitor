@@ -48,17 +48,11 @@ public class KafkaSourceServiceImpl implements KafkaSourceService {
     }
 
     @Override
-    public Flux<TopicVO> queryTopics(Long sourceId, String keyword) {
+    public Mono<List<TopicVO>> queryTopics(Long sourceId, String keyword) {
         Mono<KafkaSource> kafkaSource = kafkaSourceRepository.findById(sourceId);
-        Flux<TopicVO> result = Flux.fromIterable(Collections.emptyList());
-        kafkaSource.map(source -> {
-            List<TopicVO> topics = KafkaUtils.queryTopics(source.getBroker(), keyword);
-            for (TopicVO topic : topics) {
-                result.concatWithValues(topic);
-            }
-            return Mono.empty();
+        return kafkaSource.map(source -> {
+            return KafkaUtils.queryTopics(source.getBroker(), keyword);
         });
-        return result;
     }
 
     @Override

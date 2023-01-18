@@ -6,11 +6,13 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.clients.producer.*;
+import org.apache.kafka.common.Node;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.TopicPartitionInfo;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.korov.monitor.controller.request.KafkaMessageRequest;
+import org.korov.monitor.vo.Broker;
 import org.korov.monitor.vo.TopicDescriptionVO;
 import org.korov.monitor.vo.TopicVO;
 
@@ -236,5 +238,19 @@ public class KafkaUtils {
         } catch (ExecutionException | InterruptedException | TimeoutException e) {
             e.printStackTrace();
         }
+    }
+
+    public static List<Broker> getClusterInfo(String broker) {
+        try (AdminClient adminClient = getClient(broker)) {
+            Collection<Node> clusters = adminClient.describeCluster().nodes().get();
+            List<Broker> brokers = new ArrayList<>(clusters.size());
+            for (Node cluster : clusters) {
+                brokers.add(new Broker(cluster.id(), cluster.host(), cluster.port()));
+            }
+            return brokers;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Collections.emptyList();
     }
 }

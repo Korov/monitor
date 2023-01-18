@@ -22,7 +22,7 @@ public interface KafkaSourceService {
 
     Flux<KafkaSource> queryAllKafkaSource();
 
-    Flux<TopicVO> queryTopics(Long sourceId, String keyword);
+    Mono<List<TopicVO>> queryTopics(Long sourceId, String keyword);
 
     Mono<TopicDescriptionVO> queryTopicDetail(Long sourceId, String topic);
 
