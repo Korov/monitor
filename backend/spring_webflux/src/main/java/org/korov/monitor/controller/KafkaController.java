@@ -33,48 +33,47 @@ public class KafkaController {
     }
 
     @PostMapping(value = "/kafka/add")
-    public Result<Mono<KafkaSource>> addKafkaSource(@RequestBody KafkaSource kafkaSource) {
-        return new Result<>(Result.SUCCESS_CODE, null, kafkaSourceService.addKafkaSource(kafkaSource));
+    public Mono<Result<KafkaSource>> addKafkaSource(@RequestBody KafkaSource kafkaSource) {
+        return kafkaSourceService.addKafkaSource(kafkaSource).map(source -> new Result<>(Result.SUCCESS_CODE, null, source));
     }
 
     @DeleteMapping(value = "/kafka/delete")
-    public Result<KafkaSource> deleteKafkaSource(@RequestParam(value = "id") Long id) {
+    public Mono<Result<KafkaSource>> deleteKafkaSource(@RequestParam(value = "id") Long id) {
         kafkaSourceService.deleteKafkaSource(id);
-        return new Result<>(Result.SUCCESS_CODE, null, null);
+        return Mono.just(new Result<>(Result.SUCCESS_CODE, null, null));
     }
 
     @GetMapping(value = "/kafka/query")
-    public Result<Flux<KafkaSource>> queryKafkaSource() {
+    public Mono<Result<List<KafkaSource>>> queryKafkaSource() {
         Flux<KafkaSource> kafkaSources = kafkaSourceService.queryAllKafkaSource();
-        return new Result<>(Result.SUCCESS_CODE, null, kafkaSources);
+        return kafkaSources.collectSortedList().map(list -> new Result<>(Result.SUCCESS_CODE, null, list));
     }
 
     @GetMapping(value = "/kafka/topic/query")
-    public Result<Flux<TopicVO>> queryKafkaTopic(@RequestParam(value = "sourceId") Long sourceId,
+    public Mono<Result<List<TopicVO>>> queryKafkaTopic(@RequestParam(value = "sourceId") Long sourceId,
                                                  @RequestParam(value = "keyword", required = false) String keyword) {
         Flux<TopicVO> topics = kafkaSourceService.queryTopics(sourceId, keyword);
-        return new Result<>(Result.SUCCESS_CODE, null, topics);
+        return topics.collectSortedList().map(list -> new Result<>(Result.SUCCESS_CODE, null, list));
     }
 
     @GetMapping(value = "/kafka/topic/detail/query")
     public Mono<Result<TopicDescriptionVO>> queryKafkaTopicDetail(@RequestParam(value = "sourceId") Long sourceId,
-                                                                  @RequestParam(value = "topic") String topic) throws JsonProcessingException {
+                                                                  @RequestParam(value = "topic") String topic) {
         Mono<TopicDescriptionVO> description = kafkaSourceService.queryTopicDetail(sourceId, topic);
         return description.map(value -> new Result<>(Result.SUCCESS_CODE, null, value));
     }
 
     @PostMapping(value = "/kafka/topic/create")
-    public Result<?> createTopic(@RequestBody TopicRequest request) throws ExecutionException, InterruptedException {
+    public Mono<Result<?>> createTopic(@RequestBody TopicRequest request) throws ExecutionException, InterruptedException {
         kafkaSourceService.createTopic(request);
-
-        return new Result<>(Result.SUCCESS_CODE, null, null);
+        return Mono.just(new Result<>(Result.SUCCESS_CODE, null, null));
     }
 
     @DeleteMapping(value = "/kafka/topic/delete")
-    public Result<?> createTopic(@RequestParam(value = "sourceId") Long sourceId,
+    public Mono<Result<?>> createTopic(@RequestParam(value = "sourceId") Long sourceId,
                                  @RequestParam(value = "topic") String topic) {
         kafkaSourceService.deleteTopic(sourceId, topic);
-        return new Result<>(Result.SUCCESS_CODE, null, null);
+        return Mono.just(new Result<>(Result.SUCCESS_CODE, null, null));
     }
 
     @GetMapping("/kafka/consumer/query")
@@ -92,14 +91,14 @@ public class KafkaController {
     }
 
     @GetMapping(value = "/kafka/addr")
-    public String getAddr(ServerWebExchange chain) {
+    public Mono<String> getAddr(ServerWebExchange chain) {
         // 获取浏览器访问地址中的ip和端口，防止容器运行时候产生问题
-        return chain.getRequest().getURI().getHost() + ":" + chain.getRequest().getURI().getPort();
+        return Mono.just(chain.getRequest().getURI().getHost() + ":" + chain.getRequest().getURI().getPort());
     }
 
     @PostMapping("/kafka/message/produce")
-    public Result<?> produceMessage(@RequestBody KafkaMessageRequest request) {
+    public Mono<Result<?>> produceMessage(@RequestBody KafkaMessageRequest request) {
         kafkaSourceService.produceMessage(request);
-        return new Result<>(Result.SUCCESS_CODE, null, null);
+        return Mono.just(new Result<>(Result.SUCCESS_CODE, null, null));
     }
 }

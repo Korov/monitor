@@ -36,6 +36,10 @@ class KafkaControllerTest extends MonitorApplicationTests {
         log.info(result.toString());
     }
 
+    @Test
+    void queryKafkaSource() {
+    }
+
     /*@ParameterizedTest
     @ValueSource(strings = {
             "2"
