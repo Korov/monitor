@@ -68,7 +68,7 @@ public class KafkaController {
 
     @GetMapping(value = "/kafka/topic/detail/query")
     public Mono<Result<TopicDescriptionVO>> queryKafkaTopicDetail(@RequestParam(value = "sourceId") Long sourceId,
-                                                                  @RequestParam(value = "topic") String topic) {
+                                                                  @RequestParam(value = "topic", required = false) String topic) {
         Mono<TopicDescriptionVO> description = kafkaSourceService.queryTopicDetail(sourceId, topic);
         return description.map(value -> new Result<>(Result.SUCCESS_CODE, null, value));
     }
