@@ -7,9 +7,12 @@
     </el-row>
     <el-row>
       <el-col :span="4" class="navLeft">
-        <el-menu :default-active="activePath" class="navBar" router>
+        <el-menu :default-active="activePath" :collapse="isCollapse" class="navBar" router>
           <el-sub-menu index="/kafka">
             <template #title>
+              <el-icon>
+                <Message />
+              </el-icon>
               <span>Kafka</span>
             </template>
             <el-menu-item index="/kafka/config">
@@ -31,26 +34,39 @@
         </el-menu>
       </el-col>
       <el-col :span="20" class="navRight">
-        <div>
-          <router-view></router-view>
-        </div>
+        <el-row>
+          <template>
+            <el-radio-group v-model="isCollapse" style="margin-bottom: 20px">
+              <el-radio-button :label="false">expand</el-radio-button>
+              <el-radio-button :label="true">collapse</el-radio-button>
+            </el-radio-group>
+          </template>
+        </el-row>
+        <el-row>
+          <div>
+            <router-view></router-view>
+          </div>
+        </el-row>
       </el-col>
     </el-row>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
-import { useRoute } from 'vue-router'
+import { ElRow, ElCol, ElMenu, ElSubMenu, ElIcon, ElMenuItem, ElRadioGroup, ElRadioButton } from 'element-plus'
+import { computed, defineComponent, ref } from 'vue'
+import { RouterView, useRoute } from 'vue-router'
 
 export default defineComponent({
   name: 'HomePage',
   setup() {
+    const isCollapse = ref(true)
     const route = useRoute()
     let activePath = computed(() => route.path)
 
     return {
       activePath,
+      isCollapse
     }
   },
 })
