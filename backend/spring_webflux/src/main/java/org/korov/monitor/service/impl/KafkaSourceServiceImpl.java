@@ -96,9 +96,9 @@ public class KafkaSourceServiceImpl implements KafkaSourceService {
     }
 
     @Override
-    public void produceMessage(KafkaMessageRequest request) {
+    public Mono<Object> produceMessage(KafkaMessageRequest request) {
         Mono<KafkaSource> optional = kafkaSourceRepository.findById(request.getSourceId());
-        optional.map(source -> {
+        return optional.map(source -> {
             KafkaUtils.produceMessage(source.getBroker(), request);
             return Mono.empty();
         });

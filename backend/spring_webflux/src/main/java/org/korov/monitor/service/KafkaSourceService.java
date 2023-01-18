@@ -34,5 +34,5 @@ public interface KafkaSourceService {
 
     Mono<List<Map<String, Object>>> getConsumerDetail(Long sourceId, String group);
 
-    void produceMessage(KafkaMessageRequest request);
+    Mono<Object> produceMessage(KafkaMessageRequest request);
 }

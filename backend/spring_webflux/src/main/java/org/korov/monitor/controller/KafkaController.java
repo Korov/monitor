@@ -114,7 +114,6 @@ public class KafkaController {
 
     @PostMapping("/kafka/message/produce")
     public Mono<Result<?>> produceMessage(@RequestBody KafkaMessageRequest request) {
-        kafkaSourceService.produceMessage(request);
-        return Mono.just(new Result<>(Result.SUCCESS_CODE, null, null));
+        return kafkaSourceService.produceMessage(request).map(value -> new Result<>(Result.SUCCESS_CODE, null, null));
     }
 }
