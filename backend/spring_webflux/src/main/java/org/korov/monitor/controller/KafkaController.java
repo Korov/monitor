@@ -15,6 +15,7 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -46,14 +47,14 @@ public class KafkaController {
     @GetMapping(value = "/kafka/query")
     public Mono<Result<List<KafkaSource>>> queryKafkaSource() {
         Flux<KafkaSource> kafkaSources = kafkaSourceService.queryAllKafkaSource();
-        return kafkaSources.collectSortedList().map(list -> new Result<>(Result.SUCCESS_CODE, null, list));
+        return kafkaSources.collectSortedList(Comparator.comparing(KafkaSource::getId)).map(list -> new Result<>(Result.SUCCESS_CODE, null, list));
     }
 
     @GetMapping(value = "/kafka/topic/query")
     public Mono<Result<List<TopicVO>>> queryKafkaTopic(@RequestParam(value = "sourceId") Long sourceId,
                                                  @RequestParam(value = "keyword", required = false) String keyword) {
         Flux<TopicVO> topics = kafkaSourceService.queryTopics(sourceId, keyword);
-        return topics.collectSortedList().map(list -> new Result<>(Result.SUCCESS_CODE, null, list));
+        return topics.collectSortedList(Comparator.comparing(TopicVO::isInternal)).map(list -> new Result<>(Result.SUCCESS_CODE, null, list));
     }
 
     @GetMapping(value = "/kafka/topic/detail/query")
