@@ -4,7 +4,10 @@ logging:
 server:
   port: 8091
 spring:
-  datasource:
+#  aop:
+#    auto: false
+#    proxy-target-class: false
+  r2dbc:
     url: r2dbcs:mysql://localhost:3309/monitor?useSSL=false&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
     username: monitor
     password: monitor
