@@ -6,7 +6,7 @@
       </div>
     </el-row>
     <el-row>
-      <el-col :span="4" class="navLeft">
+      <el-col :span="leftSpan" class="navLeft">
         <el-menu :default-active="activePath" :collapse="isCollapse" class="navBar" router>
           <el-sub-menu index="/kafka">
             <template #title>
@@ -33,14 +33,11 @@
           </el-sub-menu>
         </el-menu>
       </el-col>
-      <el-col :span="20" class="navRight">
+      <el-col :span="rightSpan" class="navRight">
         <el-row>
-          <template>
-            <el-radio-group v-model="isCollapse" style="margin-bottom: 20px">
-              <el-radio-button :label="false">expand</el-radio-button>
-              <el-radio-button :label="true">collapse</el-radio-button>
-            </el-radio-group>
-          </template>
+          <div>
+            <el-button @click="collapseHandle()">Default</el-button>
+          </div>
         </el-row>
         <el-row>
           <div>
@@ -61,12 +58,29 @@ export default defineComponent({
   name: 'HomePage',
   setup() {
     const isCollapse = ref(true)
+    const leftSpan = ref(4)
+    const rightSpan = ref(20)
     const route = useRoute()
     let activePath = computed(() => route.path)
 
+    function collapseHandle() {
+      if (isCollapse.value) {
+        isCollapse.value = !isCollapse.value
+        leftSpan.value = 4
+        rightSpan.value = 24 - leftSpan.value
+      } else {
+        isCollapse.value = !isCollapse.value
+        leftSpan.value = 2
+        rightSpan.value = 24 - leftSpan.value
+      }
+    }
+
     return {
       activePath,
-      isCollapse
+      isCollapse,
+      leftSpan,
+      rightSpan,
+      collapseHandle
     }
   },
 })
