@@ -40,8 +40,7 @@ public class KafkaController {
 
     @DeleteMapping(value = "/kafka/delete")
     public Mono<Result<KafkaSource>> deleteKafkaSource(@RequestParam(value = "id") Long id) {
-        kafkaSourceService.deleteKafkaSource(id);
-        return Mono.just(new Result<>(Result.SUCCESS_CODE, null, null));
+        return kafkaSourceService.deleteKafkaSource(id).map(value -> new Result<>(Result.SUCCESS_CODE, null, null));
     }
 
     @GetMapping(value = "/kafka/query")
@@ -66,15 +65,13 @@ public class KafkaController {
 
     @PostMapping(value = "/kafka/topic/create")
     public Mono<Result<?>> createTopic(@RequestBody TopicRequest request) throws ExecutionException, InterruptedException {
-        kafkaSourceService.createTopic(request);
-        return Mono.just(new Result<>(Result.SUCCESS_CODE, null, null));
+        return kafkaSourceService.createTopic(request).map(value -> new Result<>(Result.SUCCESS_CODE, null, null));
     }
 
     @DeleteMapping(value = "/kafka/topic/delete")
     public Mono<Result<?>> createTopic(@RequestParam(value = "sourceId") Long sourceId,
                                  @RequestParam(value = "topic") String topic) {
-        kafkaSourceService.deleteTopic(sourceId, topic);
-        return Mono.just(new Result<>(Result.SUCCESS_CODE, null, null));
+       return kafkaSourceService.deleteTopic(sourceId, topic).map(value -> new Result<>(Result.SUCCESS_CODE, null, null));
     }
 
     @GetMapping("/kafka/consumer/query")

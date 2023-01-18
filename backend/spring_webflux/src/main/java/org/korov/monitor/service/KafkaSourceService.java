@@ -18,7 +18,7 @@ import java.util.concurrent.ExecutionException;
 public interface KafkaSourceService {
     Mono<KafkaSource> addKafkaSource(KafkaSource kafkaSource);
 
-    void deleteKafkaSource(Long id);
+    Mono<Void> deleteKafkaSource(Long id);
 
     Flux<KafkaSource> queryAllKafkaSource();
 
@@ -26,9 +26,9 @@ public interface KafkaSourceService {
 
     Mono<TopicDescriptionVO> queryTopicDetail(Long sourceId, String topic);
 
-    void createTopic(TopicRequest request) throws ExecutionException, InterruptedException;
+    Mono<Object> createTopic(TopicRequest request) throws ExecutionException, InterruptedException;
 
-    void deleteTopic(Long sourceId, String topic);
+    Mono<Object> deleteTopic(Long sourceId, String topic);
 
     Mono<List<String>> getConsumers(Long sourceId, String topic);
 

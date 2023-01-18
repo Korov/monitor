@@ -38,8 +38,8 @@ public class KafkaSourceServiceImpl implements KafkaSourceService {
     }
 
     @Override
-    public void deleteKafkaSource(Long id) {
-        kafkaSourceRepository.deleteById(id);
+    public Mono<Void> deleteKafkaSource(Long id) {
+       return kafkaSourceRepository.deleteById(id);
     }
 
     @Override
@@ -68,9 +68,9 @@ public class KafkaSourceServiceImpl implements KafkaSourceService {
     }
 
     @Override
-    public void createTopic(TopicRequest request) {
+    public Mono<Object> createTopic(TopicRequest request) {
         Mono<KafkaSource> optional = kafkaSourceRepository.findById(request.getSourceId());
-        optional.map(source -> {
+        return optional.map(source -> {
             try {
                 KafkaUtils.createTopic(source.getBroker(), request.getTopic(), request.getPartition(), request.getReplica());
             } catch (ExecutionException | InterruptedException e) {
@@ -81,9 +81,9 @@ public class KafkaSourceServiceImpl implements KafkaSourceService {
     }
 
     @Override
-    public void deleteTopic(Long sourceId, String topic) {
+    public Mono<Object> deleteTopic(Long sourceId, String topic) {
         Mono<KafkaSource> optional = kafkaSourceRepository.findById(sourceId);
-        optional.map(value -> {
+       return  optional.map(value -> {
             KafkaUtils.deleteTopic(value.getBroker(), topic);
             return Mono.empty();
         });
