@@ -50,28 +50,28 @@
 </template>
 
 <script lang="ts">
-import { ElRow, ElCol, ElMenu, ElSubMenu, ElIcon, ElMenuItem, ElRadioGroup, ElRadioButton } from 'element-plus'
-import { computed, defineComponent, ref } from 'vue'
-import { RouterView, useRoute } from 'vue-router'
+import { ElCol, ElIcon, ElMenu, ElMenuItem, ElRow, ElSubMenu } from "element-plus";
+import { computed, defineComponent, ref } from "vue";
+import { useRoute } from "vue-router";
 
 export default defineComponent({
-  name: 'HomePage',
+  name: "HomePage",
   setup() {
-    const isCollapse = ref(true)
-    const leftSpan = ref(4)
-    const rightSpan = ref(20)
-    const route = useRoute()
-    let activePath = computed(() => route.path)
+    const isCollapse = ref(true);
+    const leftSpan = ref(2);
+    const rightSpan = ref(22);
+    const route = useRoute();
+    let activePath = computed(() => route.path);
 
     function collapseHandle() {
       if (isCollapse.value) {
-        isCollapse.value = !isCollapse.value
-        leftSpan.value = 4
-        rightSpan.value = 24 - leftSpan.value
+        isCollapse.value = !isCollapse.value;
+        leftSpan.value = 4;
+        rightSpan.value = 24 - leftSpan.value;
       } else {
-        isCollapse.value = !isCollapse.value
-        leftSpan.value = 2
-        rightSpan.value = 24 - leftSpan.value
+        isCollapse.value = !isCollapse.value;
+        leftSpan.value = 2;
+        rightSpan.value = 24 - leftSpan.value;
       }
     }
 
@@ -81,9 +81,9 @@ export default defineComponent({
       leftSpan,
       rightSpan,
       collapseHandle
-    }
-  },
-})
+    };
+  }
+});
 </script>
 
 <style lang="scss" scoped>
