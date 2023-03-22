@@ -62,16 +62,16 @@ public class KafkaSourceServiceImpl implements KafkaSourceService {
     }
 
     @Override
-    public Mono<Object> createTopic(TopicRequest request) {
-        Mono<KafkaSource> optional = kafkaSourceRepository.findById(request.getSourceId());
-        return optional.map(source -> {
-            try {
-                KafkaUtils.createTopic(source.getBroker(), request.getTopic(), request.getPartition(), request.getReplica());
-            } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
-            }
-            return Mono.empty();
-        });
+    public Mono<KafkaSource> createTopic(TopicRequest request) {
+        return kafkaSourceRepository.findById(request.getSourceId())
+                .map(source -> {
+                    try {
+                        KafkaUtils.createTopic(source.getBroker(), request.getTopic(), request.getPartition(), request.getReplica());
+                    } catch (ExecutionException | InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return source;
+                });
     }
 
     @Override

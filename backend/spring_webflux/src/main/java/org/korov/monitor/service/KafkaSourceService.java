@@ -26,7 +26,7 @@ public interface KafkaSourceService {
 
     Mono<TopicDescriptionVO> queryTopicDetail(Long sourceId, String topic);
 
-    Mono<Object> createTopic(TopicRequest request) throws ExecutionException, InterruptedException;
+    Mono<KafkaSource> createTopic(TopicRequest request) throws ExecutionException, InterruptedException;
 
     Mono<Object> deleteTopic(Long sourceId, String topic);
 

@@ -51,7 +51,7 @@ public class KafkaController {
 
     @DeleteMapping(value = "/kafka/delete")
     public Mono<Result<KafkaSource>> deleteKafkaSource(@RequestParam(value = "id") Long id) {
-        return kafkaSourceService.deleteKafkaSource(id).map(value -> new Result<>(Result.SUCCESS_CODE, null, null));
+        return kafkaSourceService.deleteKafkaSource(id).map(source -> new Result<>(Result.SUCCESS_CODE, null, null));
     }
 
     @GetMapping(value = "/kafka/query")
