@@ -1,26 +1,28 @@
 package org.korov.monitor.websocket;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
-import org.korov.monitor.entity.KafkaSource;
-import org.korov.monitor.repository.KafkaSourceRepository;
+import org.korov.monitor.controller.request.ConsumerRequest;
+import org.korov.monitor.controller.request.KafkaMessageRequest;
 import org.korov.monitor.utils.JsonUtils;
 import org.korov.monitor.utils.KafkaUtils;
-import org.korov.monitor.utils.SpringBootUtils;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketSession;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.io.IOException;
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
 public class WebSocketServer implements WebSocketHandler {
@@ -29,23 +31,25 @@ public class WebSocketServer implements WebSocketHandler {
             new LinkedBlockingQueue<>(),
             new ThreadFactoryBuilder().setNameFormat("kafka-consumer-%d").build());
 
-    public void consume(WebSocketSession session, String broker, String topic, String group, String reset, String partition, String offset) {
+    public Mono<Void> consume(WebSocketSession session, String broker, String topic, String group, String reset, Long partition, Long offset) {
         THREAD_POOL_EXECUTOR.allowCoreThreadTimeOut(true);
+        AtomicReference<Mono<Void>> input = null;
         THREAD_POOL_EXECUTOR.execute(new Thread(() -> {
             KafkaConsumer<String, String> consumer;
             List<TopicPartition> topicPartitions = new ArrayList<>();
-            if (partition != null && offset != null && !"null".equals(partition) && !"null".equals(offset)) {
-                topicPartitions.add(new TopicPartition(topic, Integer.parseInt(partition)));
+            if (partition != null && offset != null && !"null".equals(reset)) {
+                topicPartitions.add(new TopicPartition(topic, partition.intValue()));
                 consumer = KafkaUtils.getConsumer(broker, group, reset);
                 consumer.assign(topicPartitions);
-                long defaultOffset = 0L;
-                try {
-                    defaultOffset = Long.parseLong(offset);
-                } catch (Exception e) {
-                    log.error("invalid offset:{}", offset);
-                }
-                for (TopicPartition topicPartition : topicPartitions) {
-                    consumer.seek(topicPartition, defaultOffset);
+                long defaultOffset = offset;
+                if (defaultOffset > 0) {
+                    for (TopicPartition topicPartition : topicPartitions) {
+                        consumer.seek(topicPartition, defaultOffset);
+                    }
+                } else {
+                    for (TopicPartition topicPartition : topicPartitions) {
+                        consumer.seek(topicPartition, 0);
+                    }
                 }
             } else {
                 consumer = KafkaUtils.getConsumer(broker, group, reset);
@@ -53,39 +57,62 @@ public class WebSocketServer implements WebSocketHandler {
                 consumer.assign(topicPartitions);
             }
 
-
+            log.info("session open");
             while (session.isOpen()) {
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
                 for (ConsumerRecord<String, String> record : records) {
-                    Map<String, String> text = new LinkedHashMap<>();
-                    text.put("topic", record.topic());
-                    text.put("partition", String.valueOf(record.partition()));
-                    text.put("offset", String.valueOf(record.offset()));
-                    text.put("key", record.key());
-                    text.put("value", record.value());
+                    KafkaMessageRequest message = new KafkaMessageRequest();
+                    message.setKey(record.key());
+                    message.setMessage(record.value());
+                    message.setTopic(record.topic());
+                    message.setPartition(record.partition());
                     try {
-                        session.textMessage(JsonUtils.jsonString(text));
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                        log.info("send message:{}", JsonUtils.jsonString(message));
+                        input.set(session.send(Flux.just(session.textMessage(JsonUtils.jsonString(message)))));
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
                     }
                 }
             }
             log.info("kafka consumer closed");
         }));
+        return input.get();
     }
 
     @Override
     public Mono<Void> handle(WebSocketSession session) {
-        Map<String, Object> queryString = session.getAttributes();
-        KafkaSourceRepository kafkaSourceRepository = SpringBootUtils.getBean(KafkaSourceRepository.class);
-        long sourceId = (long) queryString.get("sourceId");
-        Mono<KafkaSource> kafkaSource = kafkaSourceRepository.findById(sourceId);
-        String topic = (String) queryString.get("topic");
-        String group = (String) queryString.get("group");
-        String reset = (String) queryString.get("reset");
-        String partition = (String) queryString.get("partition");
-        String offset = (String) queryString.get("offset");
-        kafkaSource.map(KafkaSource::getBroker).subscribe(broker -> consume(session, broker, topic,group, reset, partition, offset));
-        return session.send(session.receive());
+        String queryString = session.getHandshakeInfo().getUri().getQuery();
+        String[] array = queryString.split("&");
+        ConsumerRequest request = new ConsumerRequest();
+        for (String s : array) {
+            String[] param = s.split("=");
+            if (param.length == 2) {
+                switch (param[0]) {
+                    case "topic":
+                        request.setTopic(param[1]);
+                        break;
+                    case "broker":
+                        request.setBroker(param[1]);
+                        break;
+                    case "group":
+                        request.setGroup(param[1]);
+                        break;
+                    case "reset":
+                        request.setReset(param[1]);
+                        break;
+                    case "partition":
+                        request.setPartition(Long.valueOf(param[1]));
+                        break;
+                    case "offset":
+                        request.setOffset(Long.valueOf(param[1]));
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        log.info("start consumer");
+        return consume(session, request.getBroker(), request.getTopic(), request.getGroup(), request.getReset(), request.getPartition(), request.getOffset());
     }
 }

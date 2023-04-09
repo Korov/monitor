@@ -210,6 +210,7 @@ export default defineComponent({
       // 收到消息的回调
       websocket.onmessage = (event) => {
         consumeCount.value++;
+        console.log(event.data)
         message.value.push(JSON.parse(event.data));
         console.log(message.value[message.value.length - 1]);
         /*if (autoScrollToBottom.value) {

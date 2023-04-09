@@ -25,7 +25,7 @@ public class WebSocketConfig {
     @Bean
     public HandlerMapping handlerMapping() {
         Map<String, WebSocketHandler> map = new HashMap<>();
-        map.put("/push/websocket", webSocketServer());
+        map.put("/kafka/consumer/socket", webSocketServer());
 
         SimpleUrlHandlerMapping mapping = new SimpleUrlHandlerMapping();
         mapping.setUrlMap(map);
