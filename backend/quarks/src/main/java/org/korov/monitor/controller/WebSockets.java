@@ -172,31 +172,5 @@ public class WebSockets {
         String remoteAddress = ((UndertowSession) session).getChannel().remoteAddress().toString();
         isRunningMap.put(remoteAddress, true);
         LOGGER.info("get from:{}, message:{}", remoteAddress, request.toString());
-
-        KafkaConsumer<String, String> consumer;
-        if (request.getReset() != null && !Objects.equals(request.getReset(), "")) {
-            consumer = KafkaUtils.getConsumer(request.getBroker(), request.getGroup());
-        } else {
-            consumer = KafkaUtils.getConsumer(request.getBroker(), request.getGroup(), request.getReset());
-        }
-        consumer.subscribe(Collections.singleton(request.getTopic()));
-        while (isRunningMap.get(remoteAddress)) {
-            ConsumerRecords<String, String> records = consumer.poll(Duration.of(1, ChronoUnit.SECONDS));
-            for (ConsumerRecord<String, String> record : records) {
-                KafkaMessageRequest message = new KafkaMessageRequest();
-                message.setKey(record.key());
-                message.setMessage(record.value());
-                message.setTopic(record.topic());
-                message.setPartition(record.partition());
-                session.getAsyncRemote().sendObject(message, result -> {
-                    if (result.getException() == null) {
-                        LOGGER.info("send message success");
-                    } else {
-                        LOGGER.error("unable sent message, error:{}", result.getException().getMessage());
-                        result.getException().printStackTrace();
-                    }
-                });
-            }
-        }
     }
 }

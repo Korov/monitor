@@ -27,57 +27,6 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class WebSocketServer implements WebSocketHandler {
-    private static final ThreadPoolExecutor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(16, 1024,
-            60000L, TimeUnit.MILLISECONDS,
-            new LinkedBlockingQueue<>(),
-            new ThreadFactoryBuilder().setNameFormat("kafka-consumer-%d").build());
-
-    public void consume(WebSocketSession session, String broker, String topic, String group, String reset, Long partition, Long offset) {
-        THREAD_POOL_EXECUTOR.allowCoreThreadTimeOut(true);
-        THREAD_POOL_EXECUTOR.execute(new Thread(() -> {
-            KafkaConsumer<String, String> consumer;
-            List<TopicPartition> topicPartitions = new ArrayList<>();
-            if (partition != null && offset != null && !"null".equals(reset)) {
-                topicPartitions.add(new TopicPartition(topic, partition.intValue()));
-                consumer = KafkaUtils.getConsumer(broker, group, reset);
-                consumer.assign(topicPartitions);
-                long defaultOffset = offset;
-                if (defaultOffset > 0) {
-                    for (TopicPartition topicPartition : topicPartitions) {
-                        consumer.seek(topicPartition, defaultOffset);
-                    }
-                } else {
-                    for (TopicPartition topicPartition : topicPartitions) {
-                        consumer.seek(topicPartition, 0);
-                    }
-                }
-            } else {
-                consumer = KafkaUtils.getConsumer(broker, group, reset);
-                topicPartitions = KafkaUtils.getTopicPartitions(broker, topic);
-                consumer.assign(topicPartitions);
-            }
-
-
-            log.info("session open");
-            while (session.isOpen()) {
-                ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
-                for (ConsumerRecord<String, String> record : records) {
-                    KafkaMessageRequest message = new KafkaMessageRequest();
-                    message.setKey(record.key());
-                    message.setMessage(record.value());
-                    message.setTopic(record.topic());
-                    message.setPartition(record.partition());
-                    try {
-                        log.info("send message:{}", JsonUtils.jsonString(message));
-                    } catch (JsonProcessingException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
-            log.info("kafka consumer closed");
-        }));
-    }
-
     @Override
     public Mono<Void> handle(WebSocketSession session) {
         String queryString = session.getHandshakeInfo().getUri().getQuery();
