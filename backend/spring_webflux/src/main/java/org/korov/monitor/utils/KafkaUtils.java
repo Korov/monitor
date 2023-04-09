@@ -15,6 +15,8 @@ import org.korov.monitor.controller.request.KafkaMessageRequest;
 import org.korov.monitor.vo.Broker;
 import org.korov.monitor.vo.TopicDescriptionVO;
 import org.korov.monitor.vo.TopicVO;
+import reactor.kafka.receiver.KafkaReceiver;
+import reactor.kafka.receiver.ReceiverOptions;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -213,6 +215,11 @@ public class KafkaUtils {
     }
 
     public static KafkaConsumer<String, String> getConsumer(String broker, String group, String offset) {
+        Properties props = getProps(broker, group, offset);
+        return new KafkaConsumer<>(props);
+    }
+
+    private static Properties getProps(String broker, String group, String offset) {
         Properties props = new Properties();
         props.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, broker);
         props.setProperty(ConsumerConfig.GROUP_ID_CONFIG, group);
@@ -221,8 +228,22 @@ public class KafkaUtils {
         props.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, offset);
         props.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         props.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        return new KafkaConsumer<>(props);
+        return props;
     }
+
+    public static KafkaReceiver<String, String> getReceiver(String broker, String group, String reset,
+                                                            List<TopicPartition> topicPartitions, Long offset) {
+        Properties props = getProps(broker, group, reset);
+        ReceiverOptions<String, String> consumerOptions = ReceiverOptions.<String, String>create(props)
+                .assignment(topicPartitions).addAssignListener(partitions -> {
+                    if (offset >0 ) {
+                        partitions.forEach(p -> p.seek(offset));
+                    }
+                });
+
+        return KafkaReceiver.create(consumerOptions);
+    }
+
 
     public static void produceMessage(String broker, KafkaMessageRequest request) {
         Properties props = new Properties();

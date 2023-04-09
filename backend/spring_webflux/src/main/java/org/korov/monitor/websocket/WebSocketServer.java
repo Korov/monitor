@@ -12,9 +12,11 @@ import org.korov.monitor.controller.request.KafkaMessageRequest;
 import org.korov.monitor.utils.JsonUtils;
 import org.korov.monitor.utils.KafkaUtils;
 import org.springframework.web.reactive.socket.WebSocketHandler;
+import org.springframework.web.reactive.socket.WebSocketMessage;
 import org.springframework.web.reactive.socket.WebSocketSession;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.kafka.receiver.KafkaReceiver;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -22,7 +24,6 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
 public class WebSocketServer implements WebSocketHandler {
@@ -31,9 +32,8 @@ public class WebSocketServer implements WebSocketHandler {
             new LinkedBlockingQueue<>(),
             new ThreadFactoryBuilder().setNameFormat("kafka-consumer-%d").build());
 
-    public Mono<Void> consume(WebSocketSession session, String broker, String topic, String group, String reset, Long partition, Long offset) {
+    public void consume(WebSocketSession session, String broker, String topic, String group, String reset, Long partition, Long offset) {
         THREAD_POOL_EXECUTOR.allowCoreThreadTimeOut(true);
-        AtomicReference<Mono<Void>> input = null;
         THREAD_POOL_EXECUTOR.execute(new Thread(() -> {
             KafkaConsumer<String, String> consumer;
             List<TopicPartition> topicPartitions = new ArrayList<>();
@@ -57,6 +57,7 @@ public class WebSocketServer implements WebSocketHandler {
                 consumer.assign(topicPartitions);
             }
 
+
             log.info("session open");
             while (session.isOpen()) {
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
@@ -68,7 +69,6 @@ public class WebSocketServer implements WebSocketHandler {
                     message.setPartition(record.partition());
                     try {
                         log.info("send message:{}", JsonUtils.jsonString(message));
-                        input.set(session.send(Flux.just(session.textMessage(JsonUtils.jsonString(message)))));
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException(e);
                     }
@@ -76,7 +76,6 @@ public class WebSocketServer implements WebSocketHandler {
             }
             log.info("kafka consumer closed");
         }));
-        return input.get();
     }
 
     @Override
@@ -113,6 +112,34 @@ public class WebSocketServer implements WebSocketHandler {
         }
 
         log.info("start consumer");
-        return consume(session, request.getBroker(), request.getTopic(), request.getGroup(), request.getReset(), request.getPartition(), request.getOffset());
+        List<TopicPartition> topicPartitions = new ArrayList<>();
+        if (request.getPartition() != null && request.getOffset() != null && !"null".equals(request.getReset())) {
+            topicPartitions.add(new TopicPartition(request.getTopic(), request.getPartition().intValue()));
+        } else {
+            topicPartitions = KafkaUtils.getTopicPartitions(request.getBroker(), request.getTopic());
+        }
+        KafkaReceiver<String, String> kafkaReceiver = KafkaUtils.getReceiver(request.getBroker(), request.getGroup(),
+                request.getReset(), topicPartitions, request.getOffset());
+
+        Flux<WebSocketMessage> socketMessageFlux = kafkaReceiver.receive()
+                .doOnNext(record -> {
+                            log.info("receive:{}", record.value());
+                            record.receiverOffset().acknowledge();
+                        }
+                ).map(record -> {
+                    KafkaMessageRequest message = new KafkaMessageRequest();
+                    message.setKey(record.key());
+                    message.setMessage(record.value());
+                    message.setTopic(record.topic());
+                    message.setPartition(record.partition());
+                    try {
+                        return session.textMessage(JsonUtils.jsonString(message));
+                    } catch (JsonProcessingException e) {
+                        log.error("invalid value:{}", record.value());
+                    }
+                    return session.textMessage("");
+                });
+
+        return session.send(socketMessageFlux);
     }
 }
