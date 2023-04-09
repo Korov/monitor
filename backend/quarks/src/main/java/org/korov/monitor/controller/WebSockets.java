@@ -1,9 +1,11 @@
 package org.korov.monitor.controller;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.undertow.websockets.UndertowSession;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.utils.CopyOnWriteMap;
 import org.korov.monitor.controller.request.ConsumerRequest;
 import org.korov.monitor.controller.request.ConsumerRequestDecoder;
@@ -19,17 +21,21 @@ import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 @ServerEndpoint(value = "/kafka/consumer/socket", decoders = ConsumerRequestDecoder.class, encoders = KafkaMessageRequestEncoder.class)
 @ApplicationScoped
 public class WebSockets {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSockets.class);
+    private static final ThreadPoolExecutor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(16, 1024,
+            60000L, TimeUnit.MILLISECONDS,
+            new LinkedBlockingQueue<>(),
+            new ThreadFactoryBuilder().setNameFormat("kafka-consumer-%d").build());
     Map<String, Session> sessionMap = new ConcurrentHashMap<>();
-
     Map<String, Boolean> isRunningMap = new CopyOnWriteMap<>();
 
     @OnOpen
@@ -77,24 +83,55 @@ public class WebSockets {
         consumer.subscribe(Collections.singleton(request.getTopic()));
         isRunningMap.put(remoteAddress, true);
         LOGGER.info("host:{} joined, all host:{}, query string:{}", remoteAddress, sessionMap.size(), queryString);
-        while (isRunningMap.get(remoteAddress)) {
-            ConsumerRecords<String, String> records = consumer.poll(Duration.of(1, ChronoUnit.SECONDS));
-            for (ConsumerRecord<String, String> record : records) {
-                KafkaMessageRequest message = new KafkaMessageRequest();
-                message.setKey(record.key());
-                message.setMessage(record.value());
-                message.setTopic(record.topic());
-                message.setPartition(record.partition());
-                session.getAsyncRemote().sendObject(message, result -> {
-                    if (result.getException() == null) {
-                        LOGGER.info("send message success");
-                    } else {
-                        LOGGER.error("unable sent message, error:{}", result.getException().getMessage());
-                        result.getException().printStackTrace();
+        consume(session, request);
+    }
+
+    public void consume(Session session, ConsumerRequest request) {
+        THREAD_POOL_EXECUTOR.allowCoreThreadTimeOut(true);
+        THREAD_POOL_EXECUTOR.execute(new Thread(() -> {
+            KafkaConsumer<String, String> consumer;
+            List<TopicPartition> topicPartitions = new ArrayList<>();
+            if (request.getPartition() != null && request.getOffset() != null && !"null".equals(request.getReset())) {
+                topicPartitions.add(new TopicPartition(request.getTopic(), request.getPartition().intValue()));
+                consumer = KafkaUtils.getConsumer(request.getBroker(), request.getGroup(), request.getReset());
+                consumer.assign(topicPartitions);
+                long defaultOffset = request.getOffset();
+                if (defaultOffset > 0) {
+                    for (TopicPartition topicPartition : topicPartitions) {
+                        consumer.seek(topicPartition, defaultOffset);
                     }
-                });
+                } else {
+                    for (TopicPartition topicPartition : topicPartitions) {
+                        consumer.seek(topicPartition, 0);
+                    }
+                }
+            } else {
+                consumer = KafkaUtils.getConsumer(request.getBroker(), request.getGroup(), request.getReset());
+                topicPartitions = KafkaUtils.getTopicPartitions(request.getBroker(), request.getTopic());
+                consumer.assign(topicPartitions);
             }
-        }
+
+
+            while (session.isOpen()) {
+                ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
+                for (ConsumerRecord<String, String> record : records) {
+                    KafkaMessageRequest message = new KafkaMessageRequest();
+                    message.setKey(record.key());
+                    message.setMessage(record.value());
+                    message.setTopic(record.topic());
+                    message.setPartition(record.partition());
+                    session.getAsyncRemote().sendObject(message, result -> {
+                        if (result.getException() == null) {
+                            LOGGER.info("send message success");
+                        } else {
+                            LOGGER.error("unable sent message, error:{}", result.getException().getMessage());
+                            result.getException().printStackTrace();
+                        }
+                    });
+                }
+            }
+            LOGGER.info("kafka consumer closed");
+        }));
     }
 
     @OnClose
