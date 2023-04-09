@@ -33,60 +33,60 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, ref } from 'vue'
-import GroupTable from '@cp/kafka/GroupTable.vue'
-import KafkaSelect from '@cp/kafka/KafkaSelect.vue'
-import { ElMessage } from 'element-plus'
-import apiClient from '@/http-common'
+import { defineComponent, Ref, ref } from "vue";
+import GroupTable from "@cp/kafka/GroupTable.vue";
+import KafkaSelect from "@cp/kafka/KafkaSelect.vue";
+import { ElMessage } from "element-plus";
+import apiClient from "@/http-common";
 
 export default defineComponent({
-  name: 'Group',
-  emits: ['kafka_change'],
+  name: "Group",
+  emits: ["kafka_change"],
   components: {
     GroupTable,
-    KafkaSelect,
+    KafkaSelect
   },
   setup() {
     interface Group {
-      name: string
-      internal: boolean
+      name: string;
+      internal: boolean;
     }
 
-    let detail = ref()
-    let dialogTableVisible = ref(false)
-    let keyword = ref('')
-    let tableData = ref<Group[]>([])
+    let detail = ref();
+    let dialogTableVisible = ref(false);
+    let keyword = ref("");
+    let tableData = ref<Group[]>([]);
 
     function searchGroup(sourceId: Ref<number>) {
       if (sourceId.value == null) {
-        ElMessage.error('请选择Kafka环境')
+        ElMessage.error("请选择Kafka环境");
       }
       apiClient
         .get(`/kafka/consumer/query?sourceId=${sourceId.value}`)
         .then((response) => {
-          let groupNames: string[] = response.data.data
+          let groupNames: string[] = response.data.data;
           for (let i = 0; i < groupNames.length; i++) {
             tableData.value.push({
               name: groupNames[i],
-              internal: false,
-            })
+              internal: false
+            });
           }
         })
         .catch((error) => {
-          ElMessage.error('失败' + error.message)
-        })
+          ElMessage.error("失败" + error.message);
+        });
     }
 
     function kafkaChange(sourceId: Ref<number>) {
-      searchGroup(sourceId)
+      searchGroup(sourceId);
     }
 
     function getGroupDetail(value: string) {
-      console.log(value)
+      console.log(value);
     }
 
     function deleteConfirm(value: string) {
-      console.log(value)
+      console.log(value);
     }
 
     return {
@@ -97,10 +97,10 @@ export default defineComponent({
       kafkaChange,
       tableData,
       getGroupDetail,
-      deleteConfirm,
-    }
-  },
-})
+      deleteConfirm
+    };
+  }
+});
 </script>
 
 <style scoped></style>
