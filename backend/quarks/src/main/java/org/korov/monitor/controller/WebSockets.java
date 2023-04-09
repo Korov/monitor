@@ -37,7 +37,64 @@ public class WebSockets {
         String remoteAddress = ((UndertowSession) session).getChannel().remoteAddress().toString();
         sessionMap.put(remoteAddress, session);
         isRunningMap.put(remoteAddress, false);
-        LOGGER.info("host:{} joined, all host:{}", remoteAddress, sessionMap.size());
+        String queryString = session.getQueryString();
+        String[] array = queryString.split("&");
+        ConsumerRequest request = new ConsumerRequest();
+        for (String s : array) {
+            String[] param = s.split("=");
+            if (param.length == 2) {
+                switch (param[0]) {
+                    case "topic":
+                        request.setTopic(param[1]);
+                        break;
+                    case "broker":
+                        request.setBroker(param[1]);
+                        break;
+                    case "group":
+                        request.setGroup(param[1]);
+                        break;
+                    case "reset":
+                        request.setReset(param[1]);
+                        break;
+                    case "partition":
+                        request.setPartition(Long.valueOf(param[1]));
+                        break;
+                    case "offset":
+                        request.setOffset(Long.valueOf(param[1]));
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        KafkaConsumer<String, String> consumer;
+        if (request.getReset() != null && !Objects.equals(request.getReset(), "")) {
+            consumer = KafkaUtils.getConsumer(request.getBroker(), request.getGroup());
+        } else {
+            consumer = KafkaUtils.getConsumer(request.getBroker(), request.getGroup(), request.getReset());
+        }
+        consumer.subscribe(Collections.singleton(request.getTopic()));
+        isRunningMap.put(remoteAddress, true);
+        LOGGER.info("host:{} joined, all host:{}, query string:{}", remoteAddress, sessionMap.size(), queryString);
+        while (isRunningMap.get(remoteAddress)) {
+            ConsumerRecords<String, String> records = consumer.poll(Duration.of(1, ChronoUnit.SECONDS));
+            for (ConsumerRecord<String, String> record : records) {
+                KafkaMessageRequest message = new KafkaMessageRequest();
+                message.setKey(record.key());
+                message.setMessage(record.value());
+                message.setTopic(record.topic());
+                message.setPartition(record.partition());
+                session.getAsyncRemote().sendObject(message, result -> {
+                    if (result.getException() == null) {
+                        LOGGER.info("send message success");
+                    } else {
+                        LOGGER.error("unable sent message, error:{}", result.getException().getMessage());
+                        result.getException().printStackTrace();
+                    }
+                });
+            }
+        }
     }
 
     @OnClose

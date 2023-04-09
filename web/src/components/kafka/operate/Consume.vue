@@ -15,43 +15,43 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, ref } from 'vue'
-import KafkaSelect from '@cp/kafka/KafkaSelect.vue'
-import { Topic } from '@/types'
-import apiClient from '@/http-common'
-import { ElMessage } from 'element-plus'
-import Consumer from '@cp/kafka/Consumer.vue'
+import { defineComponent, Ref, ref } from "vue";
+import KafkaSelect from "@cp/kafka/KafkaSelect.vue";
+import { Topic } from "@/types";
+import apiClient from "@/http-common";
+import { ElMessage } from "element-plus";
+import Consumer from "@cp/kafka/Consumer.vue";
 
 export default defineComponent({
-  name: 'Consume',
+  name: "Consume",
   components: {
     Consumer,
-    KafkaSelect,
+    KafkaSelect
   },
   setup() {
-    let sourceId = ref(0)
-    let topics = ref<Topic[]>([])
-    let topic = ref('')
-    let partition = ref<number>()
-    let partitions = ref<number[]>([])
-    let messageKey = ref('')
-    let broker = ref('')
+    let sourceId = ref(0);
+    let topics = ref<Topic[]>([]);
+    let topic = ref("");
+    let partition = ref<number>();
+    let partitions = ref<number[]>([]);
+    let messageKey = ref("");
+    let broker = ref("");
 
     function getTopics(value: Ref<number>, host: string) {
-      sourceId.value = value.value
-      broker.value = host
+      sourceId.value = value.value;
+      broker.value = host;
       apiClient
         .get(`/kafka/topic/query?sourceId=${value.value}`)
         .then((response) => {
           if (response.data.code) {
-            topics.value = response.data.data
+            topics.value = response.data.data;
           } else {
-            ElMessage.error(response.data.message)
+            ElMessage.error(response.data.message);
           }
         })
         .catch((error) => {
-          ElMessage.error('查询所有topic失败' + error.message)
-        })
+          ElMessage.error("查询所有topic失败" + error.message);
+        });
     }
 
     return {
@@ -62,10 +62,10 @@ export default defineComponent({
       partitions,
       messageKey,
       getTopics,
-      broker,
-    }
-  },
-})
+      broker
+    };
+  }
+});
 </script>
 
 <style scoped lang="scss">

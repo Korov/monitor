@@ -40,7 +40,7 @@
           </div>
         </el-row>
         <el-row>
-          <div>
+          <div style="width: 100%">
             <router-view></router-view>
           </div>
         </el-row>
