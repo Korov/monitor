@@ -50,9 +50,9 @@
 </template>
 
 <script lang="ts">
-import { ElCol, ElIcon, ElMenu, ElMenuItem, ElRow, ElSubMenu } from "element-plus";
 import { computed, defineComponent, ref } from "vue";
 import { useRoute } from "vue-router";
+import { localStorage } from "@/stores/store";
 
 export default defineComponent({
   name: "HomePage",
@@ -62,6 +62,19 @@ export default defineComponent({
     const rightSpan = ref(22);
     const route = useRoute();
     let activePath = computed(() => route.path);
+
+    function initCollapse() {
+      isCollapse.value = Boolean(localStorage.get("isCollapse") === "true");
+      if (isCollapse.value) {
+        leftSpan.value = 2;
+        rightSpan.value = 24 - leftSpan.value;
+      } else {
+        leftSpan.value = 4;
+        rightSpan.value = 24 - leftSpan.value;
+      }
+    }
+
+    initCollapse();
 
     function collapseHandle() {
       if (isCollapse.value) {
@@ -73,6 +86,7 @@ export default defineComponent({
         leftSpan.value = 2;
         rightSpan.value = 24 - leftSpan.value;
       }
+      localStorage.set("isCollapse", String(isCollapse.value));
     }
 
     return {
