@@ -50,9 +50,7 @@ public class KafkaSourceServiceImpl implements KafkaSourceService {
     @Override
     public Mono<List<TopicVO>> queryTopics(Long sourceId, String keyword) {
         Mono<KafkaSource> kafkaSource = kafkaSourceRepository.findById(sourceId);
-        return kafkaSource.map(source -> {
-            return KafkaUtils.queryTopics(source.getBroker(), keyword);
-        });
+        return kafkaSource.map(source -> KafkaUtils.queryTopics(source.getBroker(), keyword));
     }
 
     @Override
