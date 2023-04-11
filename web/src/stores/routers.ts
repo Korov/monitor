@@ -1,40 +1,62 @@
 import { defineStore } from 'pinia'
+import { Router } from '@/types'
 
-export const navStore = defineStore('navInfo', {
-  state: () => ({
-    path: '/',
-    name: 'home',
-    meta: {
-      title: 'Home',
-    },
-    redirect: {
-      name: 'config',
-    },
-    children: [
+const routerStore = defineStore('routerStore', {
+  state: (): { routers: Router[] } => ({
+    routers: [
       {
-        path: 'kafka/config',
-        name: 'config',
-        component: '/components/kafka/Config.vue',
-      },
-      {
-        path: 'kafka/manager',
-        name: 'manager',
-        component: '/components/kafka/Manager.vue',
-      },
-      {
-        path: 'kafka/producer',
-        name: 'producer',
-        component: '/components/kafka/operate/Produce.vue',
-      },
-      {
-        path: 'kafka/consumer',
-        name: 'consumer',
-        component: '/components/kafka/operate/Consume.vue',
+        path: '/',
+        name: 'home',
+        meta: {
+          title: 'Home',
+        },
+        redirect: {
+          name: 'config',
+        },
+        component: null,
+        children: [
+          {
+            path: 'kafka/config',
+            name: 'config',
+            component: '/components/kafka/Config.vue',
+            meta: null,
+            redirect: null,
+            children: null,
+          },
+          {
+            path: 'kafka/manager',
+            name: 'manager',
+            component: '/components/kafka/Manager.vue',
+            meta: null,
+            redirect: null,
+            children: null,
+          },
+          {
+            path: 'kafka/producer',
+            name: 'producer',
+            component: '/components/kafka/operate/Produce.vue',
+            meta: null,
+            redirect: null,
+            children: null,
+          },
+          {
+            path: 'kafka/consumer',
+            name: 'consumer',
+            component: '/components/kafka/operate/Consume.vue',
+            meta: null,
+            redirect: null,
+            children: null,
+          },
+        ],
       },
     ],
   }),
-  getters: {
-    routers: (state) => state,
+
+  actions: {
+    getRouters(): Router[] {
+      return this.routers
+    },
   },
-  actions: {},
 })
+
+export default routerStore

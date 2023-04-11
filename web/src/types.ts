@@ -42,4 +42,17 @@ interface Message {
   value: string
 }
 
-export { Topic, Config, Partition, Broker, Consumer, Message }
+interface Router {
+  path: string
+  name: string
+  meta: {
+    title: string
+  } | null
+  redirect: {
+    name: string
+  } | null
+  component: string | null
+  children: Router[] | null
+}
+
+export { Topic, Config, Partition, Broker, Consumer, Message, Router }
