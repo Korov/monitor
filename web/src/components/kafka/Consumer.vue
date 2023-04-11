@@ -86,95 +86,95 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import { ElMessage } from "element-plus";
-import apiClient from "@/http-common";
-import DataTag from "@cp/kafka/DataTag.vue";
-import { Message } from "@/types";
+import { defineComponent, ref } from 'vue'
+import { ElMessage } from 'element-plus'
+import apiClient from '@/http-common'
+import DataTag from '@cp/kafka/DataTag.vue'
+import { Message } from '@/types'
 
 export default defineComponent({
-  name: "Consumer",
+  name: 'Consumer',
   components: { DataTag },
   props: {
     topic: String,
     sourceId: Number,
-    broker: String
+    broker: String,
   },
   setup(props) {
-    let group = ref("");
-    let groups = ref<string[]>([]);
-    let consumeCount = ref(0);
-    let message = ref<Message[]>([]);
-    let keyword = ref("");
-    let partition = ref(0);
-    let partitions = ref<number[]>([]);
-    let offset = ref(-1);
-    let startOffset = ref(0);
-    let endOffset = ref(0);
-    let disabled = ref(false);
-    let mode = ref("earliest");
-    let on = ref(false);
-    let websocket: WebSocket;
-    let autoScrollToBottom = ref(false);
+    let group = ref('')
+    let groups = ref<string[]>([])
+    let consumeCount = ref(0)
+    let message = ref<Message[]>([])
+    let keyword = ref('')
+    let partition = ref(0)
+    let partitions = ref<number[]>([])
+    let offset = ref(-1)
+    let startOffset = ref(0)
+    let endOffset = ref(0)
+    let disabled = ref(false)
+    let mode = ref('earliest')
+    let on = ref(false)
+    let websocket: WebSocket
+    let autoScrollToBottom = ref(false)
 
     function getGroupByTopic() {
       if (props.sourceId == null) {
-        ElMessage.error("请选择Kafka环境");
+        ElMessage.error('请选择Kafka环境')
       }
       apiClient
         .get(`/kafka/consumer/query?sourceId=${props.sourceId}`)
         .then((response) => {
-          let groupNames: string[] = response.data.data;
+          let groupNames: string[] = response.data.data
           for (let i = 0; i < groupNames.length; i++) {
-            groups.value.push(groupNames[i]);
+            groups.value.push(groupNames[i])
           }
         })
         .catch((error) => {
-          ElMessage.error("失败" + error.message);
-        });
+          ElMessage.error('失败' + error.message)
+        })
     }
 
     function getTopicDetail() {
-      partitions.value = [];
+      partitions.value = []
       apiClient
         .get(`/kafka/topic/detail/query?sourceId=${props.sourceId}&topic=${props.topic}`)
         .then((response) => {
           for (const partitionsKey in response.data.data.partitions) {
-            partitions.value.push(response.data.data.partitions[partitionsKey].partition);
+            partitions.value.push(response.data.data.partitions[partitionsKey].partition)
           }
         })
         .catch((error) => {
-          ElMessage.error("查询topic分区详情失败" + error.message);
-        });
+          ElMessage.error('查询topic分区详情失败' + error.message)
+        })
     }
 
     function setPartition(partition: number) {
-      console.log(partition);
-      offset.value = partition;
+      console.log(partition)
+      offset.value = partition
     }
 
     function start() {
-      if (props.sourceId == null || props.topic == "" || props.topic == null) {
-        ElMessage.error("请先选择kafka和topic");
+      if (props.sourceId == null || props.topic == '' || props.topic == null) {
+        ElMessage.error('请先选择kafka和topic')
       }
 
-      if (group.value == null || group.value == "") {
-        ElMessage.error("请先输入group");
+      if (group.value == null || group.value == '') {
+        ElMessage.error('请先输入group')
       }
 
-      consumeCount.value = 0;
+      consumeCount.value = 0
 
-      if ("WebSocket" in window) {
+      if ('WebSocket' in window) {
         // let url = `ws://${address.value}/kafka/consumer/socket`
-        let url = `ws://localhost:8091/kafka/consumer/socket?topic=${props.topic}&broker=${props.broker}&group=${group.value}&reset=${mode.value}&partition=${partition.value}&offset=${offset.value}`;
-        websocket = new WebSocket(url);
-        initWebSocket();
+        let url = `ws://localhost:8091/kafka/consumer/socket?topic=${props.topic}&broker=${props.broker}&group=${group.value}&reset=${mode.value}&partition=${partition.value}&offset=${offset.value}`
+        websocket = new WebSocket(url)
+        initWebSocket()
       } else {
-        on.value = false;
-        alert("当前浏览器 不支持");
+        on.value = false
+        alert('当前浏览器 不支持')
       }
-      disabled.value = true;
-      on.value = true;
+      disabled.value = true
+      on.value = true
     }
 
     function send() {
@@ -184,52 +184,52 @@ export default defineComponent({
         group: group.value,
         reset: mode.value,
         partition: partition.value,
-        offset: offset.value
-      };
-      console.log(data);
-      websocket.send(JSON.stringify(data));
+        offset: offset.value,
+      }
+      console.log(data)
+      websocket.send(JSON.stringify(data))
     }
 
     function stop() {
-      disabled.value = false;
-      on.value = false;
-      websocket.close();
+      disabled.value = false
+      on.value = false
+      websocket.close()
     }
 
     function initWebSocket() {
       // 连接错误
       websocket.onerror = () => {
-        console.log("WebSocket连接发生错误   状态码：" + websocket.readyState);
-        disabled.value = false;
-        on.value = false;
-      };
+        console.log('WebSocket连接发生错误   状态码：' + websocket.readyState)
+        disabled.value = false
+        on.value = false
+      }
       // 连接成功
       websocket.onopen = () => {
-        console.log("WebSocket连接成功    状态码：" + websocket.readyState);
-      };
+        console.log('WebSocket连接成功    状态码：' + websocket.readyState)
+      }
       // 收到消息的回调
       websocket.onmessage = (event) => {
-        consumeCount.value++;
+        consumeCount.value++
         console.log(event.data)
-        message.value.push(JSON.parse(event.data));
-        console.log(message.value[message.value.length - 1]);
+        message.value.push(JSON.parse(event.data))
+        console.log(message.value[message.value.length - 1])
         /*if (autoScrollToBottom.value) {
           scroll()
         }*/
-      };
+      }
       // 连接关闭的回调
       websocket.onclose = (error) => {
-        console.log(error);
-        console.log(`WebSocket连接关闭    状态码：${websocket.readyState}, error:${error.reason}`);
-        disabled.value = false;
-        on.value = false;
-      };
+        console.log(error)
+        console.log(`WebSocket连接关闭    状态码：${websocket.readyState}, error:${error.reason}`)
+        disabled.value = false
+        on.value = false
+      }
       // 监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
       window.onbeforeunload = () => {
-        websocket.close();
-        disabled.value = false;
-        on.value = false;
-      };
+        websocket.close()
+        disabled.value = false
+        on.value = false
+      }
     }
 
     return {
@@ -252,10 +252,10 @@ export default defineComponent({
       start,
       stop,
       autoScrollToBottom,
-      send
-    };
-  }
-});
+      send,
+    }
+  },
+})
 </script>
 
 <style scoped lang="scss">

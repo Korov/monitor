@@ -16,47 +16,47 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, ref } from "vue";
-import apiClient from "@/http-common";
-import { ElMessage } from "element-plus";
-import KafkaSelect from "@cp/kafka/KafkaSelect.vue";
-import { Broker } from "@/types";
+import { defineComponent, Ref, ref } from 'vue'
+import apiClient from '@/http-common'
+import { ElMessage } from 'element-plus'
+import KafkaSelect from '@cp/kafka/KafkaSelect.vue'
+import { Broker } from '@/types'
 
 export default defineComponent({
-  name: "Cluster",
+  name: 'Cluster',
   components: {
-    KafkaSelect
+    KafkaSelect,
   },
   setup() {
-    let brokers = ref<Broker[]>([]);
+    let brokers = ref<Broker[]>([])
 
     function kafkaChange(sourceId: Ref<number>) {
-      console.log("source id:" + sourceId.value);
-      getCluster(sourceId);
+      console.log('source id:' + sourceId.value)
+      getCluster(sourceId)
     }
 
     function getCluster(value: Ref<number>) {
       apiClient
-        .post("/kafka/cluster/info", { sourceId: value.value })
+        .post('/kafka/cluster/info', { sourceId: value.value })
         .then((response) => {
           if (response.data.code == 1) {
-            brokers.value = response.data.data;
-            console.log(brokers);
+            brokers.value = response.data.data
+            console.log(brokers)
           } else {
-            ElMessage.error(response.data.message);
+            ElMessage.error(response.data.message)
           }
         })
         .catch((error) => {
-          ElMessage.error("查询集群信息失败" + error.message);
-        });
+          ElMessage.error('查询集群信息失败' + error.message)
+        })
     }
 
     return {
       brokers,
-      kafkaChange
-    };
-  }
-});
+      kafkaChange,
+    }
+  },
+})
 </script>
 
 <style scoped lang="scss">

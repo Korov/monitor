@@ -31,6 +31,7 @@ export default defineComponent({
           ElMessage.error('查询所有kafka环境失败' + error.message)
         })
     }
+
     getAllSource()
 
     function selectKafka() {

@@ -14,7 +14,8 @@
       >
         <el-option v-for="item in topics" :key="item.name" :label="item.name" :value="item.name"></el-option>
       </el-select>
-      <el-button size="small" style="margin-bottom: 5px" type="primary" @click="dialogFormVisible = true">创建topic
+      <el-button size="small" style="margin-bottom: 5px" type="primary" @click="dialogFormVisible = true"
+        >创建topic
       </el-button>
     </div>
     <div>
@@ -114,207 +115,207 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, ref } from "vue";
-import { ElMessage } from "element-plus";
-import apiClient from "@/http-common";
-import { Consumer, Partition, Topic } from "@/types";
-import KafkaSelect from "@cp/kafka/KafkaSelect.vue";
-import DataTag from "@cp/kafka/DataTag.vue";
-import GroupTable from "@cp/kafka/GroupTable.vue";
+import { defineComponent, Ref, ref } from 'vue'
+import { ElMessage } from 'element-plus'
+import apiClient from '@/http-common'
+import { Consumer, Partition, Topic } from '@/types'
+import KafkaSelect from '@cp/kafka/KafkaSelect.vue'
+import DataTag from '@cp/kafka/DataTag.vue'
+import GroupTable from '@cp/kafka/GroupTable.vue'
 
 export default defineComponent({
-  name: "Topic",
+  name: 'Topic',
   components: {
     KafkaSelect,
     DataTag,
-    GroupTable
+    GroupTable,
   },
   setup() {
-    let keyword = ref<string>("");
-    let sourceId = ref<number>();
-    let tableData = ref<Topic[]>([]);
+    let keyword = ref<string>('')
+    let sourceId = ref<number>()
+    let tableData = ref<Topic[]>([])
     let topic = ref<Topic>({
-      name: "",
+      name: '',
       partition: 0,
       replica: 0,
-      internal: false
-    });
-    let topics = ref<Topic[]>([]);
-    let selectedTopic = ref("");
-    let partitions = ref<Partition[]>();
-    let dialogTableVisible = ref(false);
-    let dialogFormVisible = ref(false);
-    let topicDetail = ref<Topic>();
-    let groups = ref<string[]>([]);
-    let groupVisible = ref(false);
-    let groupDetail = ref<Consumer[]>([]);
+      internal: false,
+    })
+    let topics = ref<Topic[]>([])
+    let selectedTopic = ref('')
+    let partitions = ref<Partition[]>()
+    let dialogTableVisible = ref(false)
+    let dialogFormVisible = ref(false)
+    let topicDetail = ref<Topic>()
+    let groups = ref<string[]>([])
+    let groupVisible = ref(false)
+    let groupDetail = ref<Consumer[]>([])
 
     function setKeyword(value: string) {
-      keyword.value = value;
+      keyword.value = value
     }
 
     function getTopics() {
       if (sourceId.value == null) {
-        ElMessage.error("请选择Kafka环境");
-        return;
+        ElMessage.error('请选择Kafka环境')
+        return
       }
-      let url = `/kafka/topic/query?sourceId=${sourceId.value}`;
-      if (keyword.value != null && keyword.value != "") {
-        url = `${url}&keyword=${keyword.value}`;
+      let url = `/kafka/topic/query?sourceId=${sourceId.value}`
+      if (keyword.value != null && keyword.value != '') {
+        url = `${url}&keyword=${keyword.value}`
       }
       apiClient
         .get(url)
         .then((response) => {
           if (response.data.code) {
-            tableData.value = response.data.data;
+            tableData.value = response.data.data
           } else {
-            ElMessage.error(response.data.message);
+            ElMessage.error(response.data.message)
           }
         })
         .catch((error) => {
-          ElMessage.error("查询所有topic失败" + error.message);
-        });
+          ElMessage.error('查询所有topic失败' + error.message)
+        })
     }
 
     function getAllTopics() {
       if (sourceId.value == null) {
-        ElMessage.error("请选择Kafka环境");
-        return;
+        ElMessage.error('请选择Kafka环境')
+        return
       }
       apiClient
         .get(`/kafka/topic/query?sourceId=${sourceId.value}`)
         .then((response) => {
           if (response.data.code) {
-            topics.value = response.data.data;
+            topics.value = response.data.data
           } else {
-            ElMessage.error(response.data.message);
+            ElMessage.error(response.data.message)
           }
         })
         .catch((error) => {
-          ElMessage.error("查询所有topic失败" + error.message);
-        });
+          ElMessage.error('查询所有topic失败' + error.message)
+        })
     }
 
     function kafkaChange(value: Ref<number>) {
-      sourceId.value = value.value;
-      getTopics();
+      sourceId.value = value.value
+      getTopics()
     }
 
     function addTopic() {
       if (sourceId.value == null || sourceId.value <= 0) {
-        ElMessage.error("请选择Kafka环境");
-        return;
+        ElMessage.error('请选择Kafka环境')
+        return
       }
       if (topic.value.name == null) {
-        ElMessage.error("请选择输入Topic名称");
-        return;
+        ElMessage.error('请选择输入Topic名称')
+        return
       }
       apiClient
         .post(`/kafka/topic/create`, {
           sourceId: sourceId.value,
           topic: topic.value.name,
           partition: topic.value.partition,
-          replica: topic.value.replica
+          replica: topic.value.replica,
         })
         .then((response) => {
           if (response.data.code) {
-            ElMessage.success("创建topic成功");
-            getTopics();
+            ElMessage.success('创建topic成功')
+            getTopics()
           }
         })
         .catch((error) => {
-          ElMessage.error("查询topic分区详情失败" + error.message);
-        });
-      dialogFormVisible.value = false;
+          ElMessage.error('查询topic分区详情失败' + error.message)
+        })
+      dialogFormVisible.value = false
     }
 
     function deleteConfirm(name: string) {
       if (sourceId.value == null || sourceId.value <= 0) {
-        ElMessage.error("请选择Kafka环境");
-        return;
+        ElMessage.error('请选择Kafka环境')
+        return
       }
-      if (name == null || name == "") {
-        ElMessage.error("请选择输入Topic");
-        return;
+      if (name == null || name == '') {
+        ElMessage.error('请选择输入Topic')
+        return
       }
       apiClient
         .delete(`/kafka/topic/delete?sourceId=${sourceId.value}&topic=${name}`)
         .then((response) => {
           if (response.data.code) {
-            ElMessage.success("删除topic成功");
-            getTopics();
+            ElMessage.success('删除topic成功')
+            getTopics()
           } else {
-            ElMessage.success("删除topic失败" + response);
-            getTopics();
+            ElMessage.success('删除topic失败' + response)
+            getTopics()
           }
         })
         .catch((error) => {
-          ElMessage.error("删除topic失败" + error.message);
-        });
+          ElMessage.error('删除topic失败' + error.message)
+        })
     }
 
     function getTopicDetail(topic: string) {
       if (sourceId.value == null || sourceId.value <= 0) {
-        ElMessage.error("请选择Kafka环境");
-        return;
+        ElMessage.error('请选择Kafka环境')
+        return
       }
-      selectedTopic.value = topic;
+      selectedTopic.value = topic
       apiClient
         .get(`/kafka/topic/detail/query?sourceId=${sourceId.value}&topic=${selectedTopic.value}`)
         .then((response) => {
-          partitions.value = response.data.data.partitions;
-          topicDetail.value = response.data.data;
-          dialogTableVisible.value = true;
+          partitions.value = response.data.data.partitions
+          topicDetail.value = response.data.data
+          dialogTableVisible.value = true
         })
         .catch((error) => {
-          ElMessage.error("查询topic分区详情失败" + error.message);
-        });
+          ElMessage.error('查询topic分区详情失败' + error.message)
+        })
     }
 
     function getGroupByTopic(value: string) {
       if (sourceId.value == null || sourceId.value <= 0) {
-        ElMessage.error("请选择Kafka环境");
-        return;
+        ElMessage.error('请选择Kafka环境')
+        return
       }
-      if (value == null || value == "") {
-        ElMessage.error("请选择输入Topic名称");
-        return;
+      if (value == null || value == '') {
+        ElMessage.error('请选择输入Topic名称')
+        return
       }
-      console.log(`query source id:${sourceId.value}, value:${value}`);
-      selectedTopic.value = value;
+      console.log(`query source id:${sourceId.value}, value:${value}`)
+      selectedTopic.value = value
       apiClient
         .get(`/kafka/consumer/query?sourceId=${sourceId.value}&topic=${selectedTopic.value}`)
         .then((response) => {
-          groups.value = response.data.data;
-          groupVisible.value = true;
+          groups.value = response.data.data
+          groupVisible.value = true
         })
         .catch((error) => {
-          groupVisible.value = false;
-          ElMessage.error("失败" + error.message);
-        });
+          groupVisible.value = false
+          ElMessage.error('失败' + error.message)
+        })
     }
 
     function handleChange(group: string) {
       if (sourceId.value == null || sourceId.value <= 0) {
-        ElMessage.error("请选择Kafka环境");
-        return;
+        ElMessage.error('请选择Kafka环境')
+        return
       }
-      if (group == null || group == "") {
-        ElMessage.error("请选择输入Topic名称");
-        return;
+      if (group == null || group == '') {
+        ElMessage.error('请选择输入Topic名称')
+        return
       }
 
       apiClient
         .get(`/kafka/consumer/detail?sourceId=${sourceId.value}&group=${group}`)
         .then((response) => {
           if (response.data.code) {
-            groupDetail.value = response.data.data;
-            console.log(groupDetail);
+            groupDetail.value = response.data.data
+            console.log(groupDetail)
           }
         })
         .catch((error) => {
-          ElMessage.error("查询group详情失败" + error.message);
-        });
+          ElMessage.error('查询group详情失败' + error.message)
+        })
     }
 
     return {
@@ -339,10 +340,10 @@ export default defineComponent({
       getGroupByTopic,
       groupDetail,
       handleChange,
-      dialogFormVisible
-    };
-  }
-});
+      dialogFormVisible,
+    }
+  },
+})
 </script>
 
 <style scoped lang="scss">
