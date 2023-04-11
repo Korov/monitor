@@ -29,14 +29,12 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 app.mount('#app')
 
 const modules = import.meta.glob('@/components/**/*.vue')
-console.log(modules)
 
 const routerStoreInfo = routerStore()
 
 routerStoreInfo.getRouters().forEach((store) => {
   if (store.children !== null) {
     store.children.forEach((childrenNode) => {
-      console.log(modules[`.${childrenNode.component}`])
       router.addRoute(childrenNode.name, {
         name: childrenNode.name,
         path: `${store.path}${childrenNode.path}`,
@@ -51,5 +49,4 @@ routerStoreInfo.getRouters().forEach((store) => {
       redirect: store.redirect || { name: 'config' },
     })
   }
-  console.log(store)
 })
