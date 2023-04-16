@@ -19,12 +19,13 @@ services:
     hostname: monitor_zookeeper.org
   kafka:
     container_name: monitor_kafka
-    image: bitnami/kafka:3.3.2
+    image: bitnami/kafka:3.4.0
     hostname: monitor_kafka.org
     ports:
       - 9095:9095
       - 9096:9096
     environment:
+      # BITNAMI_DEBUG: yes
       KAFKA_ENABLE_KRAFT: yes
       KAFKA_CFG_PROCESS_ROLES: broker,controller
       KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
@@ -34,7 +35,7 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@127.0.0.1:9096
       ALLOW_PLAINTEXT_LISTENER: yes
-      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: yes
+      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: true
   redis:
     container_name: monitor_redis
     image: redis:7.0.8
