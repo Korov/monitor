@@ -1,61 +1,61 @@
 <template>
   <div class="home">
-    <el-row>
-      <div class="title">
+    <el-container>
+      <el-header class="title">
         <h1>Monitor</h1>
-      </div>
-    </el-row>
-    <el-row>
-      <el-col :span="leftSpan" class="navLeft">
-        <div>
-          <svg
-            :class="{ 'is-active': isCollapse }"
-            class="hamburger"
-            viewBox="0 0 1024 1024"
-            @click="collapseHandle()"
-            xmlns="http://www.w3.org/2000/svg"
-            width="64"
-            height="64"
-          >
-            <path
-              d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM142.4 642.1L298.7 519a8.84 8.84 0 0 0 0-13.9L142.4 381.9c-5.8-4.6-14.4-.5-14.4 6.9v246.3a8.9 8.9 0 0 0 14.4 7z"
-            />
-          </svg>
-        </div>
-        <el-menu :default-active="activePath" :collapse="isCollapse" class="navBar" router>
-          <el-sub-menu index="/kafka">
-            <template #title>
-              <el-icon>
-                <Message />
-              </el-icon>
-              <span>Kafka</span>
-            </template>
-            <el-menu-item index="/kafka/config">
-              <template #title>config</template>
-            </el-menu-item>
-            <el-menu-item index="/kafka/manager">
-              <template #title>manager</template>
-            </el-menu-item>
-            <el-sub-menu index="/kafka/producer">
-              <template #title>operate</template>
-              <el-menu-item index="/kafka/producer">
-                <template #title>produce</template>
-              </el-menu-item>
-              <el-menu-item index="/kafka/consumer">
-                <template #title>consume</template>
-              </el-menu-item>
-            </el-sub-menu>
-          </el-sub-menu>
-        </el-menu>
-      </el-col>
-      <el-col :span="rightSpan" class="navRight">
-        <el-row>
-          <div style="width: 100%">
+      </el-header>
+      <el-container>
+        <el-aside width="auto">
+          <div class="navLeft">
+            <div>
+              <svg
+                :class="{ 'is-active': isCollapse }"
+                class="hamburger"
+                viewBox="0 0 1024 1024"
+                @click="collapseHandle()"
+                xmlns="http://www.w3.org/2000/svg"
+                width="64"
+                height="64"
+              >
+                <path
+                  d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM142.4 642.1L298.7 519a8.84 8.84 0 0 0 0-13.9L142.4 381.9c-5.8-4.6-14.4-.5-14.4 6.9v246.3a8.9 8.9 0 0 0 14.4 7z"
+                />
+              </svg>
+            </div>
+            <el-menu :default-active="activePath" :collapse="isCollapse" class="navBar" router>
+              <el-sub-menu index="/kafka">
+                <template #title>
+                  <el-icon>
+                    <Message />
+                  </el-icon>
+                  <span>Kafka</span>
+                </template>
+                <el-menu-item index="/kafka/config">
+                  <template #title>config</template>
+                </el-menu-item>
+                <el-menu-item index="/kafka/manager">
+                  <template #title>manager</template>
+                </el-menu-item>
+                <el-sub-menu index="/kafka/producer">
+                  <template #title>operate</template>
+                  <el-menu-item index="/kafka/producer">
+                    <template #title>produce</template>
+                  </el-menu-item>
+                  <el-menu-item index="/kafka/consumer">
+                    <template #title>consume</template>
+                  </el-menu-item>
+                </el-sub-menu>
+              </el-sub-menu>
+            </el-menu>
+          </div>
+        </el-aside>
+        <el-main>
+          <div class="navRight">
             <router-view></router-view>
           </div>
-        </el-row>
-      </el-col>
-    </el-row>
+        </el-main>
+      </el-container>
+    </el-container>
   </div>
 </template>
 
@@ -70,6 +70,7 @@ export default defineComponent({
     const isCollapse = ref(true)
     const leftSpan = ref(2)
     const rightSpan = ref(22)
+    const widthNav = ref('200px')
     const route = useRoute()
     let activePath = computed(() => {
       if (route.path === '/') {
@@ -111,12 +112,14 @@ export default defineComponent({
       leftSpan,
       rightSpan,
       collapseHandle,
+      widthNav,
     }
   },
 })
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/variables.module.scss';
 .home {
   margin-right: 1px;
   padding: 0 10px;
