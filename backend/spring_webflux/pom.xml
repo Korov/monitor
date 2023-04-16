@@ -10,7 +10,7 @@
 
     <properties>
         <java.version>17</java.version>
-        <springboot.version>3.1.0-SNAPSHOT</springboot.version>
+        <springboot.version>3.0.5</springboot.version>
         <repackage.classifier/>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
@@ -19,7 +19,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.0-SNAPSHOT</version>
+        <version>3.0.5</version>
     </parent>
     <dependencies>
         <dependency>
@@ -43,7 +43,7 @@
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
-            <version>3.0.5</version>
+            <version>${springboot.version}</version>
         </dependency>
         <dependency>
             <groupId>io.projectreactor.kafka</groupId>
@@ -65,6 +65,12 @@
             <artifactId>lombok</artifactId>
             <version>1.18.24</version>
             <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.zookeeper</groupId>
+            <artifactId>zookeeper</artifactId>
+            <version>3.8.1</version>
         </dependency>
         <!--<dependency>
             <groupId>org.flywaydb</groupId>
