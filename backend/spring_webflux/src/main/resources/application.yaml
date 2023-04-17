@@ -12,13 +12,13 @@ spring:
     url: r2dbcs:mysql://localhost:3309/monitor?useSSL=false&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
     username: monitor
     password: monitor
-#  flyway:
-#    baseline-description: monitor migration
-#    baseline-on-migrate: true
-#    url: jdbc:mysql://localhost:3309/monitor?useSSL=false&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
-#    user: monitor
-#    password: monitor
-#    locations: classpath:dev/migration/mysql,classpath:db/migration/mysql
+  flyway:
+    baseline-description: monitor migration
+    baseline-on-migrate: true
+    url: jdbc:mysql://localhost:3309/monitor?useSSL=false&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
+    user: monitor
+    password: monitor
+    locations: classpath:dev/migration/mysql,classpath:db/migration/mysql
   jpa:
     show-sql: true
     hibernate:
