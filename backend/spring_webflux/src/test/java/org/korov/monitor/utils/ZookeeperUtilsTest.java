@@ -3,13 +3,10 @@ package org.korov.monitor.utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooKeeper;
-import org.apache.zookeeper.data.ACL;
 import org.apache.zookeeper.data.Stat;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,26 +17,36 @@ import java.util.List;
 class ZookeeperUtilsTest {
 
     @Test
-    public void getZookeeper() throws IOException, InterruptedException {
+    public void getZookeeper() throws IOException, InterruptedException, KeeperException {
+        String host = "localhost:2183";
+        ZooKeeper zooKeeper = ZookeeperUtils.getZookeeper(host);
+        ZooKeeper.States states = zooKeeper.getState();
+        log.info("zookeeper states:{}", states);
 
-        try (ZooKeeper zooKeeper = ZookeeperUtils.getZookeeper("localhost:2183")) {
-            ZooKeeper.States states = zooKeeper.getState();
-            log.info("zookeeper states:{}", states);
+        int count = zooKeeper.getAllChildrenNumber("/");
+        Stat stat = new Stat();
+        List<String> childPaths = zooKeeper.getChildren("/zookeeper", false, stat);
 
-            int count = zooKeeper.getAllChildrenNumber("/");
-            Stat stat = new Stat();
-            List<String> childPaths = zooKeeper.getChildren("/zookeeper", false, stat);
-            Stat dataStat = new Stat();
-            byte[] data = zooKeeper.getData("/zookeeper/config", false, dataStat);
-            log.info("debug");
+        log.info("debug");
 
-            List<ACL> acl = new ArrayList<>();
-            acl.add(new ACL());
-            zooKeeper.create("/data_test", "message".getBytes(StandardCharsets.UTF_8), )
-        } catch (KeeperException e) {
-            throw new RuntimeException(e);
+        String dataPath = "/data_test";
+        ZookeeperUtils.createNode(host, dataPath, "message");
+        String data = ZookeeperUtils.getData(host, dataPath);
+        log.info("path:{}, data:{}", dataPath, data);
+
+        if (ZookeeperUtils.deleteNode(host, dataPath)) {
+            log.info("delete path:{} success", dataPath);
         }
+
+        String noDataPath = "/no_data_test";
+        ZookeeperUtils.createNode(host, noDataPath);
+        data = ZookeeperUtils.getData(host, noDataPath);
+        log.info("path:{}, data:{}", noDataPath, data);
+
         log.info("debug");
     }
 
+    @Test
+    void getZnode() {
+    }
 }
