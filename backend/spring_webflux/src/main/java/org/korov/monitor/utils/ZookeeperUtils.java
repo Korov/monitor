@@ -12,8 +12,10 @@ import org.korov.monitor.vo.ZNode;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -118,5 +120,42 @@ public class ZookeeperUtils {
         zNode.setStat(stat);
         zNode.setData(data);
         return zNode;
+    }
+
+    public static ZNode getAllZnode(String host) throws IOException, InterruptedException, KeeperException {
+        ZooKeeper zooKeeper = getZookeeper(host);
+        return getAllZnode(host, "/");
+    }
+
+    public static ZNode getAllZnode(String host, String path) throws IOException, InterruptedException, KeeperException {
+        ZooKeeper zooKeeper = getZookeeper(host);
+        if (zooKeeper.exists(path, false) == null) {
+            return null;
+        }
+        Stat stat = new Stat();
+        String data = getData(host, path, false, stat);
+        ZNode parentNode = new ZNode();
+        parentNode.setPath(path);
+        parentNode.setStat(stat);
+        parentNode.setData(data);
+
+        List<ZNode> childNodes = new ArrayList<>();
+        List<String> childPaths = zooKeeper.getChildren(path, false, null);
+        if (childPaths != null && !childPaths.isEmpty()) {
+            for (String childPath : childPaths) {
+                ZNode childNode;
+                if (Objects.equals("/", path)) {
+                    childNode = getAllZnode(host, "/" + childPath);
+                } else {
+                    childNode = getAllZnode(host, path + "/" + childPath);
+                }
+                if (childNode != null) {
+                    childNode.setParentPath(path);
+                    childNodes.add(childNode);
+                }
+            }
+        }
+        parentNode.setChildNodes(childNodes);
+        return parentNode;
     }
 }

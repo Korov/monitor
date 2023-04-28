@@ -48,4 +48,10 @@ class ZookeeperUtilsTest {
         ZNode zNode = ZookeeperUtils.getZnode(host, "/data_test");
         log.info("znode:{}", zNode);
     }
+
+    @Test
+    void getAllZnode() throws IOException, InterruptedException, KeeperException {
+        ZNode allNode = ZookeeperUtils.getAllZnode(host);
+        log.info("debug");
+    }
 }
