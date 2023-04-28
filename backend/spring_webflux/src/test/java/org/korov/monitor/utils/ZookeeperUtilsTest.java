@@ -3,6 +3,7 @@ package org.korov.monitor.utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.ZooKeeperMain;
 import org.apache.zookeeper.data.Stat;
 import org.junit.jupiter.api.Test;
 import org.korov.monitor.vo.ZNode;
@@ -52,6 +53,14 @@ class ZookeeperUtilsTest {
     @Test
     void getAllZnode() throws IOException, InterruptedException, KeeperException {
         ZNode allNode = ZookeeperUtils.getAllZnode(host);
+        log.info("debug");
+    }
+
+    @Test
+    void testMain() throws IOException, InterruptedException {
+        ZooKeeperMain zooKeeperMain = new ZooKeeperMain(ZookeeperUtils.getZookeeper(host));
+        log.info("debug");
+        zooKeeperMain.executeLine("mntr");
         log.info("debug");
     }
 }

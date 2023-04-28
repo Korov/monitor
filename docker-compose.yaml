@@ -16,6 +16,8 @@ services:
     image: zookeeper:3.8.1
     ports:
       - "2183:2181"
+    environment:
+      - ZOO_4LW_COMMANDS_WHITELIST=*
     hostname: monitor_zookeeper.org
   kafka:
     container_name: monitor_kafka
