@@ -5,6 +5,7 @@ import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
 import org.junit.jupiter.api.Test;
+import org.korov.monitor.vo.ZNode;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,10 +16,10 @@ import java.util.List;
  */
 @Slf4j
 class ZookeeperUtilsTest {
+    private static final String host = "localhost:2183";
 
     @Test
     public void getZookeeper() throws IOException, InterruptedException, KeeperException {
-        String host = "localhost:2183";
         ZooKeeper zooKeeper = ZookeeperUtils.getZookeeper(host);
         ZooKeeper.States states = zooKeeper.getState();
         log.info("zookeeper states:{}", states);
@@ -34,10 +35,6 @@ class ZookeeperUtilsTest {
         String data = ZookeeperUtils.getData(host, dataPath);
         log.info("path:{}, data:{}", dataPath, data);
 
-        if (ZookeeperUtils.deleteNode(host, dataPath)) {
-            log.info("delete path:{} success", dataPath);
-        }
-
         String noDataPath = "/no_data_test";
         ZookeeperUtils.createNode(host, noDataPath);
         data = ZookeeperUtils.getData(host, noDataPath);
@@ -47,6 +44,8 @@ class ZookeeperUtilsTest {
     }
 
     @Test
-    void getZnode() {
+    void getZnode() throws IOException, InterruptedException, KeeperException {
+        ZNode zNode = ZookeeperUtils.getZnode(host, "/data_test");
+        log.info("znode:{}", zNode);
     }
 }

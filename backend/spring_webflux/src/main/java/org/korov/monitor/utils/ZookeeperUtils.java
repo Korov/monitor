@@ -106,8 +106,17 @@ public class ZookeeperUtils {
         return zooKeeper.exists(path, false) == null;
     }
 
-    public static ZNode getZnode(String host, String path) {
-
-        return null;
+    public static ZNode getZnode(String host, String path) throws IOException, InterruptedException, KeeperException {
+        ZooKeeper zooKeeper = getZookeeper(host);
+        if (zooKeeper.exists(path, false) == null) {
+            return null;
+        }
+        Stat stat = new Stat();
+        String data = getData(host, path, false, stat);
+        ZNode zNode = new ZNode();
+        zNode.setPath(path);
+        zNode.setStat(stat);
+        zNode.setData(data);
+        return zNode;
     }
 }
