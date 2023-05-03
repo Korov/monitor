@@ -122,40 +122,44 @@ public class ZookeeperUtils {
         return zNode;
     }
 
-    public static ZNode getAllZnode(String host) throws IOException, InterruptedException, KeeperException {
-        ZooKeeper zooKeeper = getZookeeper(host);
+    public static ZNode getAllZnode(String host) {
         return getAllZnode(host, "/");
     }
 
-    public static ZNode getAllZnode(String host, String path) throws IOException, InterruptedException, KeeperException {
-        ZooKeeper zooKeeper = getZookeeper(host);
-        if (zooKeeper.exists(path, false) == null) {
-            return null;
-        }
-        Stat stat = new Stat();
-        String data = getData(host, path, false, stat);
-        ZNode parentNode = new ZNode();
-        parentNode.setPath(path);
-        parentNode.setStat(stat);
-        parentNode.setData(data);
+    public static ZNode getAllZnode(String host, String path) {
+        try {
+            ZooKeeper zooKeeper = getZookeeper(host);
+            if (zooKeeper.exists(path, false) == null) {
+                return null;
+            }
+            Stat stat = new Stat();
+            String data = getData(host, path, false, stat);
+            ZNode parentNode = new ZNode();
+            parentNode.setPath(path);
+            parentNode.setStat(stat);
+            parentNode.setData(data);
 
-        List<ZNode> childNodes = new ArrayList<>();
-        List<String> childPaths = zooKeeper.getChildren(path, false, null);
-        if (childPaths != null && !childPaths.isEmpty()) {
-            for (String childPath : childPaths) {
-                ZNode childNode;
-                if (Objects.equals("/", path)) {
-                    childNode = getAllZnode(host, "/" + childPath);
-                } else {
-                    childNode = getAllZnode(host, path + "/" + childPath);
-                }
-                if (childNode != null) {
-                    childNode.setParentPath(path);
-                    childNodes.add(childNode);
+            List<ZNode> childNodes = new ArrayList<>();
+            List<String> childPaths = zooKeeper.getChildren(path, false, null);
+            if (childPaths != null && !childPaths.isEmpty()) {
+                for (String childPath : childPaths) {
+                    ZNode childNode;
+                    if (Objects.equals("/", path)) {
+                        childNode = getAllZnode(host, "/" + childPath);
+                    } else {
+                        childNode = getAllZnode(host, path + "/" + childPath);
+                    }
+                    if (childNode != null) {
+                        childNode.setParentPath(path);
+                        childNodes.add(childNode);
+                    }
                 }
             }
+            parentNode.setChildNodes(childNodes);
+            return parentNode;
+        } catch (Exception e) {
+            log.error("get all znode failed", e);
         }
-        parentNode.setChildNodes(childNodes);
-        return parentNode;
+        return null;
     }
 }

@@ -13,12 +13,6 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 @Slf4j
 class KafkaControllerTest extends MonitorApplicationTests {
-    protected WebTestClient webClient;
-
-    @Autowired
-    public void setWebClient(WebTestClient webClient) {
-        this.webClient = webClient;
-    }
 
     @ParameterizedTest
     @ValueSource(strings = {

@@ -12,8 +12,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * @author zhu.lei
- * @date 2023-04-16 22:55
+ * @author korov
  */
 @Slf4j
 class ZookeeperUtilsTest {
