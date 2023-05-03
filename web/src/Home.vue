@@ -46,6 +46,17 @@
                   </el-menu-item>
                 </el-sub-menu>
               </el-sub-menu>
+              <el-sub-menu index="/zookeeper">
+                <template #title>
+                  <el-icon>
+                    <Message />
+                  </el-icon>
+                  <span>Zookeeper</span>
+                </template>
+                <el-menu-item index="/zookeeper/zktree">
+                  <template #title>Tree</template>
+                </el-menu-item>
+              </el-sub-menu>
             </el-menu>
           </div>
         </el-aside>

@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.0.10",
+    "@grapoza/vue-tree": "^5.1.0",
     "axios": "^1.2.0",
     "core-js": "^3.26.1",
     "element-plus": "^2.2.25",

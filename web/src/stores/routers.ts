@@ -49,6 +49,27 @@ const routerStore = defineStore('routerStore', {
           },
         ],
       },
+      {
+        path: '/zookeeper',
+        name: 'zookeeper',
+        meta: {
+          title: 'Zookeeper',
+        },
+        redirect: {
+          name: 'zktree',
+        },
+        component: null,
+        children: [
+          {
+            path: '/zktree',
+            name: 'zktree',
+            component: '/components/zookeeper/ZKTree.vue',
+            meta: null,
+            redirect: null,
+            children: null,
+          },
+        ],
+      },
     ],
   }),
 

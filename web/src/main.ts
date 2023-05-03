@@ -32,6 +32,10 @@ const modules = import.meta.glob('@/components/**/*.vue')
 
 const routerStoreInfo = routerStore()
 
+console.log(modules)
+console.log(modules[`./components/kafka/operate/Consume.vue`])
+console.log(modules[`./components/zookeeper/ZKTree.vue`])
+
 routerStoreInfo.getRouters().forEach((store) => {
   if (store.children !== null) {
     store.children.forEach((childrenNode) => {
@@ -50,3 +54,5 @@ routerStoreInfo.getRouters().forEach((store) => {
     })
   }
 })
+
+console.log(router.getRoutes())
