@@ -7,26 +7,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import apiClient from "@/http-common";
-import { ElMessage } from "element-plus";
+import { defineComponent, ref } from 'vue'
+import apiClient from '@/http-common'
+import { ElMessage } from 'element-plus'
 
 interface Tree {
-  label: string;
-  children?: Tree[];
+  label: string
+  children?: Tree[]
 }
 
 export default defineComponent({
-  name: "ZKTree",
+  name: 'ZKTree',
   setup() {
     const defaultProps = {
-      children: "children",
-      label: "label"
-    };
+      children: 'children',
+      label: 'label',
+    }
 
-    let zkHost = ref<String>("localhost:2183");
+    let zkHost = ref<String>('localhost:2183')
 
-    let allNode = ref<Tree[]>();
+    let allNode = ref<Tree[]>()
 
     function queryZkTree() {
       apiClient
@@ -35,46 +35,44 @@ export default defineComponent({
           if (response.data.code) {
             let rootTree: Tree = {
               label: response.data.data.path,
-              children: new Array<Tree>()
-            };
+              children: new Array<Tree>(),
+            }
             if (response.data.data.childNodes != null && response.data.data.childNodes.length > 0) {
-              extractChildNode(rootTree, response.data.data.childNodes);
+              extractChildNode(rootTree, response.data.data.childNodes)
             }
             allNode.value = [rootTree]
           } else {
-            ElMessage.error(response.data.message);
+            ElMessage.error(response.data.message)
           }
         })
         .catch((error) => {
-          ElMessage.error("查询所有zookeeper node失败" + error.message);
-        });
+          ElMessage.error('查询所有zookeeper node失败' + error.message)
+        })
     }
 
     function extractChildNode(tree: Tree, childNodes: any[]) {
-      let allChildTree: Tree[] = new Array<Tree>();
+      let allChildTree: Tree[] = new Array<Tree>()
       childNodes.forEach((childNode) => {
         let childTree: Tree = {
           label: childNode.path,
-          children: new Array<Tree>()
-        };
-        allChildTree.push(childTree);
-        if (childNode.childNodes != null && childNode.childNodes.length > 0) {
-          extractChildNode(childTree, childNode.childNodes);
+          children: new Array<Tree>(),
         }
-      });
-      tree.children = tree.children?.concat(allChildTree);
+        allChildTree.push(childTree)
+        if (childNode.childNodes != null && childNode.childNodes.length > 0) {
+          extractChildNode(childTree, childNode.childNodes)
+        }
+      })
+      tree.children = tree.children?.concat(allChildTree)
     }
 
     return {
       allNode,
       defaultProps,
       zkHost,
-      queryZkTree
-    };
-  }
-});
+      queryZkTree,
+    }
+  },
+})
 </script>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

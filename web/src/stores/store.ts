@@ -6,8 +6,7 @@ export const localStorage = {
     window.localStorage.setItem(key, val)
   },
   get(key: string) {
-    const value: string = window.localStorage.getItem(key) || ''
-    return value
+    return window.localStorage.getItem(key) || ''
   },
   remove(key: string) {
     window.localStorage.removeItem(key)
