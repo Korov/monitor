@@ -7,9 +7,9 @@
   <el-tree :data="allNode" node-key="label" :props="defaultProps" default-expand-all>
     <template #default="{ node, data }">
       <span>
-        <span>{{ node.label }}:{{ node.content }}</span>
-        <!-- <br />
-        <span>{{ node.stat }}</span> -->
+        <span>{{ node.label }}</span>
+        <el-text v-if="data.content != null && data.content.length > 0" class="mx-1" type="primary">: {{ data.content
+        }}</el-text>
       </span>
     </template>
   </el-tree>
