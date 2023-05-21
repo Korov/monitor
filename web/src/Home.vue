@@ -76,7 +76,6 @@ export default defineComponent({
     const widthNav = ref('200px')
     const route = useRoute()
     let activePath = computed(() => {
-      console.log("active path:" + route.path)
       if (route.path === '/') {
         return '/kafka/config'
       } else {

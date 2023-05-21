@@ -18,18 +18,17 @@ const router = createRouter({
   routes: constantRoutes,
 })
 
+// 确保每次刷新之后还是原来地界面
 router.beforeEach((to, from, next) => {
-  // router.getRoutes().forEach((record) => {
-  //   record.path
-  // })
-  console.log("start dynamic:%s, current:%s, to:%s, has:%s", router.getRoutes().length, router.currentRoute.value.fullPath, to.fullPath, router.hasRoute("config"))
-
-  // if (!isRefreshed.value) {
-  //   console.log("start dynamic")
-  //   addDynamicMenuAndRoutes()
-  //   isRefreshed.value = true
-  // }
-  next()
+  if (to.name == undefined) {
+    addDynamicMenuAndRoutes()
+    next({ ...to, replace: true })
+  } else if (!router.hasRoute(to.name)) {
+    addDynamicMenuAndRoutes()
+    next({ ...to, replace: true })
+  } else {
+    next()
+  }
 })
 
 router.afterEach((to) => {

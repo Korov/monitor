@@ -39,7 +39,6 @@ const modules = import.meta.glob('@/components/**/*.vue')
 const routerStoreInfo = routerStore()
 
 export function addDynamicMenuAndRoutes() {
-  console.log("add router")
   routerStoreInfo.getRouters().forEach((store) => {
     if (store.children !== null) {
       store.children.forEach((childrenNode) => {
@@ -60,6 +59,7 @@ export function addDynamicMenuAndRoutes() {
   })
 }
 
+addDynamicMenuAndRoutes()
 
 
 

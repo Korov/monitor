@@ -7,10 +7,8 @@
   <el-tree :data="allNode" node-key="label" :props="defaultProps" default-expand-all>
     <template #default="{ node, data }">
       <span>
-        <span>{{ node.label }}</span>
+        <span>{{ node.label }}:{{ node.content }}</span>
         <!-- <br />
-        <span>{{ node.data }}</span>
-        <br />
         <span>{{ node.stat }}</span> -->
       </span>
     </template>
@@ -24,6 +22,7 @@ import { ElMessage } from 'element-plus'
 
 interface Tree {
   label: string
+  content: string
   children?: Tree[]
 }
 
@@ -40,6 +39,7 @@ export default defineComponent({
     let allNode = ref<Tree[]>([
       {
         label: '',
+        content: '',
         children: [],
       },
     ])
@@ -51,6 +51,7 @@ export default defineComponent({
           if (response.data.code) {
             let rootTree: Tree = {
               label: response.data.data.path,
+              content: response.data.data.data,
               children: new Array<Tree>(),
             }
             if (response.data.data.childNodes != null && response.data.data.childNodes.length > 0) {
@@ -64,6 +65,8 @@ export default defineComponent({
         .catch((error) => {
           ElMessage.error('查询所有zookeeper node失败' + error.message)
         })
+
+      console.log(allNode.value)
     }
 
     function extractChildNode(tree: Tree, childNodes: any[]) {
@@ -71,6 +74,7 @@ export default defineComponent({
       childNodes.forEach((childNode) => {
         let childTree: Tree = {
           label: childNode.path,
+          content: childNode.data,
           children: new Array<Tree>(),
         }
         allChildTree.push(childTree)
