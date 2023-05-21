@@ -1,5 +1,7 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 import { websiteTitle } from '@/config'
+import { addDynamicMenuAndRoutes } from '@/main'
+import { ref } from 'vue'
 
 let constantRoutes: RouteRecordRaw[] = [
   {
@@ -9,9 +11,25 @@ let constantRoutes: RouteRecordRaw[] = [
   },
 ]
 
+let isRefreshed = ref(false)
+
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: constantRoutes,
+})
+
+router.beforeEach((to, from, next) => {
+  // router.getRoutes().forEach((record) => {
+  //   record.path
+  // })
+  console.log("start dynamic:%s, current:%s, to:%s, has:%s", router.getRoutes().length, router.currentRoute.value.fullPath, to.fullPath, router.hasRoute("config"))
+
+  // if (!isRefreshed.value) {
+  //   console.log("start dynamic")
+  //   addDynamicMenuAndRoutes()
+  //   isRefreshed.value = true
+  // }
+  next()
 })
 
 router.afterEach((to) => {

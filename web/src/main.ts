@@ -14,6 +14,10 @@ import VueAxios from 'vue-axios'
 import axios from 'axios'
 import routerStore from '@/stores/routers'
 import VueBlocksTree from 'vue3-blocks-tree'
+import 'vue3-blocks-tree/dist/vue3-blocks-tree.css';
+import { de } from 'element-plus/es/locale'
+
+let defaultoptions = { treeName: 'blocks-tree' }
 
 const app = createApp(Home)
   .use(createPinia()) // 启用 Pinia
@@ -21,7 +25,7 @@ const app = createApp(Home)
   .use(ElMessage)
   .use(ElementPlus)
   .use(VXETable)
-  .use(VueBlocksTree, { treeName: 'blocks-tree' })
+  .use(VueBlocksTree, defaultoptions)
   .use(VueAxios, axios)
 
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
@@ -34,21 +38,28 @@ const modules = import.meta.glob('@/components/**/*.vue')
 
 const routerStoreInfo = routerStore()
 
-routerStoreInfo.getRouters().forEach((store) => {
-  if (store.children !== null) {
-    store.children.forEach((childrenNode) => {
-      router.addRoute(childrenNode.name, {
-        name: childrenNode.name,
-        path: `${store.path}${childrenNode.path}`,
-        component: modules[`.${childrenNode.component}`],
+export function addDynamicMenuAndRoutes() {
+  console.log("add router")
+  routerStoreInfo.getRouters().forEach((store) => {
+    if (store.children !== null) {
+      store.children.forEach((childrenNode) => {
+        router.addRoute(childrenNode.name, {
+          name: childrenNode.name,
+          path: `${store.path}${childrenNode.path}`,
+          component: modules[`.${childrenNode.component}`],
+        })
       })
-    })
-  } else {
-    router.addRoute(store.name, {
-      name: store.name,
-      path: store.path,
-      meta: store.meta || { title: 'default' },
-      redirect: store.redirect || { name: 'config' },
-    })
-  }
-})
+    } else {
+      router.addRoute(store.name, {
+        name: store.name,
+        path: store.path,
+        meta: store.meta || { title: 'default' },
+        redirect: store.redirect || { name: 'config' },
+      })
+    }
+  })
+}
+
+
+
+

@@ -3,14 +3,22 @@
     <el-input v-model="zkHost" clearable placeholder="Please input ZK Host" />
     <el-button type="primary" @click="queryZkTree()">Query</el-button>
   </div>
-  <el-tree :data="allNode" :props="defaultProps" />
-  <div>
-    <blocks-tree :data="treeData" :horizontal="treeOrientation == '1'" :collapsable="true"></blocks-tree>
-  </div>
+
+  <el-tree :data="allNode" node-key="label" :props="defaultProps" default-expand-all>
+    <template #default="{ node, data }">
+      <span>
+        <span>{{ node.label }}</span>
+        <!-- <br />
+        <span>{{ node.data }}</span>
+        <br />
+        <span>{{ node.stat }}</span> -->
+      </span>
+    </template>
+  </el-tree>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue'
+import { defineComponent, ref } from 'vue'
 import apiClient from '@/http-common'
 import { ElMessage } from 'element-plus'
 
@@ -35,34 +43,6 @@ export default defineComponent({
         children: [],
       },
     ])
-
-    let treeOrientation = ref('0')
-    let treeData = reactive({
-      label: 'root',
-      expand: true,
-      some_id: 1,
-      children: [
-        { label: 'child 1', some_id: 2 },
-        { label: 'child 2', some_id: 3 },
-        {
-          label: 'subparent 1',
-          some_id: 4,
-          expand: false,
-          children: [
-            { label: 'subchild 1', some_id: 5 },
-            {
-              label: 'subchild 2',
-              some_id: 6,
-              expand: false,
-              children: [
-                { label: 'subchild 11', some_id: 7 },
-                { label: 'subchild 22', some_id: 8 },
-              ],
-            },
-          ],
-        },
-      ],
-    })
 
     function queryZkTree() {
       apiClient
@@ -103,8 +83,6 @@ export default defineComponent({
 
     return {
       allNode,
-      treeOrientation,
-      treeData,
       defaultProps,
       zkHost,
       queryZkTree,
