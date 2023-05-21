@@ -13,6 +13,7 @@ import '@less/global.less'
 import VueAxios from 'vue-axios'
 import axios from 'axios'
 import routerStore from '@/stores/routers'
+import VueBlocksTree from 'vue3-blocks-tree'
 
 const app = createApp(Home)
   .use(createPinia()) // 启用 Pinia
@@ -20,6 +21,7 @@ const app = createApp(Home)
   .use(ElMessage)
   .use(ElementPlus)
   .use(VXETable)
+  .use(VueBlocksTree, { treeName: 'blocks-tree' })
   .use(VueAxios, axios)
 
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
@@ -31,10 +33,6 @@ app.mount('#app')
 const modules = import.meta.glob('@/components/**/*.vue')
 
 const routerStoreInfo = routerStore()
-
-console.log(modules)
-console.log(modules[`./components/kafka/operate/Consume.vue`])
-console.log(modules[`./components/zookeeper/ZKTree.vue`])
 
 routerStoreInfo.getRouters().forEach((store) => {
   if (store.children !== null) {
@@ -54,5 +52,3 @@ routerStoreInfo.getRouters().forEach((store) => {
     })
   }
 })
-
-console.log(router.getRoutes())

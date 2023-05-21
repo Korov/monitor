@@ -25,6 +25,7 @@
     "vue": "^3.2.37",
     "vue-axios": "^3.5.2",
     "vue-router": "^4.0.16",
+    "vue3-blocks-tree": "^0.6.1",
     "vxe-table": "^4.3.6"
   },
   "devDependencies": {
