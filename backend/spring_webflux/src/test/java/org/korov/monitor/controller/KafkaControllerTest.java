@@ -88,4 +88,12 @@ class KafkaControllerTest extends MonitorApplicationTests {
                 .returnResult(Result.class);
         log.info(result.toString());
     }
+
+    @Test
+    void pageQueryKafkaSource() {
+        FluxExchangeResult<Result> result = webClient.get().uri("/kafka/page/query")
+                .exchange().expectStatus().isOk()
+                .returnResult(Result.class);
+        log.info(result.toString());
+    }
 }

@@ -1,17 +1,14 @@
 package org.korov.monitor.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
+import org.korov.monitor.common.Constant;
 import org.korov.monitor.controller.request.KafkaMessageRequest;
 import org.korov.monitor.controller.request.TopicRequest;
 import org.korov.monitor.entity.KafkaSource;
 import org.korov.monitor.repository.KafkaSourceRepository;
 import org.korov.monitor.service.KafkaSourceService;
 import org.korov.monitor.utils.KafkaUtils;
-import org.korov.monitor.vo.Broker;
-import org.korov.monitor.vo.Result;
-import org.korov.monitor.vo.TopicDescriptionVO;
-import org.korov.monitor.vo.TopicVO;
+import org.korov.monitor.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ServerWebExchange;
@@ -31,13 +28,12 @@ import java.util.concurrent.ExecutionException;
 public class KafkaController {
 
     private KafkaSourceRepository kafkaSourceRepository;
+    private KafkaSourceService kafkaSourceService;
 
     @Autowired
     public void setKafkaSourceRepository(KafkaSourceRepository kafkaSourceRepository) {
         this.kafkaSourceRepository = kafkaSourceRepository;
     }
-
-    private KafkaSourceService kafkaSourceService;
 
     @Autowired
     public void setKafkaSourceService(KafkaSourceService kafkaSourceService) {
@@ -60,9 +56,15 @@ public class KafkaController {
         return kafkaSources.collectSortedList(Comparator.comparing(KafkaSource::getId)).map(list -> new Result<>(Result.SUCCESS_CODE, null, list));
     }
 
+    @GetMapping(value = "/kafka/page/query")
+    public Mono<Result<PageVO<KafkaSource>>> pageQueryKafkaSource() {
+        return kafkaSourceService.pageQueryKafkaSource(Constant.START_PAGE, Constant.PAGE_SIZE)
+                .map(pageVo -> new Result<>(Result.SUCCESS_CODE, null, pageVo));
+    }
+
     @GetMapping(value = "/kafka/topic/query")
     public Mono<Result<List<TopicVO>>> queryKafkaTopic(@RequestParam(value = "sourceId") Long sourceId,
-                                                 @RequestParam(value = "keyword", required = false) String keyword) {
+                                                       @RequestParam(value = "keyword", required = false) String keyword) {
         return kafkaSourceService.queryTopics(sourceId, keyword).map(list -> new Result<>(Result.SUCCESS_CODE, null, list));
     }
 
@@ -74,14 +76,14 @@ public class KafkaController {
     }
 
     @PostMapping(value = "/kafka/topic/create")
-    public Mono<Result<?>> createTopic(@RequestBody TopicRequest request) throws ExecutionException, InterruptedException {
+    public Mono<Result<Void>> createTopic(@RequestBody TopicRequest request) throws ExecutionException, InterruptedException {
         return kafkaSourceService.createTopic(request).map(value -> new Result<>(Result.SUCCESS_CODE, null, null));
     }
 
     @DeleteMapping(value = "/kafka/topic/delete")
-    public Mono<Result<?>> createTopic(@RequestParam(value = "sourceId") Long sourceId,
-                                 @RequestParam(value = "topic") String topic) {
-       return kafkaSourceService.deleteTopic(sourceId, topic).map(value -> new Result<>(Result.SUCCESS_CODE, null, null));
+    public Mono<Result<Void>> createTopic(@RequestParam(value = "sourceId") Long sourceId,
+                                          @RequestParam(value = "topic") String topic) {
+        return kafkaSourceService.deleteTopic(sourceId, topic).map(value -> new Result<>(Result.SUCCESS_CODE, null, null));
     }
 
     @GetMapping("/kafka/consumer/query")
@@ -113,7 +115,7 @@ public class KafkaController {
     }
 
     @PostMapping("/kafka/message/produce")
-    public Mono<Result<?>> produceMessage(@RequestBody KafkaMessageRequest request) {
+    public Mono<Result<Void>> produceMessage(@RequestBody KafkaMessageRequest request) {
         return kafkaSourceService.produceMessage(request).map(value -> new Result<>(Result.SUCCESS_CODE, null, null));
     }
 }

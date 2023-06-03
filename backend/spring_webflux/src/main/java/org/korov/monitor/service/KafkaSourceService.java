@@ -3,6 +3,7 @@ package org.korov.monitor.service;
 import org.korov.monitor.controller.request.KafkaMessageRequest;
 import org.korov.monitor.controller.request.TopicRequest;
 import org.korov.monitor.entity.KafkaSource;
+import org.korov.monitor.vo.PageVO;
 import org.korov.monitor.vo.TopicDescriptionVO;
 import org.korov.monitor.vo.TopicVO;
 import reactor.core.publisher.Flux;
@@ -34,5 +35,7 @@ public interface KafkaSourceService {
 
     Mono<List<Map<String, Object>>> getConsumerDetail(Long sourceId, String group);
 
-    Mono<Object> produceMessage(KafkaMessageRequest request);
+    Mono<KafkaSource> produceMessage(KafkaMessageRequest request);
+
+    Mono<PageVO<KafkaSource>> pageQueryKafkaSource(int startPage, int pageSize);
 }
