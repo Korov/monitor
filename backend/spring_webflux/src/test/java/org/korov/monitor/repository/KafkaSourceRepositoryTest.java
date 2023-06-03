@@ -6,6 +6,7 @@ import org.korov.monitor.MonitorApplicationTests;
 import org.korov.monitor.entity.KafkaSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.PageRequest;
 import reactor.test.StepVerifier;
 
@@ -44,9 +45,12 @@ class KafkaSourceRepositoryTest extends MonitorApplicationTests {
 
     @Test
     void pageQuery() {
+        // ExampleMatcher.GenericPropertyMatchers.regex()
+        ExampleMatcher matcher = ExampleMatcher.matching().withMatcher("name", ExampleMatcher.GenericPropertyMatchers.regex());
+        Example<KafkaSource> example = Example.of(new KafkaSource(null, "aaa", null), ExampleMatcher.matching());
         StepVerifier.create(kafkaSourceRepository
                         // 表示 offset：1*2， size：2
-                        .findAllBy(PageRequest.of(1, 2))
+                        .findAllBy(example, PageRequest.of(1, 2))
                         .collectList()
                 ).consumeNextWith(source -> log.info("source:{}", source.toString()))
                 .verifyComplete();

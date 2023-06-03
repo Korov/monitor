@@ -11,8 +11,9 @@ import org.korov.monitor.vo.PageVO;
 import org.korov.monitor.vo.TopicDescriptionVO;
 import org.korov.monitor.vo.TopicVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -105,7 +106,7 @@ public class KafkaSourceServiceImpl implements KafkaSourceService {
     @Override
     public Mono<PageVO<KafkaSource>> pageQueryKafkaSource(int startPage, int pageSize) {
         return kafkaSourceRepository.count()
-                .zipWith(this.kafkaSourceRepository.findAllBy(PageRequest.of((startPage - 1) * pageSize, pageSize))
+                .zipWith(this.kafkaSourceRepository.findAllBy(Example.of(new KafkaSource()), PageRequest.of((startPage - 1), pageSize))
                         .collectList())
                 .map(result -> new PageVO<KafkaSource>(result.getT1().intValue(), startPage, pageSize, result.getT2()));
     }
