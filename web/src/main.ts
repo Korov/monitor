@@ -13,9 +13,6 @@ import '@less/global.less'
 import VueAxios from 'vue-axios'
 import axios from 'axios'
 import routerStore from '@/stores/routers'
-import VueBlocksTree from 'vue3-blocks-tree'
-import 'vue3-blocks-tree/dist/vue3-blocks-tree.css';
-import { de } from 'element-plus/es/locale'
 
 let defaultoptions = { treeName: 'blocks-tree' }
 
@@ -25,7 +22,6 @@ const app = createApp(Home)
   .use(ElMessage)
   .use(ElementPlus)
   .use(VXETable)
-  .use(VueBlocksTree, defaultoptions)
   .use(VueAxios, axios)
 
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
@@ -60,6 +56,3 @@ export function addDynamicMenuAndRoutes() {
 }
 
 addDynamicMenuAndRoutes()
-
-
-
