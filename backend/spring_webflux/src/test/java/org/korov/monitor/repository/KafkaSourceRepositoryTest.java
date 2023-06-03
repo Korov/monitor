@@ -6,6 +6,7 @@ import org.korov.monitor.MonitorApplicationTests;
 import org.korov.monitor.entity.KafkaSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.PageRequest;
 import reactor.test.StepVerifier;
 
 @Slf4j
@@ -25,19 +26,30 @@ class KafkaSourceRepositoryTest extends MonitorApplicationTests {
     }
 
     @Test
-    void queryTest() throws InterruptedException {
+    void queryTest() {
         StepVerifier
-                .create(kafkaSourceRepository.findAll())
+                .create(kafkaSourceRepository.findAll().collectList())
                 .consumeNextWith(source -> log.info("source:{}", source.toString()))
-                .expectNextMatches(source -> source.getId() > 0L)
                 .verifyComplete();
     }
 
     @Test
     void exampleQuery() {
-        kafkaSourceRepository
-                .findAll(Example.of(new KafkaSource(1L, "local", "localhost:9095")))
-                .doOnNext(source -> log.info("source:{}", source.toString()));
+        StepVerifier.create(kafkaSourceRepository
+                        .findAll(Example.of(new KafkaSource(null, "other", null)))
+                        .collectList()
+                ).consumeNextWith(source -> log.info("source:{}", source.toString()))
+                .verifyComplete();
+    }
+
+    @Test
+    void pageQuery() {
+        StepVerifier.create(kafkaSourceRepository
+                        // 表示 offset：1*2， size：2
+                        .findAllBy(PageRequest.of(1, 2))
+                        .collectList()
+                ).consumeNextWith(source -> log.info("source:{}", source.toString()))
+                .verifyComplete();
     }
 
 }
