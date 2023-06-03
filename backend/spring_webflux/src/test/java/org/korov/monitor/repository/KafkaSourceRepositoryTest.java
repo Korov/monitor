@@ -5,15 +5,17 @@ import org.junit.jupiter.api.Test;
 import org.korov.monitor.MonitorApplicationTests;
 import org.korov.monitor.entity.KafkaSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import reactor.core.publisher.Flux;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.data.domain.Example;
+import reactor.test.StepVerifier;
 
 @Slf4j
 class KafkaSourceRepositoryTest extends MonitorApplicationTests {
-    @Autowired
     private KafkaSourceRepository kafkaSourceRepository;
+
+    @Autowired
+    public void setKafkaSourceRepository(KafkaSourceRepository kafkaSourceRepository) {
+        this.kafkaSourceRepository = kafkaSourceRepository;
+    }
 
     @Test
     void insertTest() {
@@ -23,9 +25,19 @@ class KafkaSourceRepositoryTest extends MonitorApplicationTests {
     }
 
     @Test
-    void queryTest() {
-        Flux<KafkaSource> flux = kafkaSourceRepository.findAll();
-        flux.doFirst(System.out::println);
+    void queryTest() throws InterruptedException {
+        StepVerifier
+                .create(kafkaSourceRepository.findAll())
+                .consumeNextWith(source -> log.info("source:{}", source.toString()))
+                .expectNextMatches(source -> source.getId() > 0L)
+                .verifyComplete();
+    }
+
+    @Test
+    void exampleQuery() {
+        kafkaSourceRepository
+                .findAll(Example.of(new KafkaSource(1L, "local", "localhost:9095")))
+                .doOnNext(source -> log.info("source:{}", source.toString()));
     }
 
 }
