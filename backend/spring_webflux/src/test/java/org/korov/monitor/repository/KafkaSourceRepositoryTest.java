@@ -36,8 +36,10 @@ class KafkaSourceRepositoryTest extends MonitorApplicationTests {
 
     @Test
     void exampleQuery() {
+        ExampleMatcher matcher = ExampleMatcher.matching().withMatcher("name", ExampleMatcher.GenericPropertyMatchers.contains());
+        Example<KafkaSource> example = Example.of(new KafkaSource(null, "b", null), matcher);
         StepVerifier.create(kafkaSourceRepository
-                        .findAll(Example.of(new KafkaSource(null, "other", null)))
+                        .findAll(example)
                         .collectList()
                 ).consumeNextWith(source -> log.info("source:{}", source.toString()))
                 .verifyComplete();
