@@ -13,9 +13,7 @@ import '@less/global.less'
 import VueAxios from 'vue-axios'
 import axios from 'axios'
 import routerStore from '@/stores/routers'
-
-let defaultoptions = { treeName: 'blocks-tree' }
-
+import i18n from '@/locales/i18n'
 const app = createApp(Home)
   .use(createPinia()) // 启用 Pinia
   .use(router)
@@ -23,6 +21,7 @@ const app = createApp(Home)
   .use(ElementPlus)
   .use(VXETable)
   .use(VueAxios, axios)
+  .use(i18n)
 
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)

@@ -1,11 +1,11 @@
 <template>
   <div>
     <el-table :data="sources" border stripe class="config">
-      <el-table-column label="集群名称" prop="name"></el-table-column>
+      <el-table-column label="{{$t('kafka.clusterName')}}" prop="name"></el-table-column>
       <el-table-column label="地址" prop="broker"></el-table-column>
       <el-table-column label="操作">
         <template #default="scope">
-          <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除 </el-button>
+          <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -33,6 +33,7 @@ import { defineComponent, ref } from 'vue'
 import apiClient from '@/http-common'
 import { ElMessage } from 'element-plus'
 import { Config } from '@/types'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'ConfigPage',
@@ -43,6 +44,8 @@ export default defineComponent({
     let dialogFormVisible = ref(false)
     let warning = false
 
+    const { t } = useI18n()
+
     function getAllSource() {
       apiClient
         .get('/kafka/query')
@@ -50,7 +53,7 @@ export default defineComponent({
           sources.value = response.data.data
         })
         .catch((error) => {
-          ElMessage(`查询所有kafka环境失败，${error.message}`)
+          ElMessage(`${t('kafka.queryError')}${error.message}`)
         })
     }
 
@@ -100,6 +103,7 @@ export default defineComponent({
       configName,
       dialogFormVisible,
       warning,
+      t,
     }
   },
 })

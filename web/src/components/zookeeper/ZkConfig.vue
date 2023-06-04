@@ -35,7 +35,7 @@ import { ElMessage } from 'element-plus'
 import { Config } from '@/types'
 
 export default defineComponent({
-  name: 'ConfigPage',
+  name: 'ZkConfigPage',
   setup() {
     let sources = ref<Config[]>([])
     let configAddress = ref('127.0.0.1:2183')
