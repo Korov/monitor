@@ -14,6 +14,7 @@ import VueAxios from 'vue-axios'
 import axios from 'axios'
 import routerStore from '@/stores/routers'
 import i18n from '@/locales/i18n'
+
 const app = createApp(Home)
   .use(createPinia()) // 启用 Pinia
   .use(router)

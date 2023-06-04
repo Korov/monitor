@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-table :data="sources" border stripe class="config">
-      <el-table-column label="{{$t('kafka.clusterName')}}" prop="name"></el-table-column>
+      <el-table-column :label="$t('kafka.clusterName')" prop="name"></el-table-column>
       <el-table-column label="地址" prop="broker"></el-table-column>
       <el-table-column label="操作">
         <template #default="scope">
@@ -44,7 +44,7 @@ export default defineComponent({
     let dialogFormVisible = ref(false)
     let warning = false
 
-    const { t } = useI18n()
+    const { t } = useI18n({ useScope: 'global' })
 
     function getAllSource() {
       apiClient
