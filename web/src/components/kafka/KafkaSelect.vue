@@ -1,6 +1,11 @@
 <template>
   <el-select class="kafkaSelect" v-model="sourceId" placeholder="选择kafka环境" @change="selectKafka">
-    <el-option v-for="source in sources" :key="source.id" :label="source.name" :value="source.id"></el-option>
+    <el-option
+      v-for="source in sources"
+      :key="source.id"
+      :label="`${source.name}(${source.broker})`"
+      :value="source.id"
+    ></el-option>
   </el-select>
 </template>
 

@@ -1,6 +1,13 @@
 <template>
   <div style="display: flex; margin-top: 5px">
-    <el-input v-model="zkHost" clearable placeholder="Please input ZK Host" />
+    <el-select class="kafkaSelect" v-model="sourceId" placeholder="选择Zookeeper环境" @change="selectZookeeper">
+      <el-option
+        v-for="source in sources"
+        :key="source.id"
+        :label="`${source.name}(${source.address})`"
+        :value="source.id"
+      ></el-option>
+    </el-select>
     <el-button type="primary" @click="queryZkTree()">Query</el-button>
   </div>
 
@@ -8,8 +15,9 @@
     <template #default="{ node, data }">
       <span>
         <span>{{ node.label }}</span>
-        <el-text v-if="data.content != null && data.content.length > 0" class="mx-1" type="primary">: {{ data.content
-        }}</el-text>
+        <el-text v-if="data.content != null && data.content.length > 0" class="mx-1" type="primary"
+          >: {{ data.content }}</el-text
+        >
       </span>
     </template>
   </el-tree>
@@ -19,6 +27,7 @@
 import { defineComponent, ref } from 'vue'
 import apiClient from '@/http-common'
 import { ElMessage } from 'element-plus'
+import { ZookeeperConfig } from '@/types'
 
 interface Tree {
   label: string
@@ -34,7 +43,37 @@ export default defineComponent({
       label: 'label',
     }
 
+    let sourceId = ref<number>()
+    let sources = ref<ZookeeperConfig[]>([])
+    let sourceMap: Map<number, ZookeeperConfig> = new Map<number, ZookeeperConfig>()
     let zkHost = ref<String>('localhost:2183')
+
+    function getAllSource() {
+      apiClient
+        .get('/zookeeper/zookeeper/query')
+        .then((response) => {
+          sources.value = response.data.data
+          for (let index in sources.value) {
+            sourceMap.set(sources.value[index].id, sources.value[index])
+          }
+        })
+        .catch((error) => {
+          ElMessage.error('查询所有zookeeper环境失败' + error.message)
+        })
+    }
+
+    getAllSource()
+
+    function selectZookeeper() {
+      if (sourceId.value == null) {
+        ElMessage.error('请选择zookeeper环境')
+      } else {
+        let zkSource = sourceMap.get(sourceId.value)
+        if (zkSource != undefined) {
+          zkHost.value = zkSource.address
+        }
+      }
+    }
 
     let allNode = ref<Tree[]>([
       {
@@ -90,9 +129,16 @@ export default defineComponent({
       defaultProps,
       zkHost,
       queryZkTree,
+      selectZookeeper,
+      sources,
+      sourceId,
     }
   },
 })
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.kafkaSelect {
+  margin: 0 5px 10px 10px;
+}
+</style>

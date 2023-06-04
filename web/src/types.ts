@@ -11,6 +11,12 @@ interface Config {
   broker: string
 }
 
+interface ZookeeperConfig {
+  id: number
+  name: string
+  address: string
+}
+
 interface Broker {
   id: number
   host: string
@@ -55,4 +61,4 @@ interface Router {
   children: Router[] | null
 }
 
-export { Topic, Config, Partition, Broker, Consumer, Message, Router }
+export { Topic, Config, ZookeeperConfig, Partition, Broker, Consumer, Message, Router }
