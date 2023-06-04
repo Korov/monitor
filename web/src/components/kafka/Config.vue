@@ -2,27 +2,31 @@
   <div>
     <el-table :data="sources" border stripe class="config">
       <el-table-column :label="$t('kafka.clusterName')" prop="name"></el-table-column>
-      <el-table-column label="地址" prop="broker"></el-table-column>
-      <el-table-column label="操作">
+      <el-table-column :label="$t('kafka.address')" prop="broker"></el-table-column>
+      <el-table-column :label="$t('kafka.operation')">
         <template #default="scope">
-          <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">
+            {{ t(`kafka.delete`) }}
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
-    <el-button style="margin-top: 5px" type="primary" @click="dialogFormVisible = true">添加环境</el-button>
+    <el-button style="margin-top: 5px" type="primary" @click="dialogFormVisible = true">
+      {{ t(`kafka.addEnvironment`) }}
+    </el-button>
 
-    <el-dialog v-model="dialogFormVisible" title="添加kafka地址" width="600px">
+    <el-dialog v-model="dialogFormVisible" :title="$t('kafka.addKafkaAddress')" width="600px">
       <el-form label-width="80px">
-        <el-form-item label="名称">
+        <el-form-item :label="$t('kafka.name')">
           <el-input clearable v-model="configName"></el-input>
         </el-form-item>
-        <el-form-item label="地址">
+        <el-form-item :label="$t('kafka.address')">
           <el-input clearable v-model="configBroker"></el-input>
         </el-form-item>
       </el-form>
       <div class="dialogFooter">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="add()">确 定</el-button>
+        <el-button @click="dialogFormVisible = false">{{ t(`kafka.cancel`) }}</el-button>
+        <el-button type="primary" @click="add()">{{ t(`kafka.confirm`) }}</el-button>
       </div>
     </el-dialog>
   </div>
