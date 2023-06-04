@@ -2,7 +2,7 @@
   <div>
     <el-table :data="sources" border stripe class="config">
       <el-table-column label="集群名称" prop="name"></el-table-column>
-      <el-table-column label="地址" prop="broker"></el-table-column>
+      <el-table-column label="地址" prop="address"></el-table-column>
       <el-table-column label="操作">
         <template #default="scope">
           <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
@@ -11,13 +11,13 @@
     </el-table>
     <el-button style="margin-top: 5px" type="primary" @click="dialogFormVisible = true">添加环境</el-button>
 
-    <el-dialog v-model="dialogFormVisible" title="添加kafka地址" width="600px">
+    <el-dialog v-model="dialogFormVisible" title="添加zookeeper地址" width="600px">
       <el-form label-width="80px">
         <el-form-item label="名称">
           <el-input clearable v-model="configName"></el-input>
         </el-form-item>
         <el-form-item label="地址">
-          <el-input clearable v-model="configBroker"></el-input>
+          <el-input clearable v-model="configAddress"></el-input>
         </el-form-item>
       </el-form>
       <div class="dialogFooter">
@@ -38,19 +38,19 @@ export default defineComponent({
   name: 'ConfigPage',
   setup() {
     let sources = ref<Config[]>([])
-    let configBroker = ref('127.0.0.1:9092')
+    let configAddress = ref('127.0.0.1:2183')
     let configName = ref('')
     let dialogFormVisible = ref(false)
     let warning = false
 
     function getAllSource() {
       apiClient
-        .get('/kafka/query')
+        .get('/zookeeper/zookeeper/query')
         .then((response) => {
           sources.value = response.data.data
         })
         .catch((error) => {
-          ElMessage(`查询所有kafka环境失败，${error.message}`)
+          ElMessage(`查询所有zookeeper环境失败，${error.message}`)
         })
     }
 
@@ -58,14 +58,14 @@ export default defineComponent({
 
     function deleteSource(id: number) {
       apiClient
-        .delete('/kafka/delete?id=' + id)
+        .delete('/zookeeper/address/del?id=' + id)
         .then((response) => {
           console.log(response)
-          ElMessage.success('删除kafka环境成功')
+          ElMessage.success('删除zookeeper环境成功')
           getAllSource()
         })
         .catch((error) => {
-          ElMessage.error('删除kafka环境失败' + error.message)
+          ElMessage.error('删除zookeeper环境失败' + error.message)
         })
     }
 
@@ -75,20 +75,20 @@ export default defineComponent({
 
     function add() {
       apiClient
-        .post('/kafka/add', {
+        .post('/zookeeper/address/add', {
           name: configName.value,
-          broker: configBroker.value,
+          address: configAddress.value,
         })
         .then((response) => {
           console.log(response)
           warning = true
-          ElMessage.success('添加kafka环境成功')
+          ElMessage.success('添加zookeeper环境成功')
           getAllSource()
           dialogFormVisible.value = false
           configName.value = ''
         })
         .catch((error) => {
-          ElMessage.error('添加kafka环境失败' + error.message)
+          ElMessage.error('添加zookeeper环境失败' + error.message)
         })
     }
 
@@ -96,7 +96,7 @@ export default defineComponent({
       sources,
       handleDelete,
       add,
-      configBroker,
+      configAddress,
       configName,
       dialogFormVisible,
       warning,
