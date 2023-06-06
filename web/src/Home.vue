@@ -135,41 +135,34 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '@/styles/variables.module.scss';
 
+$home-height: 100vh;
+
 .home {
   margin-right: 1px;
   padding: 0 10px;
   line-height: 10px;
   //background-color: #832b2b;
   color: #ffffff;
-  height: max-content;
   border-radius: 5px;
   font-size: 16px;
   font-weight: 700;
+  height: $home-height;
 }
 
 .navLeft {
   padding: 5px 10px 5px 0;
-  height: 600px;
 }
 
 .navRight {
   padding: 5px 0 0 0;
-  height: 400px;
+  height: calc(#{$home-height} - 110px);
 }
 
 .navBar {
   border-radius: 5px;
   height: 100%;
+  border: 0;
 }
-
-/*.toggle-button {
-  background-color: #404040;
-  font-size: 15px;
-  color: #eeeeee;
-  text-align: center;
-  letter-spacing: 0.2em;
-  cursor: pointer;
-}*/
 
 .title {
   width: 100%;
