@@ -68,11 +68,11 @@ export default defineComponent({
         .delete('/kafka/delete?id=' + id)
         .then((response) => {
           console.log(response)
-          ElMessage.success('删除kafka环境成功')
+          ElMessage.success(`${t('kafka.deleteSuccess')}`)
           getAllSource()
         })
         .catch((error) => {
-          ElMessage.error('删除kafka环境失败' + error.message)
+          ElMessage.error(`${t('kafka.deleteFail')}` + error.message)
         })
     }
 
@@ -89,13 +89,13 @@ export default defineComponent({
         .then((response) => {
           console.log(response)
           warning = true
-          ElMessage.success('添加kafka环境成功')
+          ElMessage.success(`${t('kafka.addKafkaSuccess')}`)
           getAllSource()
           dialogFormVisible.value = false
           configName.value = ''
         })
         .catch((error) => {
-          ElMessage.error('添加kafka环境失败' + error.message)
+          ElMessage.error(`${t('kafka.addKafkaSuccess')}` + error.message)
         })
     }
 

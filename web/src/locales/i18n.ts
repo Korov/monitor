@@ -13,6 +13,10 @@ const messages = {
       name: '名称',
       cancel: '取 消',
       confirm: '确 定',
+      deleteSuccess: '删除kafka环境成功',
+      deleteFail: '删除kafka环境失败',
+      addKafkaSuccess: '添加kafka环境成功',
+      addKafkaFail: '添加kafka环境失败',
     },
   },
   en: {
@@ -27,6 +31,10 @@ const messages = {
       name: 'Name',
       cancel: 'Cancel',
       confirm: 'Confirm',
+      deleteSuccess: 'Delete kafka environment success',
+      deleteFail: 'Delete kafka environment failed',
+      addKafkaSuccess: 'Add kafka environment success',
+      addKafkaFail: 'Add kafka environment failed',
     },
   },
 }
