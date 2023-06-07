@@ -12,3 +12,5 @@
 
 ./mvnw native:compile -Pnative -DskipTests
 ```
+
+the default spring boot profile is `dev`, you can change it by `./mvnw clean package -Dactive.profile=test`

@@ -14,7 +14,7 @@
         <repackage.classifier/>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <activ.profile>dev</activ.profile>
+        <active.profile>dev</active.profile>
     </properties>
 
     <parent>

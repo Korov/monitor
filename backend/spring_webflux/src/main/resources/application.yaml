@@ -1,4 +1,4 @@
 spring:
   profiles:
-    active: @activ.profile@
+    active: @active.profile@
 
