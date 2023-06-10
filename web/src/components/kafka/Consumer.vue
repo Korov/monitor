@@ -40,12 +40,12 @@
     </div>
 
     <div style="margin: 10px 0; display: flex">
-      <span style="line-height: 40px">高亮显示关键字:</span>
+      <span style="line-height: 30px; color: #000;">高亮显示关键字：</span>
 
       <el-input
         v-model="keyword"
         placeholder="请输入关键字"
-        style="width: 300px; margin-left: 10px"
+        style="width: 300px;"
         clearable
       ></el-input>
     </div>
@@ -262,10 +262,10 @@ export default defineComponent({
 .label {
   margin-right: 1px;
   padding: 0 10px;
-  line-height: 40px;
+  line-height: 30px;
   background-color: #06b176;
   color: #fff;
-  height: 40px;
+  height: 30px;
   border-radius: 3px;
   font-size: 16px;
   font-weight: 700;

@@ -11,7 +11,7 @@
       </el-button>
     </div>
     <div>
-      <vxe-table :data="tableData" border max-height="650" size="small" stripe class="tableData">
+      <vxe-table :data="tableData" border max-height="100%" size="small" stripe class="tableData">
         <vxe-column title="topic名称" field="name"></vxe-column>
         <vxe-column title="类型">
           <template #default="scope">

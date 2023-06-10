@@ -72,10 +72,10 @@ export default defineComponent({
 .label {
   margin-right: 1px;
   padding: 0 10px;
-  line-height: 40px;
+  line-height: 30px;
   background-color: #06b176;
   color: #fff;
-  height: 40px;
+  height: 30px;
   border-radius: 3px;
   font-size: 16px;
   font-weight: 700;

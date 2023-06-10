@@ -48,4 +48,8 @@ export default defineComponent({
   font-weight: 600;
 }
 
+// 样式穿透
+.tabCard::v-deep .el-tabs__content {
+  padding-bottom: 0;
+}
 </style>
