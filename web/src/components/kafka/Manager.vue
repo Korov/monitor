@@ -38,11 +38,14 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@import '@/styles/variables.module.scss';
+
 .tabCard {
   background-color: #ffffff;
-  height: 400px;
+  height: calc(#{$homeHeight} - 110px);
   border-radius: 5px;
   font-size: 16px;
   font-weight: 600;
 }
+
 </style>

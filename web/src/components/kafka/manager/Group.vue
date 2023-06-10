@@ -3,13 +3,7 @@
     <div style="display: flex">
       <kafkaSelect @kafka_change="kafkaChange"></kafkaSelect>
 
-      <el-input
-        placeholder="搜索group"
-        v-model="keyword"
-        style="width: 250px; margin-left: 5px"
-        clearable
-        @change="searchGroup"
-      >
+      <el-input placeholder="搜索group" v-model="keyword" class="searchInput" clearable @change="searchGroup">
         <el-button icon="el-icon-search" @click="searchGroup"></el-button>
       </el-input>
     </div>
@@ -103,4 +97,10 @@ export default defineComponent({
 })
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.searchInput {
+  width: 250px;
+  height: 30px;
+  margin-left: 5px;
+}
+</style>

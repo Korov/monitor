@@ -2,16 +2,8 @@
   <div>
     <div style="display: flex">
       <kafkaSelect @kafka_change="kafkaChange"></kafkaSelect>
-      <el-select
-        class="topicSelect"
-        v-model="keyword"
-        allow-create
-        default-first-option
-        filterable
-        placeholder="请输入topic"
-        @change="getTopics"
-        @focus="getAllTopics"
-      >
+      <el-select class="topicSelect" v-model="keyword" allow-create default-first-option filterable placeholder="请输入topic"
+        @change="getTopics" @focus="getAllTopics">
         <el-option v-for="item in topics" :key="item.name" :label="item.name" :value="item.name"></el-option>
       </el-select>
       <el-button size="small" class="createButton" type="primary" @click="dialogFormVisible = true">
@@ -73,33 +65,20 @@
         <el-table-column label="分区号" property="partition" width="80"></el-table-column>
         <el-table-column label="leader分区" property="leader">
           <template #default="scope">
-            <data-tag
-              :right="scope.row.leader.id"
-              :title="scope.row.leader.host + ':' + scope.row.leader.port"
-              left="broker"
-            ></data-tag>
+            <data-tag :right="scope.row.leader.id" :title="scope.row.leader.host + ':' + scope.row.leader.port"
+              left="broker"></data-tag>
           </template>
         </el-table-column>
         <el-table-column label="所有副本">
           <template #default="scope">
-            <data-tag
-              v-for="item in scope.row.replicas"
-              :key="item.id"
-              :right="item.id"
-              :title="item.host + ':' + item.port"
-              left="broker"
-            ></data-tag>
+            <data-tag v-for="item in scope.row.replicas" :key="item.id" :right="item.id"
+              :title="item.host + ':' + item.port" left="broker"></data-tag>
           </template>
         </el-table-column>
         <el-table-column label="isr副本">
           <template #default="scope">
-            <data-tag
-              v-for="item in scope.row.replicas"
-              :key="item.id"
-              :right="item.id"
-              :title="item.host + ':' + item.port"
-              left="broker"
-            ></data-tag>
+            <data-tag v-for="item in scope.row.replicas" :key="item.id" :right="item.id"
+              :title="item.host + ':' + item.port" left="broker"></data-tag>
           </template>
         </el-table-column>
         <el-table-column label="最小偏移量" property="beginningOffset"></el-table-column>
@@ -347,6 +326,8 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@import '@/styles/variables.module.scss';
+
 .topicSelect {
   margin: 0 10px 0 5px;
 }
@@ -362,5 +343,6 @@ export default defineComponent({
 
 .tableData {
   padding: 5px 5px 0 5px;
+  height: calc(#{$homeHeight} - 250px);
 }
 </style>

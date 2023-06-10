@@ -1,5 +1,7 @@
-$sideBarWidth: 200px;
+$homeHeight: 100vh;
+$headerHeight: 60px;
 
 :export {
-  sideBarWidth: $sideBarWidth;
+  homeHeight: $homeHeight;
+  headerHeight: $headerHeight;
 }

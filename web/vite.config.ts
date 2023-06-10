@@ -25,47 +25,12 @@ export default defineConfig({
     port: 18091,
     proxy: {
       '^/api': {
-        target: 'http://localhost:8091',
+        target: 'http://172.21.227.18:8091',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
     },
-    // proxy: {
-    //   '/devapi': {
-    //     target: 'http://192.168.10.198',
-    //     changeOrigin: true,
-    //     rewrite: (path) => path.replace(/^\/devapi/, ''),
-    //   },
-    // },
   },
-
-  // build: {
-  //   rollupOptions: {
-  //     /**
-  //      * 如果要对比较大的组件库打包单独的 chunk，可以在这里配置
-  //      * @see https://rollupjs.org/guide/en/#outputmanualchunks
-  //      */
-  //     output: {
-  //       // 其中一种方式
-  //       manualChunks: {
-  //         'ant-design-vue': ['ant-design-vue'],
-  //         '@icon-park': ['@icon-park/vue-next'],
-  //       },
-
-  //       // 另外一种方式
-  //       // manualChunks(id) {
-  //       //   if (id.includes('node_modules')) {
-  //       //     return id
-  //       //       .toString()
-  //       //       .split('node_modules/')[1]
-  //       //       .split('/')[0]
-  //       //       .toString()
-  //       //   }
-  //       // },
-  //     },
-  //   },
-  // },
-
   build: {
     chunkSizeWarningLimit: 2048,
   },
@@ -94,24 +59,7 @@ export default defineConfig({
   },
 
   css: {
-    /**
-     * 包括 vw / rem 单位转换等
-     * @see https://cn.vitejs.dev/config/#css-postcss
-     */
-    // postcss: {
-    //   plugins: [
-    //     // 使用 postcss-px2rem
-    //     // px2rem({
-    //     //   remUnit: 75,
-    //     // }),
-
-    //     // 使用 postcss-px-to-viewport
-    //     // px2vw({
-    //     //   viewportWidth: 375,
-    //     //   minPixelValue: 1,
-    //     // }),
-    //   ],
-    // },
+    
 
     /**
      * 预处理器选项可以在这里配置
