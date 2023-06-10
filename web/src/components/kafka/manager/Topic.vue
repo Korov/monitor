@@ -14,8 +14,8 @@
       >
         <el-option v-for="item in topics" :key="item.name" :label="item.name" :value="item.name"></el-option>
       </el-select>
-      <el-button size="small" style="margin-bottom: 5px" type="primary" @click="dialogFormVisible = true"
-        >创建topic
+      <el-button size="small" class="createButton" type="primary" @click="dialogFormVisible = true">
+        创建topic
       </el-button>
     </div>
     <div>
@@ -349,6 +349,11 @@ export default defineComponent({
 <style scoped lang="scss">
 .topicSelect {
   margin: 0 10px 0 5px;
+}
+
+.createButton {
+  margin-bottom: 5px;
+  height: 30px;
 }
 
 .dialogFooter {

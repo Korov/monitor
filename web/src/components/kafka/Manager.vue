@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-tabs v-model="activeName" type="card" class="tabCard">
+    <el-tabs v-model="activeName" type="border-card" class="tabCard">
       <el-tab-pane label="topic管理" name="topic">
         <topic></topic>
       </el-tab-pane>

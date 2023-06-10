@@ -49,7 +49,7 @@
               <el-sub-menu index="/zookeeper">
                 <template #title>
                   <el-icon>
-                    <Message />
+                    <Setting />
                   </el-icon>
                   <span>Zookeeper</span>
                 </template>

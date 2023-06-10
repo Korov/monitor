@@ -1,5 +1,11 @@
 <template>
-  <el-select class="kafkaSelect" v-model="sourceId" placeholder="选择kafka环境" @change="selectKafka">
+  <el-select
+    class="kafkaSelect"
+    v-model="sourceId"
+    placeholder="选择kafka环境"
+    @change="selectKafka"
+    @focus="getAllSource"
+  >
     <el-option
       v-for="source in sources"
       :key="source.id"
@@ -37,16 +43,12 @@ export default defineComponent({
         })
     }
 
-    getAllSource()
-
     function selectKafka() {
       if (sourceId.value != null) {
         let source = sourceMap.get(sourceId.value)
-        console.log(`select kafka:`)
         if (source?.broker == undefined) {
           emit('kafka_change', sourceId, '')
         } else {
-          console.log(source.broker)
           emit('kafka_change', sourceId, source.broker)
         }
       }
@@ -56,6 +58,7 @@ export default defineComponent({
       sourceId,
       sources,
       selectKafka,
+      getAllSource,
     }
   },
 })
