@@ -1,12 +1,14 @@
 <template>
   <div style="display: flex; margin-top: 5px">
     <el-select class="kafkaSelect" v-model="sourceId" placeholder="选择Zookeeper环境" @change="selectZookeeper">
-      <el-option
-        v-for="source in sources"
-        :key="source.id"
-        :label="`${source.name}(${source.address})`"
-        :value="source.id"
-      ></el-option>
+      <el-option v-for="source in sources" :key="source.id" :label="`${source.name}`" :value="source.id">
+        <span style="float: left">{{ source.name }}</span>
+        <span style="
+          float: right;
+          color: var(--el-text-color-secondary);
+          font-size: 13px;
+        ">{{ source.address }}</span>
+      </el-option>
     </el-select>
     <el-button type="primary" @click="queryZkTree()">Query</el-button>
   </div>
@@ -15,9 +17,8 @@
     <template #default="{ node, data }">
       <span>
         <span>{{ node.label }}</span>
-        <el-text v-if="data.content != null && data.content.length > 0" class="mx-1" type="primary"
-          >: {{ data.content }}</el-text
-        >
+        <el-text v-if="data.content != null && data.content.length > 0" class="mx-1" type="primary">: {{ data.content
+        }}</el-text>
       </span>
     </template>
   </el-tree>

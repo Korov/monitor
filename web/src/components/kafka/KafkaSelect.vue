@@ -1,17 +1,13 @@
 <template>
-  <el-select
-    class="kafkaSelect"
-    v-model="sourceId"
-    placeholder="选择kafka环境"
-    @change="selectKafka"
-    @focus="getAllSource"
-  >
-    <el-option
-      v-for="source in sources"
-      :key="source.id"
-      :label="`${source.name}(${source.broker})`"
-      :value="source.id"
-    ></el-option>
+  <el-select class="kafkaSelect" v-model="sourceId" placeholder="选择kafka环境" @change="selectKafka" @focus="getAllSource">
+    <el-option v-for="source in sources" :key="source.id" :label="`${source.name}(${source.broker})`" :value="source.id">
+      <span style="float: left">{{ source.name }}</span>
+      <span style="
+          float: right;
+          color: var(--el-text-color-secondary);
+          font-size: 13px;
+        ">{{ source.broker }}</span>
+    </el-option>
   </el-select>
 </template>
 
