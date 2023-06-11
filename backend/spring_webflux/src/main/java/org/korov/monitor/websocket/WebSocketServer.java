@@ -36,26 +36,14 @@ public class WebSocketServer implements WebSocketHandler {
             String[] param = s.split("=");
             if (param.length == 2) {
                 switch (param[0]) {
-                    case "topic":
-                        request.setTopic(param[1]);
-                        break;
-                    case "broker":
-                        request.setBroker(param[1]);
-                        break;
-                    case "group":
-                        request.setGroup(param[1]);
-                        break;
-                    case "reset":
-                        request.setReset(param[1]);
-                        break;
-                    case "partition":
-                        request.setPartition(Long.valueOf(param[1]));
-                        break;
-                    case "offset":
-                        request.setOffset(Long.valueOf(param[1]));
-                        break;
-                    default:
-                        break;
+                    case "topic" -> request.setTopic(param[1]);
+                    case "broker" -> request.setBroker(param[1]);
+                    case "group" -> request.setGroup(param[1]);
+                    case "reset" -> request.setReset(param[1]);
+                    case "partition" -> request.setPartition(Long.valueOf(param[1]));
+                    case "offset" -> request.setOffset(Long.valueOf(param[1]));
+                    default -> {
+                    }
                 }
             }
         }
@@ -81,6 +69,7 @@ public class WebSocketServer implements WebSocketHandler {
                     message.setMessage(record.value());
                     message.setTopic(record.topic());
                     message.setPartition(record.partition());
+                    message.setOffset(record.offset());
                     try {
                         return session.textMessage(JsonUtils.jsonString(message));
                     } catch (JsonProcessingException e) {

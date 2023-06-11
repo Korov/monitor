@@ -12,4 +12,5 @@ public class KafkaMessageRequest {
     private String key;
     private String message;
     private Integer partition;
+    private Long offset;
 }
