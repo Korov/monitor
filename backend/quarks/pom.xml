@@ -68,6 +68,11 @@
             <version>31.1-jre</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.zookeeper</groupId>
+            <artifactId>zookeeper</artifactId>
+            <version>3.8.1</version>
+        </dependency>
+        <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-junit5</artifactId>
             <scope>test</scope>

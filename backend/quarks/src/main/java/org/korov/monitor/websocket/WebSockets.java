@@ -1,4 +1,4 @@
-package org.korov.monitor.controller;
+package org.korov.monitor.websocket;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.undertow.websockets.UndertowSession;
@@ -26,6 +26,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @author korov
+ */
 @ServerEndpoint(value = "/kafka/consumer/socket", decoders = ConsumerRequestDecoder.class, encoders = KafkaMessageRequestEncoder.class)
 @ApplicationScoped
 public class WebSockets {

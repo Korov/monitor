@@ -38,7 +38,7 @@ public class ZookeeperController {
         return zookeeperService.deleteZookeeperSource(id).then(Mono.fromCallable(() -> new Result<>(Result.SUCCESS_CODE, null, null)));
     }
 
-    @GetMapping(value = "/zookeeper/zookeeper/query")
+    @GetMapping(value = "/zookeeper/address/query")
     public Mono<Result<List<ZookeeperSource>>> queryKafkaSource() {
         Flux<ZookeeperSource> zookeeperSources = zookeeperService.queryAllZookeeperSource();
         return zookeeperSources.collectSortedList(Comparator.comparing(ZookeeperSource::getId)).map(list -> new Result<>(Result.SUCCESS_CODE, null, list));

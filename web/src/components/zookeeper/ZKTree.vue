@@ -51,7 +51,7 @@ export default defineComponent({
 
     function getAllSource() {
       apiClient
-        .get('/zookeeper/zookeeper/query')
+        .get('/zookeeper/address/query')
         .then((response) => {
           sources.value = response.data.data
           for (let index in sources.value) {
@@ -105,8 +105,6 @@ export default defineComponent({
         .catch((error) => {
           ElMessage.error('查询所有zookeeper node失败' + error.message)
         })
-
-      console.log(allNode.value)
     }
 
     function extractChildNode(tree: Tree, childNodes: any[]) {
