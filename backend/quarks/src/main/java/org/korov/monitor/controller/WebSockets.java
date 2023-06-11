@@ -120,6 +120,7 @@ public class WebSockets {
                     message.setMessage(record.value());
                     message.setTopic(record.topic());
                     message.setPartition(record.partition());
+                    message.setOffset(record.offset());
                     session.getAsyncRemote().sendObject(message, result -> {
                         if (result.getException() == null) {
                             LOGGER.info("send message success");

@@ -11,6 +11,8 @@ public class KafkaMessageRequest {
     private String message;
     private Integer partition;
 
+    private Long offset;
+
     public Long getSourceId() {
         return sourceId;
     }
@@ -49,5 +51,13 @@ public class KafkaMessageRequest {
 
     public void setPartition(Integer partition) {
         this.partition = partition;
+    }
+
+    public Long getOffset() {
+        return offset;
+    }
+
+    public void setOffset(Long offset) {
+        this.offset = offset;
     }
 }
