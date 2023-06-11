@@ -2,6 +2,9 @@ package org.korov.monitor.controller;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.undertow.websockets.UndertowSession;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.websocket.*;
+import jakarta.websocket.server.ServerEndpoint;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -15,12 +18,8 @@ import org.korov.monitor.utils.KafkaUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.websocket.*;
-import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;

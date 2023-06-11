@@ -3,8 +3,6 @@ package org.korov.monitor.vo;
 
 import com.google.common.base.MoreObjects;
 
-import javax.persistence.Entity;
-
 /**
  * @author korov
  */

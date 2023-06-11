@@ -2,9 +2,9 @@ package org.korov.monitor.controller.request;
 
 import org.korov.monitor.utils.JsonUtils;
 
-import javax.websocket.DecodeException;
-import javax.websocket.Decoder;
-import javax.websocket.EndpointConfig;
+import jakarta.websocket.DecodeException;
+import jakarta.websocket.Decoder;
+import jakarta.websocket.EndpointConfig;
 
 public class ConsumerRequestDecoder implements Decoder.Text<ConsumerRequest> {
     @Override
