@@ -1,6 +1,5 @@
 package org.korov.monitor.service;
 
-import org.korov.monitor.entity.KafkaSource;
 import org.korov.monitor.entity.ZookeeperSource;
 import org.korov.monitor.vo.ZNode;
 import reactor.core.publisher.Flux;
@@ -16,5 +15,5 @@ public interface ZookeeperService {
 
     Flux<ZookeeperSource> queryAllZookeeperSource();
 
-    Mono<ZNode> getZkTree(String host);
+    Mono<ZNode> getZkTree(String host, String path, Boolean recursion);
 }

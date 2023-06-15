@@ -51,7 +51,7 @@ class ZookeeperUtilsTest {
 
     @Test
     void getAllZnode() throws IOException, InterruptedException, KeeperException {
-        ZNode allNode = ZookeeperUtils.getAllZnode("192.168.1.19:2181");
+        ZNode allNode = ZookeeperUtils.getAllZnode("localhost:2183", "/", false);
         log.info("debug");
     }
 

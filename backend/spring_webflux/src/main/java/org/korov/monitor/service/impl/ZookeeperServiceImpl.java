@@ -38,8 +38,8 @@ public class ZookeeperServiceImpl implements ZookeeperService {
     }
 
     @Override
-    public Mono<ZNode> getZkTree(String host) {
+    public Mono<ZNode> getZkTree(String host, String path, Boolean recursion) {
         Mono<String> hostMono = Mono.just(host);
-        return hostMono.map(zkHost -> ZookeeperUtils.getAllZnode(zkHost));
+        return hostMono.mapNotNull(zkHost -> ZookeeperUtils.getAllZnode(zkHost, path, recursion));
     }
 }

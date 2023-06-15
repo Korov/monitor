@@ -123,10 +123,16 @@ public class ZookeeperUtils {
     }
 
     public static ZNode getAllZnode(String host) {
-        return getAllZnode(host, "/");
+        return getAllZnode(host, "/", true);
     }
 
-    public static ZNode getAllZnode(String host, String path) {
+    public static ZNode getAllZnode(String host, String path, Boolean recursion) {
+        if (path == null || path.isEmpty()) {
+            path = "/";
+        }
+        if (recursion == null) {
+            recursion = true;
+        }
         try {
             ZooKeeper zooKeeper = getZookeeper(host);
             if (zooKeeper.exists(path, false) == null) {
@@ -138,6 +144,9 @@ public class ZookeeperUtils {
             parentNode.setPath(path);
             parentNode.setStat(stat);
             parentNode.setData(data);
+            if (!recursion) {
+                return parentNode;
+            }
 
             List<ZNode> childNodes = new ArrayList<>();
             List<String> childPaths = zooKeeper.getChildren(path, false, null);
@@ -145,9 +154,9 @@ public class ZookeeperUtils {
                 for (String childPath : childPaths) {
                     ZNode childNode;
                     if (Objects.equals("/", path)) {
-                        childNode = getAllZnode(host, "/" + childPath);
+                        childNode = getAllZnode(host, "/" + childPath, recursion);
                     } else {
-                        childNode = getAllZnode(host, path + "/" + childPath);
+                        childNode = getAllZnode(host, path + "/" + childPath, recursion);
                     }
                     if (childNode != null) {
                         childNode.setParentPath(path);

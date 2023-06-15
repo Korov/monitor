@@ -1,7 +1,6 @@
 package org.korov.monitor.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.korov.monitor.entity.KafkaSource;
 import org.korov.monitor.entity.ZookeeperSource;
 import org.korov.monitor.service.ZookeeperService;
 import org.korov.monitor.vo.Result;
@@ -34,19 +33,20 @@ public class ZookeeperController {
     }
 
     @DeleteMapping(value = "/zookeeper/address/del")
-    public Mono<Result<ZookeeperSource>> deleteKafkaSource(@RequestParam(value = "id") Long id) {
+    public Mono<Result<ZookeeperSource>> deleteZookeeperSource(@RequestParam(value = "id") Long id) {
         return zookeeperService.deleteZookeeperSource(id).then(Mono.fromCallable(() -> new Result<>(Result.SUCCESS_CODE, null, null)));
     }
 
     @GetMapping(value = "/zookeeper/address/query")
-    public Mono<Result<List<ZookeeperSource>>> queryKafkaSource() {
+    public Mono<Result<List<ZookeeperSource>>> queryZookeeperSource() {
         Flux<ZookeeperSource> zookeeperSources = zookeeperService.queryAllZookeeperSource();
         return zookeeperSources.collectSortedList(Comparator.comparing(ZookeeperSource::getId)).map(list -> new Result<>(Result.SUCCESS_CODE, null, list));
     }
 
     @GetMapping(value = "/zookeeper/tree")
-    public Mono<Result<ZNode>> queryKafkaSource(@RequestParam("host") String host) {
-        Mono<ZNode> allNodes = zookeeperService.getZkTree(host);
+    public Mono<Result<ZNode>> queryZookeeperPath(@RequestParam("host") String host, @RequestParam(value = "path", required = false) String path,
+                                                  @RequestParam(value = "recursion", required = false) Boolean recursion) {
+        Mono<ZNode> allNodes = zookeeperService.getZkTree(host, path, recursion);
         return allNodes.map(allNode -> new Result<>(Result.SUCCESS_CODE, null, allNode));
     }
 }

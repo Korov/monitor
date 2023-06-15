@@ -3,13 +3,18 @@
     <el-select class="kafkaSelect" v-model="sourceId" placeholder="选择Zookeeper环境" @change="selectZookeeper">
       <el-option v-for="source in sources" :key="source.id" :label="`${source.name}`" :value="source.id">
         <span style="float: left">{{ source.name }}</span>
-        <span style="
-          float: right;
-          color: var(--el-text-color-secondary);
-          font-size: 13px;
-        ">{{ source.address }}</span>
+        <span style="float: right; color: var(--el-text-color-secondary); font-size: 13px">{{ source.address }}</span>
       </el-option>
     </el-select>
+    <el-input v-model="zkPath" clearable placeholder="请输入需要查询的路径" style="width: 10%; height: 32px"></el-input>
+    <el-switch
+      v-model="recursion"
+      class="mt-2"
+      style="margin-left: 24px"
+      inline-prompt
+      :active-icon="Check()"
+      :inactive-icon="Close()"
+    />
     <el-button type="primary" @click="queryZkTree()">Query</el-button>
   </div>
 
@@ -17,8 +22,9 @@
     <template #default="{ node, data }">
       <span>
         <span>{{ node.label }}</span>
-        <el-text v-if="data.content != null && data.content.length > 0" class="mx-1" type="primary">: {{ data.content
-        }}</el-text>
+        <el-text v-if="data.content != null && data.content.length > 0" class="mx-1" type="primary"
+          >: {{ data.content }}</el-text
+        >
       </span>
     </template>
   </el-tree>
@@ -29,6 +35,7 @@ import { defineComponent, ref } from 'vue'
 import apiClient from '@/http-common'
 import { ElMessage } from 'element-plus'
 import { ZookeeperConfig } from '@/types'
+import { Check, Close } from '@element-plus/icons-vue'
 
 interface Tree {
   label: string
@@ -38,6 +45,14 @@ interface Tree {
 
 export default defineComponent({
   name: 'ZKTree',
+  methods: {
+    Close() {
+      return Close
+    },
+    Check() {
+      return Check
+    },
+  },
   setup() {
     const defaultProps = {
       children: 'children',
@@ -48,6 +63,8 @@ export default defineComponent({
     let sources = ref<ZookeeperConfig[]>([])
     let sourceMap: Map<number, ZookeeperConfig> = new Map<number, ZookeeperConfig>()
     let zkHost = ref<String>('localhost:2183')
+    let zkPath = ref<String>('/')
+    let recursion = ref<Boolean>(true)
 
     function getAllSource() {
       apiClient
@@ -86,7 +103,7 @@ export default defineComponent({
 
     function queryZkTree() {
       apiClient
-        .get(`/zookeeper/tree?host=${zkHost.value}`)
+        .get(`/zookeeper/tree?host=${zkHost.value}&path=${zkPath.value}&recursion=${recursion.value}`)
         .then((response) => {
           if (response.data.code) {
             let rootTree: Tree = {
@@ -127,6 +144,8 @@ export default defineComponent({
       allNode,
       defaultProps,
       zkHost,
+      zkPath,
+      recursion,
       queryZkTree,
       selectZookeeper,
       sources,
