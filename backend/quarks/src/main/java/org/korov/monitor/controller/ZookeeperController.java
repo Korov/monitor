@@ -42,9 +42,9 @@ public class ZookeeperController {
 
     @Path(value = "/zookeeper/tree")
     @GET
-    public Uni<Result> queryKafkaSource(@QueryParam("host") String host, @QueryParam(value = "path", required = false) String path,
-                                        @QueryParam(value = "recursion", required = false) Boolean recursion) {
+    public Uni<Result> queryKafkaSource(@QueryParam("host") String host, @QueryParam(value = "path") String path,
+                                        @QueryParam(value = "recursion") Boolean recursion) {
         return Uni.createFrom().item(host).onItem()
-                .transform(zkHost -> new Result(Result.SUCCESS_CODE, null, ZookeeperUtils.getAllZnode(zkHost)));
+                .transform(zkHost -> new Result(Result.SUCCESS_CODE, null, ZookeeperUtils.getAllZnode(zkHost, path, recursion)));
     }
 }
