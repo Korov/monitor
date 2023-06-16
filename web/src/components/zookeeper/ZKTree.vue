@@ -9,11 +9,9 @@
     <el-input v-model="zkPath" clearable placeholder="请输入需要查询的路径" style="width: 10%; height: 32px"></el-input>
     <el-switch
       v-model="recursion"
-      class="mt-2"
-      style="margin-left: 24px"
-      inline-prompt
-      :active-icon="Check()"
-      :inactive-icon="Close()"
+      style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
+      active-value="100"
+      inactive-value="0"
     />
     <el-button type="primary" @click="queryZkTree()">Query</el-button>
   </div>
@@ -35,7 +33,6 @@ import { defineComponent, ref } from 'vue'
 import apiClient from '@/http-common'
 import { ElMessage } from 'element-plus'
 import { ZookeeperConfig } from '@/types'
-import { Check, Close } from '@element-plus/icons-vue'
 
 interface Tree {
   label: string
@@ -45,14 +42,6 @@ interface Tree {
 
 export default defineComponent({
   name: 'ZKTree',
-  methods: {
-    Close() {
-      return Close
-    },
-    Check() {
-      return Check
-    },
-  },
   setup() {
     const defaultProps = {
       children: 'children',
