@@ -1,0 +1,49 @@
+databaseChangeLog:
+  - changeSet:
+      author: korov9
+      id: 1
+      changes:
+        - sqlFile:
+            dbms: mysql
+            encoding: utf8
+            path: db/migration/mysql/V1__create_kafka_source.sql
+            relativeToChangelogFile: false
+            splitStatements: true
+            stripComments: true
+
+  - changeSet:
+      author: korov9
+      id: 2
+      changes:
+        - sqlFile:
+            dbms: mysql
+            encoding: utf8
+            path: dev/migration/mysql/V2__insert_kafka_source.sql
+            relativeToChangelogFile: false
+            splitStatements: true
+            stripComments: true
+
+
+  - changeSet:
+      author: korov9
+      id: 3
+      changes:
+        - sqlFile:
+            dbms: mysql
+            encoding: utf8
+            path: db/migration/mysql/V3__create_zookeeper_source.sql
+            relativeToChangelogFile: false
+            splitStatements: true
+            stripComments: true
+
+  - changeSet:
+      author: korov9
+      id: 4
+      changes:
+        - sqlFile:
+            dbms: mysql
+            encoding: utf8
+            path: dev/migration/mysql/V4__insert_zookeeper_source.sql
+            relativeToChangelogFile: false
+            splitStatements: true
+            stripComments: true
