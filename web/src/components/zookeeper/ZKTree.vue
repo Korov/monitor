@@ -7,22 +7,21 @@
       </el-option>
     </el-select>
     <el-input v-model="zkPath" clearable placeholder="请输入需要查询的路径" style="width: 10%; height: 32px"></el-input>
-    <el-switch
-      v-model="recursion"
-      style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
-      active-value="100"
-      inactive-value="0"
-    />
+    <el-switch v-model="recursion" style="padding-left: 10px; padding-right: 10px" />
     <el-button type="primary" @click="queryZkTree()">Query</el-button>
   </div>
 
   <el-tree :data="allNode" node-key="label" :props="defaultProps" default-expand-all>
     <template #default="{ node, data }">
-      <span>
+      <span style="width: 100%">
         <span>{{ node.label }}</span>
-        <el-text v-if="data.content != null && data.content.length > 0" class="mx-1" type="primary"
-          >: {{ data.content }}</el-text
+        <el-text
+          v-if="data.content != null && data.content.length > 0"
+          style="float: right; color: var(--el-text-color-secondary)"
+          type="primary"
         >
+          {{ data.content }}
+        </el-text>
       </span>
     </template>
   </el-tree>
