@@ -2,6 +2,7 @@ package org.korov.monitor.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.quarkus.hibernate.reactive.panache.Panache;
+import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import org.korov.monitor.controller.request.KafkaMessageRequest;
 import org.korov.monitor.controller.request.TopicRequest;

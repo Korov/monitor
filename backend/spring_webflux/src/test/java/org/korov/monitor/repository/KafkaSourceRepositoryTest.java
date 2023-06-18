@@ -10,6 +10,8 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.PageRequest;
 import reactor.test.StepVerifier;
 
+import java.util.List;
+
 @Slf4j
 class KafkaSourceRepositoryTest extends MonitorApplicationTests {
     private KafkaSourceRepository kafkaSourceRepository;
@@ -56,6 +58,12 @@ class KafkaSourceRepositoryTest extends MonitorApplicationTests {
                         .collectList()
                 ).consumeNextWith(source -> log.info("source:{}", source.toString()))
                 .verifyComplete();
+    }
+
+    @Test
+    void callbackHell() {
+        // first map flux to Mono and then block to get the list
+        List<KafkaSource> all = kafkaSourceRepository.findAll().collectList().block();
     }
 
 }
