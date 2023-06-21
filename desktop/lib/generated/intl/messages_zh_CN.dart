@@ -24,6 +24,12 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "kafka": MessageLookupByLibrary.simpleMessage("Kafka"),
         "kafkaConfig": MessageLookupByLibrary.simpleMessage("配置"),
-        "kafkaManager": MessageLookupByLibrary.simpleMessage("管理")
+        "kafkaConsumer": MessageLookupByLibrary.simpleMessage("消费者"),
+        "kafkaManager": MessageLookupByLibrary.simpleMessage("管理"),
+        "kafkaOperator": MessageLookupByLibrary.simpleMessage("操作"),
+        "kafkaProducer": MessageLookupByLibrary.simpleMessage("生产者"),
+        "zookeeper": MessageLookupByLibrary.simpleMessage("Zookeeper"),
+        "zookeeperConfig": MessageLookupByLibrary.simpleMessage("配置"),
+        "zookeeperTree": MessageLookupByLibrary.simpleMessage("树图")
       };
 }

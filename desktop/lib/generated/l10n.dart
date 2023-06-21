@@ -79,6 +79,66 @@ class S {
       args: [],
     );
   }
+
+  /// `Operator`
+  String get kafkaOperator {
+    return Intl.message(
+      'Operator',
+      name: 'kafkaOperator',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Producer`
+  String get kafkaProducer {
+    return Intl.message(
+      'Producer',
+      name: 'kafkaProducer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Consumer`
+  String get kafkaConsumer {
+    return Intl.message(
+      'Consumer',
+      name: 'kafkaConsumer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zookeeper`
+  String get zookeeper {
+    return Intl.message(
+      'Zookeeper',
+      name: 'zookeeper',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Config`
+  String get zookeeperConfig {
+    return Intl.message(
+      'Config',
+      name: 'zookeeperConfig',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tree`
+  String get zookeeperTree {
+    return Intl.message(
+      'Tree',
+      name: 'zookeeperTree',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

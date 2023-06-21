@@ -1,5 +1,11 @@
 {
   "kafka": "Kafka",
   "kafkaConfig": "Config",
-  "kafkaManager": "Manager"
+  "kafkaManager": "Manager",
+  "kafkaOperator": "Operator",
+  "kafkaProducer": "Producer",
+  "kafkaConsumer": "Consumer",
+  "zookeeper": "Zookeeper",
+  "zookeeperConfig": "Config",
+  "zookeeperTree": "Tree"
 }

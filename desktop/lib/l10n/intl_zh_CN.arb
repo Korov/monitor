@@ -1,5 +1,11 @@
 {
   "kafka": "Kafka",
   "kafkaConfig": "配置",
-  "kafkaManager": "管理"
+  "kafkaManager": "管理",
+  "kafkaOperator": "操作",
+  "kafkaProducer": "生产者",
+  "kafkaConsumer": "消费者",
+  "zookeeper": "Zookeeper",
+  "zookeeperConfig": "配置",
+  "zookeeperTree": "树图"
 }

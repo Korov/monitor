@@ -44,6 +44,20 @@ class MenuDrawer extends StatelessWidget {
                       children: <Widget>[
                         ListTile(title: Text(S.of(context).kafkaConfig)),
                         ListTile(title: Text(S.of(context).kafkaManager)),
+                        ExpansionTile(
+                            title: Text(S.of(context).kafkaOperator),
+                            children: <Widget>[
+                              ListTile(
+                                  title: Text(S.of(context).kafkaProducer)),
+                              ListTile(
+                                  title: Text(S.of(context).kafkaConsumer)),
+                            ]),
+                      ]),
+                  ExpansionTile(
+                      title: Text(S.of(context).zookeeper),
+                      children: <Widget>[
+                        ListTile(title: Text(S.of(context).zookeeperConfig)),
+                        ListTile(title: Text(S.of(context).zookeeperTree)),
                       ]),
                 ],
               ),
