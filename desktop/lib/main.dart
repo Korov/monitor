@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'components/MenuDrawer.dart';
+import 'generated/l10n.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,6 +35,15 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        S.delegate
+      ],
+      supportedLocales: S.delegate.supportedLocales,
+      locale: const Locale('en', 'US'),
+      //手动指定locale
       home: const MyHomePage(title: 'Monitor'),
     );
   }
@@ -128,6 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
+            TextField(),
             Text(
               "Hello worssssld",
               style: TextStyle(
@@ -143,7 +155,7 @@ class _MyHomePageState extends State<MyHomePage> {
               constraints: const BoxConstraints(
                   minWidth: 50.0, //宽度尽可能大
                   minHeight: 50.0 //最小高度为50像素
-              ),
+                  ),
               child: SizedBox(width: 80.0, height: 80.0, child: redBox),
             ),
           ],

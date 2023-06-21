@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../generated/l10n.dart';
+
 class MenuDrawer extends StatelessWidget {
   const MenuDrawer({
     Key? key,
@@ -36,15 +38,13 @@ class MenuDrawer extends StatelessWidget {
             ),
             Expanded(
               child: ListView(
-                children: const <Widget>[
-                  ListTile(
-                    leading: Icon(Icons.add),
-                    title: Text('Add account'),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.settings),
-                    title: Text('Manage accounts'),
-                  ),
+                children: <Widget>[
+                  ExpansionTile(
+                      title: Text(S.of(context).kafka),
+                      children: <Widget>[
+                        ListTile(title: Text(S.of(context).kafkaConfig)),
+                        ListTile(title: Text(S.of(context).kafkaManager)),
+                      ]),
                 ],
               ),
             ),

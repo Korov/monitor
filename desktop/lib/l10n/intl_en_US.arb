@@ -1,0 +1,5 @@
+{
+  "kafka": "Kafka",
+  "kafkaConfig": "Config",
+  "kafkaManager": "Manager"
+}
