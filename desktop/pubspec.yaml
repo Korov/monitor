@@ -38,6 +38,7 @@ dependencies:
 
   flutter_localizations:
     sdk: flutter
+  logger: ^1.4.0
 
 flutter_intl:
   enabled: true

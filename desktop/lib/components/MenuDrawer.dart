@@ -1,3 +1,4 @@
+import 'package:desktop/utils/Log.dart';
 import 'package:flutter/material.dart';
 
 import '../generated/l10n.dart';
@@ -56,8 +57,13 @@ class MenuDrawer extends StatelessWidget {
                   ExpansionTile(
                       title: Text(S.of(context).zookeeper),
                       children: <Widget>[
-                        ListTile(title: Text(S.of(context).zookeeperConfig)),
-                        ListTile(title: Text(S.of(context).zookeeperTree)),
+                        ListTile(
+                          title: Text(S.of(context).zookeeperConfig),
+                          onTap: () => {Log.i("tap the list tile")},
+                        ),
+                        ElevatedButton(
+                            onPressed: () => Navigator.pop(context, "我是返回值"),
+                            child: Text(S.of(context).zookeeperTree)),
                       ]),
                 ],
               ),
