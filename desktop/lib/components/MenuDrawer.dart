@@ -1,3 +1,4 @@
+import 'package:desktop/components/kafka/KafkaConfig.dart';
 import 'package:desktop/utils/Log.dart';
 import 'package:flutter/material.dart';
 
@@ -43,7 +44,24 @@ class MenuDrawer extends StatelessWidget {
                   ExpansionTile(
                       title: Text(S.of(context).kafka),
                       children: <Widget>[
-                        ListTile(title: Text(S.of(context).kafkaConfig)),
+                        ListTile(
+                            title: Text(S.of(context).kafkaConfig),
+                            onTap: () async {
+                              // 打开`TipRoute`，并等待返回结果
+                              var result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return KafkaConfig(
+                                      key: new Key("kafkaConfig"),
+                                      text: "input param",
+                                    );
+                                  },
+                                ),
+                              );
+                              //输出`TipRoute`路由返回结果
+                              print("路由返回值: $result");
+                            }),
                         ListTile(title: Text(S.of(context).kafkaManager)),
                         ExpansionTile(
                             title: Text(S.of(context).kafkaOperator),
