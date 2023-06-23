@@ -4,16 +4,22 @@ import 'package:flutter/material.dart';
 class KafkaConfig extends StatefulWidget {
   KafkaConfig({
     required Key key,
-    required this.text, // 接收一个text参数
+    required this.text,
   }) : super(key: key);
   final String text;
 
   @override
-  _KafkaConfigState createState() => _KafkaConfigState();
+  _KafkaConfigState createState() => _KafkaConfigState(text: this.text);
 }
 
 class _KafkaConfigState extends State<KafkaConfig> {
   int _selectedIndex = 1;
+
+  _KafkaConfigState({
+    this.text = "",
+  });
+
+  String text;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +34,13 @@ class _KafkaConfigState extends State<KafkaConfig> {
               onPressed: () => Navigator.pop(context, "我是返回值")),
         ],
       ),
-      drawer: MenuDrawer(), //抽屉
+      drawer: MenuDrawer(),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[Text("thie is input $text")],
+        ),
+      ),
       bottomNavigationBar: BottomNavigationBar(
         // 底部导航
         items: <BottomNavigationBarItem>[
