@@ -1,4 +1,5 @@
 import 'package:desktop/components/MenuDrawer.dart';
+import 'package:desktop/utils/Log.dart';
 import 'package:flutter/material.dart';
 
 class KafkaConfig extends StatefulWidget {
@@ -26,7 +27,7 @@ class _KafkaConfigState extends State<KafkaConfig> {
     return Scaffold(
       appBar: AppBar(
         //导航栏
-        title: Text("App Name"),
+        title: Text("Kafka Config"),
         actions: <Widget>[
           //导航栏右侧菜单
           IconButton(
@@ -37,26 +38,55 @@ class _KafkaConfigState extends State<KafkaConfig> {
       drawer: MenuDrawer(),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[Text("thie is input $text")],
+          children: <Widget>[
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                  minWidth: double.infinity,
+                  maxWidth: double.infinity,
+                  minHeight: 20.0),
+              child: DataTable(
+                sortColumnIndex: 1,
+                sortAscending: true,
+                columns: [
+                  DataColumn(
+                    label: Text('Cluster Name'),
+                  ),
+                  DataColumn(
+                      label: Text('Address'),
+                      numeric: true,
+                      onSort: (int columnIndex, bool ascending) {}),
+                  DataColumn(label: Text('Operation')),
+                ],
+                rows: [
+                  DataRow(cells: [
+                    DataCell(Text('老王')),
+                    DataCell(Text('26')),
+                    DataCell(Text('26')),
+                  ]),
+                  DataRow(cells: [
+                    DataCell(Text('老李')),
+                    DataCell(Text('16')),
+                    DataCell(Text('16')),
+                  ]),
+                  DataRow(cells: [
+                    DataCell(Text('老李')),
+                    DataCell(Text('16')),
+                    DataCell(Text('16')),
+                  ]),
+                ],
+              ),
+            ),
+            Flex(
+              direction: Axis.horizontal,
+              children: [
+                MaterialButton(
+                    onPressed: () => {Log.i("pressed the button")},
+                    child: Text("Button"))
+              ],
+            ),
+          ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        // 底部导航
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.business), label: 'Business'),
-          BottomNavigationBarItem(icon: Icon(Icons.school), label: 'School'),
-        ],
-        currentIndex: _selectedIndex,
-        fixedColor: Colors.blue,
-        onTap: _onItemTapped,
-      ),
-      floatingActionButton: FloatingActionButton(
-          //悬浮按钮
-          child: Icon(Icons.add),
-          onPressed: _onAdd),
     );
   }
 
