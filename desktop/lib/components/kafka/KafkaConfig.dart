@@ -1,6 +1,10 @@
 import 'package:desktop/components/MenuDrawer.dart';
+import 'package:desktop/utils/HttpUtils.dart';
 import 'package:desktop/utils/Log.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+
+import '../../model/KafkaConfig.dart';
 
 class KafkaConfig extends StatefulWidget {
   KafkaConfig({
@@ -21,6 +25,8 @@ class _KafkaConfigState extends State<KafkaConfig> {
   });
 
   String text;
+
+  List<DataRow> _rows = [];
 
   @override
   Widget build(BuildContext context) {
@@ -57,31 +63,21 @@ class _KafkaConfigState extends State<KafkaConfig> {
                       onSort: (int columnIndex, bool ascending) {}),
                   DataColumn(label: Text('Operation')),
                 ],
-                rows: [
-                  DataRow(cells: [
-                    DataCell(Text('老王')),
-                    DataCell(Text('26')),
-                    DataCell(Text('26')),
-                  ]),
-                  DataRow(cells: [
-                    DataCell(Text('老李')),
-                    DataCell(Text('16')),
-                    DataCell(Text('16')),
-                  ]),
-                  DataRow(cells: [
-                    DataCell(Text('老李')),
-                    DataCell(Text('16')),
-                    DataCell(Text('16')),
-                  ]),
-                ],
+                rows: _rows,
               ),
             ),
             Flex(
               direction: Axis.horizontal,
               children: [
                 MaterialButton(
-                    onPressed: () => {Log.i("pressed the button")},
-                    child: Text("Button"))
+                    onPressed: () async {
+                      _updateTable();
+                      Response response = await HttpUtils.get(
+                          "http://localhost:8091/kafka/query");
+                      List data = response.data['data'];
+                      Log.i(data.length);
+                    },
+                    child: Text("Button")),
               ],
             ),
           ],
@@ -97,4 +93,26 @@ class _KafkaConfigState extends State<KafkaConfig> {
   }
 
   void _onAdd() {}
+
+  @override
+  void initState() {
+    super.initState();
+    _updateTable();
+  }
+
+  Future<void> _updateTable() async {
+    Response response =
+        await HttpUtils.get("http://localhost:8091/kafka/query");
+    List data = response.data['data'];
+    setState(() {
+      for (var config in data) {
+        KafkaConfigModel kafkaConfig = KafkaConfigModel.fromJson(config);
+        _rows.add(DataRow(cells: [
+          DataCell(Text(kafkaConfig.name)),
+          DataCell(Text(kafkaConfig.broker)),
+          DataCell(Text("operation")),
+        ]));
+      }
+    });
+  }
 }
