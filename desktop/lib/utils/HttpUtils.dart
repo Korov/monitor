@@ -2,7 +2,7 @@
 import 'package:desktop/utils/Log.dart';
 import 'package:dio/dio.dart';
 
-enum HttpType { HttpTypeGet, HttpTypePost }
+enum HttpType { HttpTypeGet, HttpTypePost, HttpTypeDelete, HttpTypePut }
 
 class HttpUtils {
   // 单例方法
@@ -27,6 +27,18 @@ class HttpUtils {
         queryParameters: queryParameters, data: data);
   }
 
+  static Future<Response> delete(String requestUrl,
+      {Map<String, dynamic>? queryParameters, dynamic data}) async {
+    return await _sendHttpRequest(HttpType.HttpTypeDelete, requestUrl,
+        queryParameters: queryParameters, data: data);
+  }
+
+  static Future<Response> put(String requestUrl,
+      {Map<String, dynamic>? queryParameters, dynamic data}) async {
+    return await _sendHttpRequest(HttpType.HttpTypePut, requestUrl,
+        queryParameters: queryParameters, data: data);
+  }
+
   // 私有方法 - 处理get请求、post请求
   static Future _sendHttpRequest(HttpType type, String requestUrl,
       {Map<String, dynamic>? queryParameters, dynamic data}) async {
@@ -37,6 +49,12 @@ class HttpUtils {
         case HttpType.HttpTypePost:
           return await await getHttpUtils()
               .post(requestUrl, queryParameters: queryParameters, data: data);
+        case HttpType.HttpTypeDelete:
+          return await await getHttpUtils()
+              .delete(requestUrl, queryParameters: queryParameters, data: data);
+        case HttpType.HttpTypePut:
+          return await await getHttpUtils()
+              .put(requestUrl, queryParameters: queryParameters, data: data);
         default:
           throw Exception('报错了：请求只支持get和post');
       }

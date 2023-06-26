@@ -63,7 +63,9 @@ class _KafkaConfigState extends State<KafkaConfig> {
                       label: Text('Address'),
                       numeric: true,
                       onSort: (int columnIndex, bool ascending) {}),
-                  DataColumn(label: Text('Operation')),
+                  DataColumn(
+                    label: Text('Operation'),
+                  ),
                 ],
                 rows: _rows,
               ),
@@ -189,10 +191,24 @@ class _KafkaConfigState extends State<KafkaConfig> {
         _rows.add(DataRow(cells: [
           DataCell(Text(kafkaConfig.name)),
           DataCell(Text(kafkaConfig.broker)),
-          DataCell(Text("operation")),
+          DataCell(IconButton(
+            icon: Icon(Icons.delete),
+            tooltip: 'Delete',
+            onPressed: () {
+              _deleteConfig(kafkaConfig.id);
+            },
+          )),
         ]));
       }
     });
+  }
+
+  Future<void> _deleteConfig(int id) async {
+    Response response =
+        await HttpUtils.delete("http://localhost:8091/kafka/delete?id=$id");
+    dynamic data = response.data['data'];
+    Log.i(data);
+    _updateTable();
   }
 
   Future<void> _addConfig(String name, String address) async {
