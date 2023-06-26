@@ -7,6 +7,7 @@ enum HttpType { HttpTypeGet, HttpTypePost }
 class HttpUtils {
   // 单例方法
   static Dio? _dioInstance;
+
   static Dio getHttpUtils() {
     if (_dioInstance == null) {
       _dioInstance = Dio();
@@ -21,9 +22,9 @@ class HttpUtils {
 
   // 对外抛出方法 - post请求
   static Future<Response> post(String requestUrl,
-      {Map<String, dynamic>? queryParameters}) async {
+      {Map<String, dynamic>? queryParameters, dynamic data}) async {
     return await _sendHttpRequest(HttpType.HttpTypePost, requestUrl,
-        queryParameters: queryParameters);
+        queryParameters: queryParameters, data: data);
   }
 
   // 私有方法 - 处理get请求、post请求
@@ -53,9 +54,9 @@ class HttpUtils {
       Dio dio = getHttpUtils();
       var response = await dio.download(downLoadUrl, savePath,
           onReceiveProgress: (int count, int total) {
-            String progressValue = (count / total * 100).toStringAsFixed(1);
-            print('当前下载进度:$progressValue%');
-          }).whenComplete(() {
+        String progressValue = (count / total * 100).toStringAsFixed(1);
+        print('当前下载进度:$progressValue%');
+      }).whenComplete(() {
         DateTime timeEnd = DateTime.now();
         //用时多少秒
         int second_use = timeEnd.difference(timeStart).inSeconds;

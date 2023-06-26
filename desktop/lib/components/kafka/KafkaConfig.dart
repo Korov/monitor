@@ -20,6 +20,10 @@ class KafkaConfig extends StatefulWidget {
 class _KafkaConfigState extends State<KafkaConfig> {
   int _selectedIndex = 1;
 
+  final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _addressController = TextEditingController();
+
   _KafkaConfigState({
     this.text = "",
   });
@@ -69,15 +73,99 @@ class _KafkaConfigState extends State<KafkaConfig> {
             Flex(
               direction: Axis.horizontal,
               children: [
-                MaterialButton(
+                TextButton(
                     onPressed: () async {
-                      _updateTable();
-                      Response response = await HttpUtils.get(
-                          "http://localhost:8091/kafka/query");
-                      List data = response.data['data'];
-                      Log.i(data.length);
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return SimpleDialog(
+                              title: Text('Add Kafka Address'),
+                              children: <Widget>[
+                                Form(
+                                  key: _formKey,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: <Widget>[
+                                      Row(
+                                        children: [
+                                          Flexible(flex: 1, child: Text("名字：")),
+                                          Flexible(
+                                            flex: 2,
+                                            child: TextFormField(
+                                              controller: _nameController,
+                                              validator: (value) {
+                                                if (value == null ||
+                                                    value.isEmpty) {
+                                                  return '请输入名字';
+                                                }
+                                                return null;
+                                              },
+                                              decoration: InputDecoration(
+                                                hintText: '请输入名字',
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Flexible(flex: 1, child: Text("地址：")),
+                                          Flexible(
+                                            flex: 2,
+                                            child: TextFormField(
+                                              controller: _addressController,
+                                              validator: (value) {
+                                                if (value == null ||
+                                                    value.isEmpty) {
+                                                  return '请输入地址';
+                                                }
+                                                return null;
+                                              },
+                                              decoration: InputDecoration(
+                                                hintText: '请输入地址',
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Row(
+                                  children: [
+                                    TextButton(
+                                      child: Text('确定'),
+                                      onPressed: () {
+                                        if (_formKey.currentState != null) {
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            Log.i(_nameController.text);
+                                            Log.i(_addressController.text);
+                                            _addConfig(_nameController.text,
+                                                _addressController.text);
+                                            _nameController.text = "";
+                                            _addressController.text = "";
+                                            // 执行保存操作
+                                            Navigator.of(context).pop();
+                                          }
+                                        }
+                                      },
+                                    ),
+                                    TextButton(
+                                      child: Text('取消'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            );
+                          });
                     },
-                    child: Text("Button")),
+                    child: Text("Add Environment")),
               ],
             ),
           ],
@@ -85,14 +173,6 @@ class _KafkaConfigState extends State<KafkaConfig> {
       ),
     );
   }
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  void _onAdd() {}
 
   @override
   void initState() {
@@ -105,6 +185,7 @@ class _KafkaConfigState extends State<KafkaConfig> {
         await HttpUtils.get("http://localhost:8091/kafka/query");
     List data = response.data['data'];
     setState(() {
+      _rows = [];
       for (var config in data) {
         KafkaConfigModel kafkaConfig = KafkaConfigModel.fromJson(config);
         _rows.add(DataRow(cells: [
@@ -114,5 +195,16 @@ class _KafkaConfigState extends State<KafkaConfig> {
         ]));
       }
     });
+  }
+
+  Future<void> _addConfig(String name, String address) async {
+    Map<String, String> body = {};
+    body['name'] = name;
+    body['broker'] = address;
+    Response response =
+        await HttpUtils.post("http://localhost:8091/kafka/add", data: body);
+    dynamic data = response.data['data'];
+    Log.i(data);
+    _updateTable();
   }
 }
