@@ -1,7 +1,6 @@
 import 'package:desktop/components/kafka/KafkaConfig.dart';
 import 'package:desktop/utils/Log.dart';
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 
 import '../generated/l10n.dart';
 

@@ -52,7 +52,7 @@ class HttpUtils {
     print('开始下载～当前时间：$timeStart');
     try {
       Dio dio = getHttpUtils();
-      var response = await dio.download(downLoadUrl, savePath,
+      await dio.download(downLoadUrl, savePath,
           onReceiveProgress: (int count, int total) {
         String progressValue = (count / total * 100).toStringAsFixed(1);
         print('当前下载进度:$progressValue%');

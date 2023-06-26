@@ -18,8 +18,6 @@ class KafkaConfig extends StatefulWidget {
 }
 
 class _KafkaConfigState extends State<KafkaConfig> {
-  int _selectedIndex = 1;
-
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _addressController = TextEditingController();
