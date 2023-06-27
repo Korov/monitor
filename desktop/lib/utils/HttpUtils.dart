@@ -1,4 +1,3 @@
-// 枚举类型 - 请求类型
 import 'package:desktop/utils/Log.dart';
 import 'package:dio/dio.dart';
 

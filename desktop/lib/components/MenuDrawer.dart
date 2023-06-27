@@ -1,8 +1,10 @@
 import 'package:desktop/components/kafka/KafkaConfig.dart';
+import 'package:desktop/components/kafka/KafkaManager.dart';
 import 'package:desktop/utils/Log.dart';
 import 'package:flutter/material.dart';
 
 import '../generated/l10n.dart';
+import '../utils/Constant.dart';
 
 class MenuDrawer extends StatelessWidget {
   const MenuDrawer({
@@ -47,22 +49,42 @@ class MenuDrawer extends StatelessWidget {
                         ListTile(
                             title: Text(S.of(context).kafkaConfig),
                             onTap: () async {
-                              // 打开`TipRoute`，并等待返回结果
+                              if (Cache.cachedRoute.contains("KafkaConfig")) {
+                                return;
+                              }
+                              Cache.cachedRoute.add("KafkaConfig");
+                              var result = await Navigator.pushNamed(
+                                  context, "KafkaConfig",
+                                  arguments: KafkaConfig(
+                                    key: ConstantKey.kafkaKey,
+                                    text: "input param",
+                                  ));
+                              //输出`TipRoute`路由返回结果
+                              Log.i("路由返回值: $result");
+                            }),
+                        ListTile(
+                            title: Text(S.of(context).kafkaManager),
+                            onTap: () async {
+                              Log.i(Cache.cachedRoute);
+                              if (Cache.cachedRoute.contains("kafkaManager")) {
+                                return;
+                              }
+                              Cache.cachedRoute.add("kafkaManager");
+                              Log.i(Cache.cachedRoute);
                               var result = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) {
-                                    return KafkaConfig(
-                                      key: new Key("kafkaConfig"),
-                                      text: "input param",
+                                    return KafkaManager(
+                                      key: const Key("kafkaManager"),
                                     );
                                   },
                                 ),
                               );
+                              Log.i(Cache.cachedRoute);
                               //输出`TipRoute`路由返回结果
                               Log.i("路由返回值: $result");
                             }),
-                        ListTile(title: Text(S.of(context).kafkaManager)),
                         ExpansionTile(
                             title: Text(S.of(context).kafkaOperator),
                             children: <Widget>[

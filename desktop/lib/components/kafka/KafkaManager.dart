@@ -1,33 +1,25 @@
 import 'package:desktop/components/MenuDrawer.dart';
-import 'package:desktop/utils/Constant.dart';
 import 'package:desktop/utils/HttpUtils.dart';
 import 'package:desktop/utils/Log.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import '../../model/KafkaConfig.dart';
+import '../../utils/Constant.dart';
 
-class KafkaConfig extends StatefulWidget {
-  KafkaConfig({
-    required Key key,
-    required this.text,
-  }) : super(key: key);
-  final String text;
+class KafkaManager extends StatefulWidget {
+  KafkaManager({required Key key}) : super(key: key);
 
   @override
-  _KafkaConfigState createState() => _KafkaConfigState(text: this.text);
+  _KafkaManagerState createState() => _KafkaManagerState();
 }
 
-class _KafkaConfigState extends State<KafkaConfig> {
+class _KafkaManagerState extends State<KafkaManager> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _addressController = TextEditingController();
 
-  _KafkaConfigState({
-    this.text = "",
-  });
-
-  String text;
+  _KafkaManagerState();
 
   List<DataRow> _rows = [];
 
@@ -35,7 +27,7 @@ class _KafkaConfigState extends State<KafkaConfig> {
   void initState() {
     super.initState();
     _updateTable();
-    Cache.cachedRoute.add("KafkaConfig");
+    Cache.cachedRoute.add("kafkaManager");
   }
 
   @override
@@ -43,16 +35,14 @@ class _KafkaConfigState extends State<KafkaConfig> {
     return Scaffold(
       appBar: AppBar(
         //导航栏
-        title: Text("Kafka Config"),
+        title: const Text("Kafka Manager"),
         actions: <Widget>[
           //导航栏右侧菜单
           IconButton(
               icon: Icon(Icons.arrow_back),
               onPressed: () {
-                if(Cache.cachedRoute.length == 1) {
-                  return;
-                }
-                Cache.cachedRoute.remove("KafkaConfig");
+                Cache.cachedRoute.remove("kafkaManager");
+                Log.i(Cache.cachedRoute);
                 Navigator.pop(context, "我是返回值");
               }),
         ],

@@ -1,7 +1,9 @@
+import 'package:desktop/utils/Constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'components/kafka/KafkaConfig.dart';
+import 'components/kafka/KafkaManager.dart';
 import 'generated/l10n.dart';
 
 void main() {
@@ -20,6 +22,15 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
+      routes: {
+        "KafkaConfig": (context) => KafkaConfig(
+              key: ConstantKey.kafkaKey,
+              text: "",
+            ),
+        "KafkaManager": (context) => KafkaManager(
+              key: const Key("kafkaManager"),
+            )
+      },
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
