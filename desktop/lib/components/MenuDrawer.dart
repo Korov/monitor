@@ -45,6 +45,8 @@ class MenuDrawer extends StatelessWidget {
                 children: <Widget>[
                   ExpansionTile(
                       title: Text(S.of(context).kafka),
+                      initiallyExpanded: true,
+                      childrenPadding: EdgeInsets.only(left: 16.0),
                       children: <Widget>[
                         ListTile(
                             title: Text(S.of(context).kafkaConfig),
@@ -87,6 +89,8 @@ class MenuDrawer extends StatelessWidget {
                             }),
                         ExpansionTile(
                             title: Text(S.of(context).kafkaOperator),
+                            initiallyExpanded: true,
+                            childrenPadding: EdgeInsets.only(left: 16.0),
                             children: <Widget>[
                               ListTile(
                                   title: Text(S.of(context).kafkaProducer)),
@@ -96,14 +100,17 @@ class MenuDrawer extends StatelessWidget {
                       ]),
                   ExpansionTile(
                       title: Text(S.of(context).zookeeper),
+                      initiallyExpanded: true,
+                      childrenPadding: EdgeInsets.only(left: 16.0),
                       children: <Widget>[
                         ListTile(
                           title: Text(S.of(context).zookeeperConfig),
                           onTap: () => {Log.i("tap the list tile")},
                         ),
-                        ElevatedButton(
-                            onPressed: () => Navigator.pop(context, "我是返回值"),
-                            child: Text(S.of(context).zookeeperTree)),
+                        ListTile(
+                          title: Text(S.of(context).zookeeperTree),
+                          onTap: () => {Log.i("tap the list tile")},
+                        ),
                       ]),
                 ],
               ),
