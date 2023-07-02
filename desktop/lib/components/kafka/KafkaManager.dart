@@ -19,6 +19,16 @@ class _KafkaManagerState extends State<KafkaManager> {
   final _nameController = TextEditingController();
   final _addressController = TextEditingController();
 
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  List<Widget> _bottomNavPages = []; // 底部导航栏各个可切换页面组
+
   _KafkaManagerState();
 
   List<DataRow> _rows = [];
@@ -26,8 +36,10 @@ class _KafkaManagerState extends State<KafkaManager> {
   @override
   void initState() {
     super.initState();
-    _updateTable();
-    Cache.cachedRoute.add("kafkaManager");
+    _bottomNavPages
+      ..add(TopicManager(text: 'Topic管理'))
+      ..add(ClusterManager(text: '集群管理'))
+      ..add(GroupManager(text: 'Group管理'));
   }
 
   @override
@@ -48,132 +60,16 @@ class _KafkaManagerState extends State<KafkaManager> {
         ],
       ),
       drawer: MenuDrawer(),
-      body: Center(
-        child: Column(
-          children: <Widget>[
-            ConstrainedBox(
-              constraints: BoxConstraints(
-                  minWidth: double.infinity,
-                  maxWidth: double.infinity,
-                  minHeight: 20.0),
-              child: DataTable(
-                sortColumnIndex: 1,
-                sortAscending: true,
-                columns: [
-                  DataColumn(
-                    label: Text('Cluster Name'),
-                  ),
-                  DataColumn(
-                      label: Text('Address'),
-                      numeric: true,
-                      onSort: (int columnIndex, bool ascending) {}),
-                  DataColumn(
-                    label: Text('Operation'),
-                  ),
-                ],
-                rows: _rows,
-              ),
-            ),
-            Flex(
-              direction: Axis.horizontal,
-              children: [
-                TextButton(
-                    onPressed: () async {
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return SimpleDialog(
-                              title: Text('Add Kafka Address'),
-                              children: <Widget>[
-                                Form(
-                                  key: _formKey,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: <Widget>[
-                                      Row(
-                                        children: [
-                                          Flexible(flex: 1, child: Text("名字：")),
-                                          Flexible(
-                                            flex: 2,
-                                            child: TextFormField(
-                                              controller: _nameController,
-                                              validator: (value) {
-                                                if (value == null ||
-                                                    value.isEmpty) {
-                                                  return '请输入名字';
-                                                }
-                                                return null;
-                                              },
-                                              decoration: InputDecoration(
-                                                hintText: '请输入名字',
-                                              ),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Flexible(flex: 1, child: Text("地址：")),
-                                          Flexible(
-                                            flex: 2,
-                                            child: TextFormField(
-                                              controller: _addressController,
-                                              validator: (value) {
-                                                if (value == null ||
-                                                    value.isEmpty) {
-                                                  return '请输入地址';
-                                                }
-                                                return null;
-                                              },
-                                              decoration: InputDecoration(
-                                                hintText: '请输入地址',
-                                              ),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Row(
-                                  children: [
-                                    TextButton(
-                                      child: Text('确定'),
-                                      onPressed: () {
-                                        if (_formKey.currentState != null) {
-                                          if (_formKey.currentState!
-                                              .validate()) {
-                                            Log.i(_nameController.text);
-                                            Log.i(_addressController.text);
-                                            _addConfig(_nameController.text,
-                                                _addressController.text);
-                                            _nameController.text = "";
-                                            _addressController.text = "";
-                                            // 执行保存操作
-                                            Navigator.of(context).pop();
-                                          }
-                                        }
-                                      },
-                                    ),
-                                    TextButton(
-                                      child: Text('取消'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            );
-                          });
-                    },
-                    child: Text("Add Environment")),
-              ],
-            ),
-          ],
-        ),
+      body: _bottomNavPages[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Topic管理'),
+          BottomNavigationBarItem(icon: Icon(Icons.business), label: '集群管理'),
+          BottomNavigationBarItem(icon: Icon(Icons.school), label: 'Group管理'),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.teal,
+        onTap: _onItemTapped,
       ),
     );
   }
@@ -218,5 +114,65 @@ class _KafkaManagerState extends State<KafkaManager> {
     dynamic data = response.data['data'];
     Log.i(data);
     _updateTable();
+  }
+}
+
+class GroupManager extends StatefulWidget {
+  GroupManager({
+    required this.text,
+  });
+
+  final String text;
+
+  @override
+  _GroupManager createState() => _GroupManager();
+}
+
+class _GroupManager extends State<GroupManager> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Text("GroupManager"),
+    );
+  }
+}
+
+class ClusterManager extends StatefulWidget {
+  ClusterManager({
+    required this.text,
+  });
+
+  final String text;
+
+  @override
+  _ClusterManager createState() => _ClusterManager();
+}
+
+class _ClusterManager extends State<ClusterManager> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Text("ClusterManager"),
+    );
+  }
+}
+
+class TopicManager extends StatefulWidget {
+  TopicManager({
+    required this.text,
+  });
+
+  final String text;
+
+  @override
+  _TopicManager createState() => _TopicManager();
+}
+
+class _TopicManager extends State<TopicManager> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Text("TopicManager"),
+    );
   }
 }
