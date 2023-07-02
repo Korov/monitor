@@ -169,10 +169,85 @@ class TopicManager extends StatefulWidget {
 }
 
 class _TopicManager extends State<TopicManager> {
+  String dropdownValue = '';
+
+  List<DropdownMenuItem<String>> dropdownList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    for (var value in ['One', 'Two', 'Three', 'Four']) {
+      DropdownMenuItem<String> dropdownMenuItem = new DropdownMenuItem<String>(
+        value: value,
+        child: Text(value),
+      );
+      dropdownList.add(dropdownMenuItem);
+    }
+    Log.i(dropdownList.length);
+    dropdownValue = dropdownList[0].value!;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Text("TopicManager"),
+      body: Column(
+        children: [
+          SizedBox(
+            height: 45.0,
+            width: double.infinity,
+            child: Row(
+              children: [
+                DropdownButton(
+                    hint: Text("请选择Kafka环境"),
+                    value: dropdownValue,
+                    items: dropdownList,
+                    onChanged: (value) {
+                      setState(() {
+                        dropdownValue = value!;
+                      });
+                      Log.i("chanaged value:$value");
+                    }),
+                DropdownButton(
+                    hint: Text("请选择Topic"),
+                    value: dropdownValue,
+                    items: dropdownList,
+                    onChanged: (value) {
+                      setState(() {
+                        dropdownValue = value!;
+                      });
+                      Log.i("chanaged value:$value");
+                    }),
+                TextButton(
+                  onPressed: () {
+                    Log.i("print button");
+                  },
+                  child: Text("button"),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+              child: ConstrainedBox(
+            constraints: BoxConstraints(
+                minWidth: double.infinity,
+                maxWidth: double.infinity,
+                minHeight: 20.0),
+            child: DataTable(
+              columns: [
+                DataColumn(
+                  label: Text('Cluster Name'),
+                ),
+                DataColumn(
+                    label: Text('Address'),
+                    numeric: true,
+                    onSort: (int columnIndex, bool ascending) {}),
+                DataColumn(label: Text('Operation'))
+              ],
+              rows: [],
+            ),
+          )),
+        ],
+      ),
     );
   }
 }
