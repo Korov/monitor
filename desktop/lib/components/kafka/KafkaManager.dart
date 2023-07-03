@@ -169,22 +169,53 @@ class TopicManager extends StatefulWidget {
 }
 
 class _TopicManager extends State<TopicManager> {
-  String dropdownValue = '';
+  String? dropdownValue = null;
 
   List<DropdownMenuItem<String>> dropdownList = [];
 
   @override
   void initState() {
     super.initState();
-    for (var value in ['One', 'Two', 'Three', 'Four']) {
+    /*for (var value in ['One', 'Two', 'Three', 'Four']) {
       DropdownMenuItem<String> dropdownMenuItem = new DropdownMenuItem<String>(
         value: value,
         child: Text(value),
       );
       dropdownList.add(dropdownMenuItem);
     }
-    Log.i(dropdownList.length);
-    dropdownValue = dropdownList[0].value!;
+    Log.i(dropdownList.length);*/
+    dropdownList.add(new DropdownMenuItem<String>(
+      value: '',
+      child: Text(''),
+    ));
+  }
+
+  _queryAllKafka() async {
+    FocusScopeNode currentFocus = FocusScope.of(context);
+    if (!currentFocus.hasPrimaryFocus) {
+      currentFocus.unfocus();
+    }
+    Response response =
+        await HttpUtils.get("http://localhost:8091/kafka/query");
+    List data = response.data['data'];
+    setState(() {
+      dropdownList = [];
+      for (var item in data) {
+        Log.i("name:${item['name']}, address:${item['broker']}");
+        DropdownMenuItem<String> dropdownMenuItem =
+            new DropdownMenuItem<String>(
+          value: item['name'],
+          child: Row(
+            children: [
+              Text(item['name']),
+              Text(item['broker']),
+            ],
+          ),
+        );
+        dropdownList.add(dropdownMenuItem);
+      }
+      Log.i(dropdownList.length);
+    });
   }
 
   @override
@@ -197,6 +228,28 @@ class _TopicManager extends State<TopicManager> {
             width: double.infinity,
             child: Row(
               children: [
+                FutureBuilder<List>(builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return DropdownButton(
+                      items: snapshot.data
+                          ?.map((option) => DropdownMenuItem(
+                                value: option['name'],
+                                child: Row(
+                                  children: [
+                                    Text(option['name']),
+                                    Text(option['broker']),
+                                  ],
+                                ),
+                              ))
+                          .toList(),
+                      onChanged: (value) {},
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text(snapshot.error.toString());
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                }),
                 DropdownButton(
                     hint: Text("请选择Kafka环境"),
                     value: dropdownValue,
@@ -206,17 +259,22 @@ class _TopicManager extends State<TopicManager> {
                         dropdownValue = value!;
                       });
                       Log.i("chanaged value:$value");
+                    },
+                    onTap: () {
+                      _queryAllKafka();
+                      Log.i("drop down tap");
                     }),
-                DropdownButton(
-                    hint: Text("请选择Topic"),
-                    value: dropdownValue,
-                    items: dropdownList,
-                    onChanged: (value) {
-                      setState(() {
-                        dropdownValue = value!;
-                      });
-                      Log.i("chanaged value:$value");
-                    }),
+                /*DropdownButton(
+                  hint: Text("请选择Topic"),
+                  value: dropdownValue,
+                  items: dropdownList,
+                  onChanged: (value) {
+                    setState(() {
+                      dropdownValue = value!;
+                    });
+                    Log.i("chanaged value:$value");
+                  },
+                ),*/
                 TextButton(
                   onPressed: () {
                     Log.i("print button");
