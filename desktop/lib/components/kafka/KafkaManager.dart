@@ -4,6 +4,7 @@ import 'package:desktop/utils/Log.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
+import '../../customize/TapDropDown.dart';
 import '../../model/KafkaConfig.dart';
 import '../../utils/Constant.dart';
 
@@ -190,32 +191,27 @@ class _TopicManager extends State<TopicManager> {
     ));
   }
 
-  _queryAllKafka() async {
+  Future<List<DropdownMenuItem<String>>> _queryAllKafka() async {
     Response response =
         await HttpUtils.get("http://localhost:8091/kafka/query");
-    HttpUtils.get("http://localhost:8091/kafka/query").then((value) {
-      List data = response.data['data'];
-      dropdownList = [];
-      setState(() {
-        dropdownList = [];
-        for (var item in data) {
-          Log.i("name:${item['name']}, address:${item['broker']}");
-          DropdownMenuItem<String> dropdownMenuItem =
-              new DropdownMenuItem<String>(
-            value: item['name'],
-            child: Row(
-              children: [
-                Text(item['name']),
-                Text(item['broker']),
-              ],
-            ),
-          );
-          dropdownList.add(dropdownMenuItem);
-        }
-        Log.i(dropdownList.length);
-      });
-    });
     List data = response.data['data'];
+    setState(() {
+      dropdownList = [];
+      for (var item in data) {
+        DropdownMenuItem<String> dropdownMenuItem =
+            new DropdownMenuItem<String>(
+          value: item['name'],
+          child: Row(
+            children: [
+              Text(item['name']),
+              Text(item['broker']),
+            ],
+          ),
+        );
+        dropdownList.add(dropdownMenuItem);
+      }
+    });
+    return dropdownList;
   }
 
   @override
@@ -250,7 +246,7 @@ class _TopicManager extends State<TopicManager> {
                     return CircularProgressIndicator();
                   }
                 }),
-                DropdownButton(
+                TapDropdownButton(
                     hint: Text("请选择Kafka环境"),
                     value: dropdownValue,
                     items: dropdownList,
@@ -261,9 +257,10 @@ class _TopicManager extends State<TopicManager> {
                       Log.i("chanaged value:$value");
                     },
                     onTap: () async {
-                      await _queryAllKafka();
-                      await Future.delayed(Duration(seconds: 3));
-                      Log.i("drop down tap");
+                      List<DropdownMenuItem<String>> listValue =
+                          await _queryAllKafka();
+                      Log.i("drop down tap end size:${listValue.length}");
+                      return listValue;
                     }),
                 /*DropdownButton(
                   hint: Text("请选择Topic"),
