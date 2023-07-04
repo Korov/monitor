@@ -191,31 +191,31 @@ class _TopicManager extends State<TopicManager> {
   }
 
   _queryAllKafka() async {
-    FocusScopeNode currentFocus = FocusScope.of(context);
-    if (!currentFocus.hasPrimaryFocus) {
-      currentFocus.unfocus();
-    }
     Response response =
         await HttpUtils.get("http://localhost:8091/kafka/query");
-    List data = response.data['data'];
-    setState(() {
+    HttpUtils.get("http://localhost:8091/kafka/query").then((value) {
+      List data = response.data['data'];
       dropdownList = [];
-      for (var item in data) {
-        Log.i("name:${item['name']}, address:${item['broker']}");
-        DropdownMenuItem<String> dropdownMenuItem =
-            new DropdownMenuItem<String>(
-          value: item['name'],
-          child: Row(
-            children: [
-              Text(item['name']),
-              Text(item['broker']),
-            ],
-          ),
-        );
-        dropdownList.add(dropdownMenuItem);
-      }
-      Log.i(dropdownList.length);
+      setState(() {
+        dropdownList = [];
+        for (var item in data) {
+          Log.i("name:${item['name']}, address:${item['broker']}");
+          DropdownMenuItem<String> dropdownMenuItem =
+              new DropdownMenuItem<String>(
+            value: item['name'],
+            child: Row(
+              children: [
+                Text(item['name']),
+                Text(item['broker']),
+              ],
+            ),
+          );
+          dropdownList.add(dropdownMenuItem);
+        }
+        Log.i(dropdownList.length);
+      });
     });
+    List data = response.data['data'];
   }
 
   @override
@@ -260,8 +260,9 @@ class _TopicManager extends State<TopicManager> {
                       });
                       Log.i("chanaged value:$value");
                     },
-                    onTap: () {
-                      _queryAllKafka();
+                    onTap: () async {
+                      await _queryAllKafka();
+                      await Future.delayed(Duration(seconds: 3));
                       Log.i("drop down tap");
                     }),
                 /*DropdownButton(
