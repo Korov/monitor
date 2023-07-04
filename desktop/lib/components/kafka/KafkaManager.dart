@@ -224,28 +224,6 @@ class _TopicManager extends State<TopicManager> {
             width: double.infinity,
             child: Row(
               children: [
-                FutureBuilder<List>(builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return DropdownButton(
-                      items: snapshot.data
-                          ?.map((option) => DropdownMenuItem(
-                                value: option['name'],
-                                child: Row(
-                                  children: [
-                                    Text(option['name']),
-                                    Text(option['broker']),
-                                  ],
-                                ),
-                              ))
-                          .toList(),
-                      onChanged: (value) {},
-                    );
-                  } else if (snapshot.hasError) {
-                    return Text(snapshot.error.toString());
-                  } else {
-                    return CircularProgressIndicator();
-                  }
-                }),
                 TapDropdownButton(
                     hint: Text("请选择Kafka环境"),
                     value: dropdownValue,
