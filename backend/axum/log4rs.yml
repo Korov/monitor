@@ -22,7 +22,7 @@ appenders:
         pattern: "log/monitor_{}.log"
 
 root:
-  level: debug
+  level: info
   appenders:
     - stdout
     - logFile
