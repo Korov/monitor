@@ -1,0 +1,28 @@
+refresh_rate: 10 seconds
+
+appenders:
+  stdout:
+    kind: console
+    encoder:
+      pattern: "{h({d(%Y-%m-%d %H:%M:%S)(utc)} - {l}: [{f}:{L}] {m}{n})}"
+
+  logFile:
+    kind: rolling_file
+    path: "logs/monitor.log"
+    encoder:
+      pattern: "{d(%Y-%m-%d %H:%M:%S)(utc)} - {h({l})}: [{f}:{L}] {m}{n}"
+    policy:
+      trigger:
+        kind: size
+        limit: 20mb
+      roller:
+        kind: fixed_window
+        base: 1
+        count: 10
+        pattern: "log/monitor_{}.log"
+
+root:
+  level: debug
+  appenders:
+    - stdout
+    - logFile

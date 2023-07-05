@@ -1,0 +1,16 @@
+[package]
+name = "monitor"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "monitor_lib"
+path = "src/lib.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+log = "0.4.19"
+log4rs = "1.2.0"
+axum = "0.6.18"
+tokio = { version = "1.29.1", features = ["full"] }
