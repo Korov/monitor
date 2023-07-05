@@ -1,3 +1,5 @@
+pub mod routes;
+
 use log::info;
 
 pub struct Person {
