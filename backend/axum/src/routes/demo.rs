@@ -7,7 +7,8 @@ use axum::{extract::State, routing::get};
 use log::info;
 use sqlx::{MySql, Pool, Row};
 
-use crate::KafkaSource;
+use super::entity::KafkaSource;
+
 
 pub struct AppState {
     pub db: Pool<MySql>,
