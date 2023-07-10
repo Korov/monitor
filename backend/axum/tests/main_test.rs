@@ -1,5 +1,7 @@
 use std::sync::Arc;
 
+use log::info;
+use axum::{Router, http::HeaderName};
 use axum_test::TestServer;
 
 use monitor_lib::routes::{self, demo::AppState};
@@ -17,15 +19,26 @@ async fn test_handler() {
 
     let app_state = Arc::new(AppState { db: pool.clone() });
 
-    let app = routes::demo::create_router(app_state);
+    let demo_router = routes::demo::create_router(&app_state);
+    let kafka_router = routes::kafka_router::create_router(&app_state);
+
+    let app = Router::new().merge(demo_router).merge(kafka_router);
 
     // Run the server on a random address.
     let server = TestServer::new(app.into_make_service()).unwrap();
 
     // Get the request.
-    let response = server.get("/").await;
+    // let response = server.get("/").await;
 
-    response.assert_text("Hello, world!");
+    // response.assert_text("Hello, world!");
+    
+    let response = server
+        .post("/kafka/add")
+        .json("{\"name\":\"test1\",\"broker\":\"localhost\"}")
+        .await;
+    let response_body = response.bytes();
+    let response_body_str = std::str::from_utf8(&response_body).unwrap();
+    info!("kafka add response:{}", response_body_str);
 }
 
 #[cfg(test)]

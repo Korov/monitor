@@ -1,8 +1,8 @@
 use std::fmt;
 
-use axum::{body, response::IntoResponse};
 use serde::{Deserialize, Serialize};
 
+#[derive(Debug, serde::Deserialize, serde::Serialize)]
 pub struct Response<T: std::fmt::Display> {
     pub code: i64,
     pub message: String,
@@ -15,20 +15,11 @@ impl<T: std::fmt::Display> fmt::Display for Response<T> {
     }
 }
 
-impl<T: std::fmt::Display> IntoResponse for Response<T> {
-    type Body = String;
-    type BodyError = std::io::Error;
-
-    fn into_response(self) -> axum::http::Response<Self::Body> {
-        Response::new(body::boxed(self))
-    }
-}
-
 #[derive(sqlx::FromRow, Debug, Serialize, Deserialize)]
 pub struct KafkaSource {
-    id: i64,
-    name: String,
-    broker: String,
+    pub id: i64,
+    pub name: String,
+    pub broker: String,
 }
 
 impl fmt::Display for KafkaSource {
