@@ -27,3 +27,13 @@ async fn test_handler() {
 
     response.assert_text("Hello, world!");
 }
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    #[should_panic(expected = "Guess value must be less than or equal to 100")]
+    fn print() {
+        log4rs::init_file("log4rs.yml", Default::default()).unwrap();
+        print!("test print")
+    }
+}
