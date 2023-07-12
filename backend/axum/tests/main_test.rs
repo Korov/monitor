@@ -1,8 +1,7 @@
 use std::sync::Arc;
 
-use log::info;
-use axum::{Router, http::HeaderName};
-use axum_test::TestServer;
+use axum::{http::StatusCode, Router};
+use axum_test_helper::TestClient;
 
 use monitor_lib::routes::{self, demo::AppState};
 use sqlx::mysql::MySqlPoolOptions;
@@ -23,22 +22,26 @@ async fn test_handler() {
     let kafka_router = routes::kafka_router::create_router(&app_state);
 
     let app = Router::new().merge(demo_router).merge(kafka_router);
+    let client = TestClient::new(app);
 
-    // Run the server on a random address.
-    let server = TestServer::new(app.into_make_service()).unwrap();
-
-    // Get the request.
-    // let response = server.get("/").await;
-
-    // response.assert_text("Hello, world!");
-    
-    let response = server
-        .post("/kafka/add")
-        .json("{\"name\":\"test1\",\"broker\":\"localhost\"}")
+    let mut get_response = client
+        .get("/")
+        .header("content-type", "application/json")
+        .body("{\"name\":\"test1\",\"broker\":\"localhost\"}")
+        .send()
         .await;
-    let response_body = response.bytes();
-    let response_body_str = std::str::from_utf8(&response_body).unwrap();
-    info!("kafka add response:{}", response_body_str);
+    assert_eq!(get_response.status(), StatusCode::OK);
+    let body = get_response.chunk_text().await.unwrap();
+    assert_eq!(&body, "Hello, world!");
+
+    let response = client
+        .post("/kafka/add")
+        .header("content-type", "application/json")
+        .body("{\"name\":\"test1\",\"broker\":\"localhost\"}")
+        .send()
+        .await;
+
+    assert_eq!(response.status(), StatusCode::OK);
 }
 
 #[cfg(test)]

@@ -17,6 +17,7 @@ impl<T: std::fmt::Display> fmt::Display for Response<T> {
 
 #[derive(sqlx::FromRow, Debug, Serialize, Deserialize)]
 pub struct KafkaSource {
+    #[serde(default)]
     pub id: i64,
     pub name: String,
     pub broker: String,
