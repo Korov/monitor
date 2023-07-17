@@ -1,6 +1,11 @@
 use std::fmt;
 
 use serde::{Deserialize, Serialize};
+use sqlx::{Pool, MySql};
+
+pub struct AppState {
+    pub db: Pool<MySql>,
+}
 
 #[derive(Debug, serde::Deserialize, serde::Serialize)]
 pub struct Response<T: std::fmt::Display> {

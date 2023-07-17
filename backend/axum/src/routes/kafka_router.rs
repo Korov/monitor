@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use super::{demo::AppState, entity::KafkaSource};
+use super::entity::{AppState, KafkaSource};
 use axum::{routing::post, Json, Router};
 use log::info;
 

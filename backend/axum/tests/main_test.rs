@@ -3,11 +3,10 @@ use std::sync::Arc;
 use axum::{http::StatusCode, Router};
 use axum_test_helper::TestClient;
 
-use monitor_lib::routes::{self, demo::AppState};
+use monitor_lib::routes::{self, entity::AppState};
 use sqlx::mysql::MySqlPoolOptions;
 
-#[tokio::test]
-async fn test_handler() {
+async fn get_client() -> TestClient {
     log4rs::init_file("log4rs.yml", Default::default()).unwrap();
     let db_url = "mysql://monitor:monitor@localhost:3309/monitor";
     let pool = MySqlPoolOptions::new()
@@ -18,21 +17,14 @@ async fn test_handler() {
 
     let app_state = Arc::new(AppState { db: pool.clone() });
 
-    let demo_router = routes::demo::create_router(&app_state);
     let kafka_router = routes::kafka_router::create_router(&app_state);
+    let app = Router::new().merge(kafka_router);
+    TestClient::new(app)
+}
 
-    let app = Router::new().merge(demo_router).merge(kafka_router);
-    let client = TestClient::new(app);
-
-    let mut get_response = client
-        .get("/")
-        .header("content-type", "application/json")
-        .body("{\"name\":\"test1\",\"broker\":\"localhost\"}")
-        .send()
-        .await;
-    assert_eq!(get_response.status(), StatusCode::OK);
-    let body = get_response.chunk_text().await.unwrap();
-    assert_eq!(&body, "Hello, world!");
+#[tokio::test]
+async fn test_handler() {
+    let client = get_client().await;
 
     let response = client
         .post("/kafka/add")
@@ -46,10 +38,12 @@ async fn test_handler() {
 
 #[cfg(test)]
 mod tests {
+    use log::info;
+
     #[test]
-    #[should_panic(expected = "Guess value must be less than or equal to 100")]
     fn print() {
         log4rs::init_file("log4rs.yml", Default::default()).unwrap();
+        info!("aaa");
         print!("test print")
     }
 }
