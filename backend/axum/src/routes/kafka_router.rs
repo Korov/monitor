@@ -1,9 +1,10 @@
+use futures_util::TryStreamExt;
 use std::{collections::HashMap, sync::Arc};
 
 use super::entity::{AppState, KafkaSource, Response};
 use axum::{
     extract::Query,
-    routing::{delete, post},
+    routing::{delete, get, post},
     Json, Router,
 };
 use log::info;
@@ -22,6 +23,13 @@ pub fn create_router(app_state: &Arc<AppState>) -> Router {
             delete({
                 let shared_state = Arc::clone(app_state);
                 move |body| delte_kafka_source(body, shared_state)
+            }),
+        )
+        .route(
+            "/kafka/query",
+            get({
+                let shared_state = Arc::clone(app_state);
+                || query_kafka_source(shared_state)
             }),
         )
 }
@@ -50,7 +58,7 @@ async fn delte_kafka_source(
     Query(params): Query<HashMap<String, String>>,
     state: Arc<AppState>,
 ) -> Json<Response<KafkaSource>> {
-    let id = params.get("id").unwrap().parse::<i32>().unwrap_or(0);
+    let id = params.get("id").unwrap().parse::<i64>().unwrap_or(0);
     if id <= 0 {
         return Json(Response {
             code: 0,
@@ -69,5 +77,20 @@ async fn delte_kafka_source(
         code: 1,
         message: None,
         data: None,
+    })
+}
+
+async fn query_kafka_source(state: Arc<AppState>) -> Json<Response<Vec<KafkaSource>>> {
+    let mut stream =
+        sqlx::query_as::<_, KafkaSource>("SELECT * FROM kafka_source").fetch(&state.db);
+    let mut sources = Vec::new();
+    while let Some(source) = stream.try_next().await.unwrap() {
+        sources.push(source);
+    }
+    info!("query all source size:{}", sources.len());
+    Json(Response {
+        code: 1,
+        message: None,
+        data: Some(sources),
     })
 }

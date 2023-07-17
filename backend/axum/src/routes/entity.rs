@@ -8,7 +8,7 @@ pub struct AppState {
 }
 
 #[derive(Debug, serde::Deserialize, serde::Serialize)]
-pub struct Response<T: std::fmt::Display> {
+pub struct Response<T> {
     pub code: i64,
     pub message: Option<String>,
     pub data: Option<T>,
@@ -16,7 +16,7 @@ pub struct Response<T: std::fmt::Display> {
 
 impl<T> fmt::Display for Response<T>
 where
-    T: std::fmt::Display + std::fmt::Debug,
+    T: std::fmt::Debug,
 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
