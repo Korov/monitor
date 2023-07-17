@@ -1,7 +1,7 @@
 use std::fmt;
 
 use serde::{Deserialize, Serialize};
-use sqlx::{Pool, MySql};
+use sqlx::{MySql, Pool};
 
 pub struct AppState {
     pub db: Pool<MySql>,
@@ -10,13 +10,20 @@ pub struct AppState {
 #[derive(Debug, serde::Deserialize, serde::Serialize)]
 pub struct Response<T: std::fmt::Display> {
     pub code: i64,
-    pub message: String,
-    pub data: T,
+    pub message: Option<String>,
+    pub data: Option<T>,
 }
 
-impl<T: std::fmt::Display> fmt::Display for Response<T> {
+impl<T> fmt::Display for Response<T>
+where
+    T: std::fmt::Display + std::fmt::Debug,
+{
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "({}, {}, {})", self.code, self.message, self.data)
+        write!(
+            f,
+            "Response {{ code: {}, message: {:?}, data: {:?} }}",
+            self.code, self.message, self.data
+        )
     }
 }
 
