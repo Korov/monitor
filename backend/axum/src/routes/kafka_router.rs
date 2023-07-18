@@ -1,7 +1,7 @@
-use futures_util::TryStreamExt;
+use futures_util::{TryStreamExt, __private::async_await};
 use std::{collections::HashMap, sync::Arc};
 
-use super::entity::{AppState, KafkaSource, Response};
+use super::entity::{AppState, KafkaSource, PageVO, Response};
 use axum::{
     extract::Query,
     routing::{delete, get, post},
@@ -92,5 +92,28 @@ async fn query_kafka_source(state: Arc<AppState>) -> Json<Response<Vec<KafkaSour
         code: 1,
         message: None,
         data: Some(sources),
+    })
+}
+
+async fn page_query_kafka_source(state: Arc<AppState>) -> Json<PageVO<KafkaSource>> {
+    let total: (i64,) =
+        sqlx::query_as(, "SELECT COUNT(*) as count FROM kafka_source")
+            .fetch_one(&state.db)
+            .await;
+
+    let mut stream = sqlx::query_as::<_, KafkaSource>("SELECT * FROM kafka_source LIMIT ?,?")
+        .bind(1)
+        .bind(10)
+        .fetch(&state.db);
+    let mut sources = Vec::new();
+    while let Some(source) = stream.try_next().await.unwrap() {
+        sources.push(source);
+    }
+    info!("query all source size:{}", sources.len());
+    Json(PageVO {
+        total: 10,
+        start_page: 1,
+        page_size: 10,
+        page_data: None,
     })
 }

@@ -27,6 +27,27 @@ where
     }
 }
 
+#[derive(Debug, serde::Deserialize, serde::Serialize)]
+pub struct PageVO<T> {
+    pub total: i64,
+    pub start_page: i64,
+    pub page_size: i64,
+    pub page_data: Option<Vec<T>>,
+}
+
+impl<T> fmt::Display for PageVO<T>
+where
+    T: std::fmt::Debug,
+{
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "PageVO {{ start_page: {}, page_size: {}, total: {}, page_data: {:?} }}",
+            self.start_page, self.page_size, self.total, self.page_data
+        )
+    }
+}
+
 #[derive(sqlx::FromRow, Debug, Serialize, Deserialize)]
 pub struct KafkaSource {
     #[serde(default)]
