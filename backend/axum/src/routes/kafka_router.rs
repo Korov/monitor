@@ -1,4 +1,4 @@
-use futures_util::{FutureExt, TryStreamExt};
+use futures_util::TryStreamExt;
 use std::{collections::HashMap, sync::Arc};
 
 use super::entity::{AppState, KafkaSource, PageVO, Response};
@@ -7,7 +7,7 @@ use axum::{
     routing::{delete, get, post},
     Json, Router,
 };
-use log::info;
+use log::{error, info};
 
 pub fn create_router(app_state: &Arc<AppState>) -> Router {
     Router::new()
@@ -106,12 +106,35 @@ async fn page_query_kafka_source(
     Query(params): Query<HashMap<String, String>>,
     state: Arc<AppState>,
 ) -> Json<PageVO<KafkaSource>> {
-    info!("param:{:?}", params);
+    info!("param:{:?}", params.get("start_page"));
+    info!("param:{:?}", params.contains_key("start_page"));
+    let mut start_page: i64 = 1;
+    let mut page_size: i64 = 10;
+    if params.contains_key("start_page") {
+        start_page = match params.get("start_page").unwrap().parse::<i64>() {
+            Ok(n) => n,
+            Err(_) => {
+                error!("invalid start_page:{:?}", params.get("start_page").unwrap());
+                1
+            }
+        };
+    }
+    if params.contains_key("page_size") {
+        page_size = match params.get("page_size").unwrap().parse::<i64>() {
+            Ok(n) => n,
+            Err(_) => {
+                error!("invalid start_page:{:?}", params.get("page_size").unwrap());
+                10
+            }
+        };
+    }
+    info!("start_page:{}, page_size:{}", start_page, page_size);
 
-    let total: i64 = sqlx::query_as::<i64, _, _>("SELECT COUNT(*) as count FROM kafka_source")
+    let total = sqlx::query_as::<_, (i64,)>("SELECT COUNT(*) as count FROM kafka_source")
         .fetch_one(&state.db)
-        .await;
-    info!("total:{:?}", total);
+        .await
+        .unwrap()
+        .0;
 
     let mut stream = sqlx::query_as::<_, KafkaSource>("SELECT * FROM kafka_source LIMIT ?,?")
         .bind(1)
@@ -123,9 +146,9 @@ async fn page_query_kafka_source(
     }
     info!("query all source size:{}", sources.len());
     Json(PageVO {
-        total: 10,
-        start_page: 1,
-        page_size: 10,
+        total,
+        start_page,
+        page_size,
         page_data: None,
     })
 }
