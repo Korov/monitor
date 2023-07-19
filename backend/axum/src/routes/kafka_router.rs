@@ -130,11 +130,8 @@ async fn page_query_kafka_source(
     }
     info!("start_page:{}, page_size:{}", start_page, page_size);
 
-    let total = sqlx::query_as::<_, (i64,)>("SELECT COUNT(*) as count FROM kafka_source")
-        .fetch_one(&state.db)
-        .await
-        .unwrap()
-        .0;
+    let total_future = sqlx::query_as::<_, (i64,)>("SELECT COUNT(*) as count FROM kafka_source")
+        .fetch_one(&state.db);
 
     let mut stream = sqlx::query_as::<_, KafkaSource>("SELECT * FROM kafka_source LIMIT ?,?")
         .bind(1)
@@ -144,7 +141,8 @@ async fn page_query_kafka_source(
     while let Some(source) = stream.try_next().await.unwrap() {
         sources.push(source);
     }
-    info!("query all source size:{}", sources.len());
+    let total = total_future.await.unwrap().0;
+    info!("query all source size:{}, total:{}", sources.len(), total);
     Json(PageVO {
         total,
         start_page,
