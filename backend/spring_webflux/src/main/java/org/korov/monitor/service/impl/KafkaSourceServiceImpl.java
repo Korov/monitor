@@ -88,7 +88,7 @@ public class KafkaSourceServiceImpl implements KafkaSourceService {
     public Mono<List<String>> getConsumers(Long sourceId, String topic) {
         Mono<KafkaSource> optional = kafkaSourceRepository.findById(sourceId);
         return optional.map(source -> KafkaUtils.getConsumers(source.getBroker(), topic));
-    }ss
+    }
 
     @Override
     public Mono<List<Map<String, Object>>> getConsumerDetail(Long sourceId, String group) {

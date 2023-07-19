@@ -1,4 +1,4 @@
-use futures_util::{TryStreamExt, __private::async_await};
+use futures_util::{FutureExt, TryStreamExt};
 use std::{collections::HashMap, sync::Arc};
 
 use super::entity::{AppState, KafkaSource, PageVO, Response};
@@ -30,6 +30,13 @@ pub fn create_router(app_state: &Arc<AppState>) -> Router {
             get({
                 let shared_state = Arc::clone(app_state);
                 || query_kafka_source(shared_state)
+            }),
+        )
+        .route(
+            "/kafka/page/query",
+            get({
+                let shared_state = Arc::clone(app_state);
+                move |body| page_query_kafka_source(body, shared_state)
             }),
         )
 }
@@ -95,11 +102,16 @@ async fn query_kafka_source(state: Arc<AppState>) -> Json<Response<Vec<KafkaSour
     })
 }
 
-async fn page_query_kafka_source(state: Arc<AppState>) -> Json<PageVO<KafkaSource>> {
-    let total: (i64,) =
-        sqlx::query_as(, "SELECT COUNT(*) as count FROM kafka_source")
-            .fetch_one(&state.db)
-            .await;
+async fn page_query_kafka_source(
+    Query(params): Query<HashMap<String, String>>,
+    state: Arc<AppState>,
+) -> Json<PageVO<KafkaSource>> {
+    info!("param:{:?}", params);
+
+    let total: i64 = sqlx::query_as::<i64, _, _>("SELECT COUNT(*) as count FROM kafka_source")
+        .fetch_one(&state.db)
+        .await;
+    info!("total:{:?}", total);
 
     let mut stream = sqlx::query_as::<_, KafkaSource>("SELECT * FROM kafka_source LIMIT ?,?")
         .bind(1)
