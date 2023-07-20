@@ -6,12 +6,11 @@ mod tests {
     #[test]
     fn print() {
         log4rs::init_file("log4rs.yml", Default::default()).unwrap();
-        info!("test");
-        let mut brokers = Vec::new();
-        brokers.push("localhost:9092".to_string());
-        // Create a Kafka client
-        let mut kafka_client = KafkaClient::new(brokers);
-        let all_metadata = kafka_client.load_metadata_all();
-        info!("metadata:{:?}", all_metadata.unwrap());
+
+        let mut client = KafkaClient::new(vec!["192.168.50.8:9095".to_owned()]);
+        client.load_metadata_all().unwrap();
+        for topic in client.topics().names() {
+            info!("topic: {}", topic);
+        }
     }
 }
