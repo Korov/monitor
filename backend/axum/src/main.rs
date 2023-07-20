@@ -1,9 +1,11 @@
-use axum::Router;
-use monitor_lib::routes;
-use monitor_lib::routes::entity::AppState;
-use sqlx::mysql::MySqlPoolOptions;
 use std::net::SocketAddr;
 use std::sync::Arc;
+
+use axum::Router;
+use sqlx::mysql::MySqlPoolOptions;
+
+use monitor_lib::routes;
+use monitor_lib::routes::entity::AppState;
 
 #[tokio::main]
 async fn main() {
@@ -18,8 +20,9 @@ async fn main() {
     let app_state = Arc::new(AppState { db: pool.clone() });
 
     let kafka_router = routes::kafka_router::create_router(&app_state);
+    let ws_router = routes::websocket_server::create_router(&app_state);
 
-    let app = Router::new().merge(kafka_router);
+    let app = Router::new().merge(kafka_router).merge(ws_router);
 
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));

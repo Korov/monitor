@@ -12,7 +12,7 @@ path = "src/lib.rs"
 [dependencies]
 log = "0.4.19"
 log4rs = "1.2.0"
-axum = "0.6.18"
+axum = {version = "0.6.19", features = ["ws"]}
 tokio = { version = "1.29.1", features = ["full"] }
 # 使用 tokio 运行时,MySQL 数据库,开启 query! 等宏的支持
 sqlx = { version = "0.7", features = [
