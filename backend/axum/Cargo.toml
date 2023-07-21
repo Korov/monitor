@@ -27,6 +27,7 @@ serde_json = "1.0.100"
 mime = "0.3.17"
 tracing = "0.1.37"
 rdkafka = { version = "0.25", features = ["cmake-build"] }
+zookeeper = "0.7.0"
 
 [dev-dependencies]
 axum-test-helper = "0.3.0"
