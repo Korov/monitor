@@ -22,7 +22,7 @@ pub fn create_router(app_state: &Arc<AppState>) -> Router {
             "/kafka/delete",
             delete({
                 let shared_state = Arc::clone(app_state);
-                move |body| delte_kafka_source(body, shared_state)
+                move |params| delte_kafka_source(params, shared_state)
             }),
         )
         .route(
