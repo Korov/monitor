@@ -65,3 +65,9 @@ impl fmt::Display for KafkaSource {
         )
     }
 }
+
+#[derive(Debug, serde::Deserialize, serde::Serialize)]
+pub struct TopicVO {
+    pub name: String,
+    pub is_internal: bool,
+}

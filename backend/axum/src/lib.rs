@@ -15,6 +15,7 @@ use tracing_subscriber::{
 };
 
 pub mod routes;
+pub mod utils;
 
 // 用来格式化日志的输出时间格式
 struct LocalTimer;
@@ -25,13 +26,33 @@ impl FormatTime for LocalTimer {
     }
 }
 
+pub async fn init_env() {
+    // 从文件中读取环境变量并将其设置为系统变量
+    if let Ok(file) = File::open(".env") {
+        let reader = BufReader::new(file);
+        for line in reader.lines() {
+            if let Ok(line) = line {
+                let mut parts = line.split('=');
+                if let Some(key) = parts.next() {
+                    if let Some(value) = parts.next() {
+                        env::set_var(key, value);
+                        debug!(".env file add key:{}, value:{}", key, value);
+                    }
+                }
+            }
+        }
+    }
+}
+
+
 pub async fn init_tracing() {
+    init_env().await;
     let env_filter = EnvFilter::from_default_env().add_directive(Level::INFO.into());
 
     let file_appender = tracing_appender::rolling::daily(env::var("log_dir").unwrap(), env::var("log_file_name").unwrap());
     let (non_blocking, _guard) = tracing_appender::non_blocking(file_appender);
     // 初始化并设置日志格式(定制和筛选日志)
-    let file_layer = fmt::layer()
+    let file_layer: fmt::Layer<tracing_subscriber::layer::Layered<EnvFilter, tracing_subscriber::Registry>, fmt::format::DefaultFields, fmt::format::Format<fmt::format::Full, LocalTimer>, tracing_appender::non_blocking::NonBlocking> = fmt::layer()
         .event_format(fmt::format().with_timer(LocalTimer))
         .with_writer(io::stdout)
         .with_writer(non_blocking)
@@ -54,22 +75,6 @@ pub async fn init_tracing() {
 }
 
 pub async fn create_app() -> Router {
-    // 从文件中读取环境变量并将其设置为系统变量
-    if let Ok(file) = File::open(".env") {
-        let reader = BufReader::new(file);
-        for line in reader.lines() {
-            if let Ok(line) = line {
-                let mut parts = line.split('=');
-                if let Some(key) = parts.next() {
-                    if let Some(value) = parts.next() {
-                        env::set_var(key, value);
-                        debug!(".env file add key:{}, value:{}", key, value);
-                    }
-                }
-            }
-        }
-    }
-
     init_tracing().await;
 
     let db_url = env::var("mysql_url").unwrap();
