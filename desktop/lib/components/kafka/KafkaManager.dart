@@ -177,14 +177,6 @@ class _TopicManager extends State<TopicManager> {
   @override
   void initState() {
     super.initState();
-    /*for (var value in ['One', 'Two', 'Three', 'Four']) {
-      DropdownMenuItem<String> dropdownMenuItem = new DropdownMenuItem<String>(
-        value: value,
-        child: Text(value),
-      );
-      dropdownList.add(dropdownMenuItem);
-    }
-    Log.i(dropdownList.length);*/
     dropdownList.add(new DropdownMenuItem<String>(
       value: '',
       child: Text(''),
@@ -240,17 +232,6 @@ class _TopicManager extends State<TopicManager> {
                       Log.i("drop down tap end size:${listValue.length}");
                       return listValue;
                     }),
-                /*DropdownButton(
-                  hint: Text("请选择Topic"),
-                  value: dropdownValue,
-                  items: dropdownList,
-                  onChanged: (value) {
-                    setState(() {
-                      dropdownValue = value!;
-                    });
-                    Log.i("chanaged value:$value");
-                  },
-                ),*/
                 TextButton(
                   onPressed: () {
                     Log.i("print button");
