@@ -67,12 +67,10 @@ class MenuDrawer extends StatelessWidget {
                         ListTile(
                             title: Text(S.of(context).kafkaManager),
                             onTap: () async {
-                              Log.i(Cache.cachedRoute);
                               if (Cache.cachedRoute.contains("kafkaManager")) {
                                 return;
                               }
                               Cache.cachedRoute.add("kafkaManager");
-                              Log.i(Cache.cachedRoute);
                               var result = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -83,9 +81,6 @@ class MenuDrawer extends StatelessWidget {
                                   },
                                 ),
                               );
-                              Log.i(Cache.cachedRoute);
-                              //输出`TipRoute`路由返回结果
-                              Log.i("路由返回值: $result");
                             }),
                         ExpansionTile(
                             title: Text(S.of(context).kafkaOperator),

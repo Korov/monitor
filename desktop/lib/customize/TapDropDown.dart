@@ -1269,12 +1269,9 @@ class _TapDropdownButtonState<T> extends State<TapDropdownButton<T>>
       widget.style ?? Theme.of(context).textTheme.titleMedium;
 
   Future<void> _handleTap() async {
-    Log.i("handle 1 tap ${widget.items?.length}");
     List<DropdownMenuItem<T>>? listValue = await widget.onTap?.call();
     widget.items = listValue;
-    Log.i("handle 2 tap ${widget.items?.length}");
 
-    Log.i("debug tap");
     final TextDirection? textDirection = Directionality.maybeOf(context);
     final EdgeInsetsGeometry menuMargin =
         ButtonTheme.of(context).alignedDropdown
@@ -1336,7 +1333,6 @@ class _TapDropdownButtonState<T> extends State<TapDropdownButton<T>>
       }
       widget.onChanged?.call(newValue.result);
     });
-    Log.i(widget.items?.length);
   }
 
   // When isDense is true, reduce the height of this button from _kMenuItemHeight to

@@ -177,10 +177,7 @@ class _TopicManager extends State<TopicManager> {
   @override
   void initState() {
     super.initState();
-    dropdownList.add(new DropdownMenuItem<String>(
-      value: '',
-      child: Text(''),
-    ));
+    _queryAllKafka();
   }
 
   Future<List<DropdownMenuItem<String>>> _queryAllKafka() async {
@@ -190,10 +187,10 @@ class _TopicManager extends State<TopicManager> {
     setState(() {
       dropdownList = [];
       for (var item in data) {
-        DropdownMenuItem<String> dropdownMenuItem =
-            new DropdownMenuItem<String>(
-          value: item['name'],
+        DropdownMenuItem<String> dropdownMenuItem = DropdownMenuItem<String>(
+          value: item['id'].toString(),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(item['name']),
               Text(item['broker']),
@@ -224,12 +221,11 @@ class _TopicManager extends State<TopicManager> {
                       setState(() {
                         dropdownValue = value!;
                       });
-                      Log.i("chanaged value:$value");
+                      Log.i("changed value:$dropdownValue");
                     },
                     onTap: () async {
                       List<DropdownMenuItem<String>> listValue =
                           await _queryAllKafka();
-                      Log.i("drop down tap end size:${listValue.length}");
                       return listValue;
                     }),
                 TextButton(
