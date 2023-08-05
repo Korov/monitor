@@ -170,9 +170,11 @@ class TopicManager extends StatefulWidget {
 }
 
 class _TopicManager extends State<TopicManager> {
-  String? dropdownValue = null;
+  String? brokerDropdownValue = null;
+  List<DropdownMenuItem<String>> brokerDropdownList = [];
 
-  List<DropdownMenuItem<String>> dropdownList = [];
+  String? topicDropdownValue = null;
+  List<DropdownMenuItem<String>> topicDropdownList = [];
 
   @override
   void initState() {
@@ -185,7 +187,7 @@ class _TopicManager extends State<TopicManager> {
         await HttpUtils.get("http://localhost:8091/kafka/query");
     List data = response.data['data'];
     setState(() {
-      dropdownList = [];
+      brokerDropdownList = [];
       for (var item in data) {
         DropdownMenuItem<String> dropdownMenuItem = DropdownMenuItem<String>(
           value: item['id'].toString(),
@@ -193,14 +195,19 @@ class _TopicManager extends State<TopicManager> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(item['name']),
-              Text(item['broker']),
+              Text(
+                item['broker'],
+                style: TextStyle(
+                  color: Colors.black45,
+                ),
+              ),
             ],
           ),
         );
-        dropdownList.add(dropdownMenuItem);
+        brokerDropdownList.add(dropdownMenuItem);
       }
     });
-    return dropdownList;
+    return brokerDropdownList;
   }
 
   @override
@@ -215,17 +222,30 @@ class _TopicManager extends State<TopicManager> {
               children: [
                 TapDropdownButton(
                     hint: Text("请选择Kafka环境"),
-                    value: dropdownValue,
-                    items: dropdownList,
+                    value: brokerDropdownValue,
+                    items: brokerDropdownList,
                     onChanged: (value) {
                       setState(() {
-                        dropdownValue = value!;
+                        brokerDropdownValue = value!;
                       });
-                      Log.i("changed value:$dropdownValue");
                     },
                     onTap: () async {
                       List<DropdownMenuItem<String>> listValue =
                           await _queryAllKafka();
+                      return listValue;
+                    }),
+                TapDropdownButton(
+                    hint: Text("请输入topic"),
+                    value: brokerDropdownValue,
+                    items: brokerDropdownList,
+                    onChanged: (value) {
+                      setState(() {
+                        brokerDropdownValue = value!;
+                      });
+                    },
+                    onTap: () async {
+                      List<DropdownMenuItem<String>> listValue =
+                      await _queryAllKafka();
                       return listValue;
                     }),
                 TextButton(
