@@ -210,6 +210,25 @@ class _TopicManager extends State<TopicManager> {
     return brokerDropdownList;
   }
 
+  Future<List<DropdownMenuItem<String>>> _queryKafkaTopic(
+      String? sourceId, String? keyword) async {
+    String url = "http://localhost:8091/kafka/topic/query?sourceId=$sourceId";
+    if (keyword != null) {
+      url = url + "&keyword=$keyword";
+    }
+    Response response = await HttpUtils.get(url);
+    List data = response.data['data'];
+    setState(() {
+      topicDropdownList = [];
+      for (var item in data) {
+        DropdownMenuItem<String> dropdownMenuItem = DropdownMenuItem<String>(
+            value: item['name'], child: Text(item['name']));
+        topicDropdownList.add(dropdownMenuItem);
+      }
+    });
+    return topicDropdownList;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -225,8 +244,9 @@ class _TopicManager extends State<TopicManager> {
                     value: brokerDropdownValue,
                     items: brokerDropdownList,
                     onChanged: (value) {
-                      setState(() {
+                      setState(() async {
                         brokerDropdownValue = value!;
+                        await _queryKafkaTopic(brokerDropdownValue, null);
                       });
                     },
                     onTap: () async {
@@ -236,16 +256,16 @@ class _TopicManager extends State<TopicManager> {
                     }),
                 TapDropdownButton(
                     hint: Text("请输入topic"),
-                    value: brokerDropdownValue,
-                    items: brokerDropdownList,
+                    value: topicDropdownValue,
+                    items: topicDropdownList,
                     onChanged: (value) {
                       setState(() {
-                        brokerDropdownValue = value!;
+                        topicDropdownValue = value!;
                       });
                     },
                     onTap: () async {
                       List<DropdownMenuItem<String>> listValue =
-                      await _queryAllKafka();
+                          await _queryKafkaTopic(brokerDropdownValue, null);
                       return listValue;
                     }),
                 TextButton(
