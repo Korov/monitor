@@ -348,7 +348,7 @@ class _TopicManager extends State<TopicManager> {
               },
             ),
           ],
-        );
+        )Dialog;
       },
     );
   }
