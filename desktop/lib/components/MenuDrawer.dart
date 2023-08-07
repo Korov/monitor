@@ -71,7 +71,7 @@ class MenuDrawer extends StatelessWidget {
                                 return;
                               }
                               Cache.cachedRoute.add("kafkaManager");
-                              var result = await Navigator.push(
+                              await Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) {

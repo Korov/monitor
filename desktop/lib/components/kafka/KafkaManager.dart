@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../../customize/TapDropDown.dart';
 import '../../model/KafkaConfig.dart';
+import '../../model/KafkaTopicModel.dart';
 import '../../utils/Constant.dart';
 
 class KafkaManager extends StatefulWidget {
@@ -16,10 +17,6 @@ class KafkaManager extends StatefulWidget {
 }
 
 class _KafkaManagerState extends State<KafkaManager> {
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _addressController = TextEditingController();
-
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
@@ -176,6 +173,8 @@ class _TopicManager extends State<TopicManager> {
   String? topicDropdownValue = null;
   List<DropdownMenuItem<String>> topicDropdownList = [];
 
+  List<DataRow> topicRows = [];
+
   @override
   void initState() {
     super.initState();
@@ -219,11 +218,43 @@ class _TopicManager extends State<TopicManager> {
     Response response = await HttpUtils.get(url);
     List data = response.data['data'];
     setState(() {
-      topicDropdownList = [];
+      topicDropdownList.clear();
+      topicRows.clear();
       for (var item in data) {
-        DropdownMenuItem<String> dropdownMenuItem = DropdownMenuItem<String>(
-            value: item['name'], child: Text(item['name']));
+        String name = item['name'];
+        bool isInternal = item['internal'];
+        DropdownMenuItem<String> dropdownMenuItem =
+            DropdownMenuItem<String>(value: name, child: Text(name));
         topicDropdownList.add(dropdownMenuItem);
+        topicRows.add(DataRow(cells: [
+          DataCell(Text(name)),
+          DataCell(Text(isInternal.toString())),
+          DataCell(Row(
+            children: [
+              IconButton(
+                icon: Icon(Icons.description),
+                tooltip: 'TopicDetail',
+                onPressed: () {
+                  showTopicDetail(context);
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.delete),
+                tooltip: 'Delete',
+                onPressed: () {
+                  Log.i("press delete");
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.people),
+                tooltip: 'Consumer',
+                onPressed: () {
+                  Log.i("press delete");
+                },
+              )
+            ],
+          )),
+        ]));
       }
     });
     return topicDropdownList;
@@ -244,9 +275,9 @@ class _TopicManager extends State<TopicManager> {
                     value: brokerDropdownValue,
                     items: brokerDropdownList,
                     onChanged: (value) {
-                      setState(() async {
+                      setState(() {
                         brokerDropdownValue = value!;
-                        await _queryKafkaTopic(brokerDropdownValue, null);
+                        _queryKafkaTopic(brokerDropdownValue, null);
                       });
                     },
                     onTap: () async {
@@ -272,7 +303,7 @@ class _TopicManager extends State<TopicManager> {
                   onPressed: () {
                     Log.i("print button");
                   },
-                  child: Text("button"),
+                  child: Text("创建Topic"),
                 ),
               ],
             ),
@@ -286,19 +317,39 @@ class _TopicManager extends State<TopicManager> {
             child: DataTable(
               columns: [
                 DataColumn(
-                  label: Text('Cluster Name'),
+                  label: Text('Topic Name'),
                 ),
                 DataColumn(
-                    label: Text('Address'),
+                    label: Text('Topic Type'),
                     numeric: true,
                     onSort: (int columnIndex, bool ascending) {}),
                 DataColumn(label: Text('Operation'))
               ],
-              rows: [],
+              rows: topicRows,
             ),
           )),
         ],
       ),
+    );
+  }
+
+  void showTopicDetail(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('提示'),
+          content: Text('您点击了按钮'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('确认'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
