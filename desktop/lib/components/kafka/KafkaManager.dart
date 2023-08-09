@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:desktop/components/MenuDrawer.dart';
 import 'package:desktop/utils/HttpUtils.dart';
 import 'package:desktop/utils/Log.dart';
@@ -209,6 +211,45 @@ class _TopicManager extends State<TopicManager> {
     return brokerDropdownList;
   }
 
+  Future<KafkaTopicDescriptionModel> _queryKafkaTopicDetail(
+      String? brokerId, String topicName) async {
+    String url =
+        "http://localhost:8091/kafka/topic/detail/query?sourceId=$brokerId&topic=$topicName";
+    Response response = await HttpUtils.get(url);
+    dynamic data = response.data['data'];
+    String name = data['name'];
+    bool isInternal = data['internal'];
+    List<KafkaTopicPartitionModel> partitions = [];
+    for (var partitionItem in data['partitions']) {
+      int beginningOffset = partitionItem['beginningOffset'];
+      int endOffset = partitionItem['endOffset'];
+      int partition = partitionItem['partition'];
+
+      var leaderItem = partitionItem['leader'];
+      Node leader = Node(leaderItem['id'], leaderItem['host'],
+          leaderItem['port'], leaderItem['rack']);
+
+      List<Node> replicas = [];
+      for (var replicaItem in partitionItem['replicas']) {
+        replicas.add(Node(replicaItem['id'], replicaItem['host'],
+            replicaItem['port'], replicaItem['rack']));
+      }
+
+      List<Node> isr = [];
+      for (var isrItem in partitionItem['isr']) {
+        isr.add(Node(
+            isrItem['id'], isrItem['host'], isrItem['port'], isrItem['rack']));
+      }
+
+      KafkaTopicPartitionModel partitionModel = KafkaTopicPartitionModel(
+          partition, leader, replicas, isr, beginningOffset, endOffset);
+      partitions.add(partitionModel);
+    }
+    KafkaTopicDescriptionModel topicDescription =
+        KafkaTopicDescriptionModel(name, isInternal, partitions);
+    return topicDescription;
+  }
+
   Future<List<DropdownMenuItem<String>>> _queryKafkaTopic(
       String? sourceId, String? keyword) async {
     String url = "http://localhost:8091/kafka/topic/query?sourceId=$sourceId";
@@ -234,8 +275,11 @@ class _TopicManager extends State<TopicManager> {
               IconButton(
                 icon: Icon(Icons.description),
                 tooltip: 'TopicDetail',
-                onPressed: () {
-                  showTopicDetail(context);
+                onPressed: () async {
+                  KafkaTopicDescriptionModel topicDetail =
+                      await _queryKafkaTopicDetail(brokerDropdownValue!, name);
+                  int ll = topicDetail.partitions.length;
+                  showTopicDetail(context, topicDetail);
                 },
               ),
               IconButton(
@@ -333,13 +377,38 @@ class _TopicManager extends State<TopicManager> {
     );
   }
 
-  void showTopicDetail(BuildContext context) {
+  void showTopicDetail(
+      BuildContext context, KafkaTopicDescriptionModel topicDetail) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        List<DataRow> partitionRow = [];
+        for (KafkaTopicPartitionModel partition in topicDetail.partitions) {
+          partitionRow.add(DataRow(cells: [
+            DataCell(Text(partition.partition.toString())),
+            DataCell(Text("leader")),
+            DataCell(Text("all replica")),
+            DataCell(Text("isr replica")),
+            DataCell(Text(partition.beginningOffset.toString())),
+            DataCell(Text(partition.endOffset.toString())),
+            DataCell(Text(
+                (partition.endOffset - partition.beginningOffset).toString())),
+          ]));
+        }
         return AlertDialog(
-          title: Text('提示'),
-          content: Text('您点击了按钮'),
+          title: Text(topicDetail.name + '分区详情'),
+          content: DataTable(
+            columns: [
+              DataColumn(label: Text('分区号'), numeric: true),
+              DataColumn(label: Text('leader分区')),
+              DataColumn(label: Text('所有副本')),
+              DataColumn(label: Text('isr副本')),
+              DataColumn(label: Text('最小偏移量')),
+              DataColumn(label: Text('最大偏移量')),
+              DataColumn(label: Text('消息数量')),
+            ],
+            rows: partitionRow,
+          ),
           actions: <Widget>[
             TextButton(
               child: Text('确认'),
@@ -348,7 +417,7 @@ class _TopicManager extends State<TopicManager> {
               },
             ),
           ],
-        )Dialog;
+        );
       },
     );
   }
