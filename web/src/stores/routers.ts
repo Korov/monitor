@@ -18,7 +18,7 @@ const routerStore = defineStore('routerStore', {
           {
             path: 'kafka/config',
             name: 'config',
-            component: '/components/kafka/Config.vue',
+            component: '/src/components/kafka/Config.vue',
             meta: null,
             redirect: null,
             children: null,
@@ -26,7 +26,7 @@ const routerStore = defineStore('routerStore', {
           {
             path: 'kafka/manager',
             name: 'manager',
-            component: '/components/kafka/Manager.vue',
+            component: '/src/components/kafka/Manager.vue',
             meta: null,
             redirect: null,
             children: null,
@@ -34,7 +34,7 @@ const routerStore = defineStore('routerStore', {
           {
             path: 'kafka/producer',
             name: 'producer',
-            component: '/components/kafka/operate/Produce.vue',
+            component: '/src/components/kafka/operate/Produce.vue',
             meta: null,
             redirect: null,
             children: null,
@@ -42,7 +42,7 @@ const routerStore = defineStore('routerStore', {
           {
             path: 'kafka/consumer',
             name: 'consumer',
-            component: '/components/kafka/operate/Consume.vue',
+            component: '/src/components/kafka/operate/Consume.vue',
             meta: null,
             redirect: null,
             children: null,
@@ -63,7 +63,7 @@ const routerStore = defineStore('routerStore', {
           {
             path: '/zkconfig',
             name: 'zkconfig',
-            component: '/components/zookeeper/ZkConfig.vue',
+            component: '/src/components/zookeeper/ZkConfig.vue',
             meta: null,
             redirect: null,
             children: null,
@@ -71,7 +71,7 @@ const routerStore = defineStore('routerStore', {
           {
             path: '/zktree',
             name: 'zktree',
-            component: '/components/zookeeper/ZKTree.vue',
+            component: '/src/components/zookeeper/ZKTree.vue',
             meta: null,
             redirect: null,
             children: null,

@@ -1,7 +1,6 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 import { websiteTitle } from '@/config'
 import { addDynamicMenuAndRoutes } from '@/main'
-import { ref } from 'vue'
 
 let constantRoutes: RouteRecordRaw[] = [
   {
@@ -10,8 +9,6 @@ let constantRoutes: RouteRecordRaw[] = [
     component: () => import('@/components/kafka/Config.vue'),
   },
 ]
-
-let isRefreshed = ref(false)
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -35,16 +32,5 @@ router.afterEach((to) => {
   const { title } = to.meta
   document.title = title ? `${title} - ${websiteTitle}` : websiteTitle
 })
-
-// 动态增加路由
-/*router.addRoute("demo", {
-  path: `/demo`,
-  name: "demo",
-  redirect: {
-    name: "aaa"
-  },
-  component: () => import(`@/index.vue`),
-  children: []
-});*/
 
 export default router

@@ -35,21 +35,21 @@ const modules = import.meta.glob('@/components/**/*.vue')
 const routerStoreInfo = routerStore()
 
 export function addDynamicMenuAndRoutes() {
-  routerStoreInfo.getRouters().forEach((store) => {
-    if (store.children !== null) {
-      store.children.forEach((childrenNode) => {
-        router.addRoute(childrenNode.name, {
-          name: childrenNode.name,
-          path: `${store.path}${childrenNode.path}`,
-          component: modules[`.${childrenNode.component}`],
+  routerStoreInfo.getRouters().forEach((routerInfo) => {
+    if (routerInfo.children !== null) {
+      routerInfo.children.forEach((childrenRouter) => {
+        router.addRoute(childrenRouter.name, {
+          name: childrenRouter.name,
+          path: `${routerInfo.path}${childrenRouter.path}`,
+          component: modules[`${childrenRouter.component}`],
         })
       })
     } else {
-      router.addRoute(store.name, {
-        name: store.name,
-        path: store.path,
-        meta: store.meta || { title: 'default' },
-        redirect: store.redirect || { name: 'config' },
+      router.addRoute(routerInfo.name, {
+        name: routerInfo.name,
+        path: routerInfo.path,
+        meta: routerInfo.meta || { title: 'default' },
+        redirect: routerInfo.redirect || { name: 'config' },
       })
     }
   })
