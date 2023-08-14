@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 class KafkaTopicModel {
   String name;
   bool isInternal;
