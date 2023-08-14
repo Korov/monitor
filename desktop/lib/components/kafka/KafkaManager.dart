@@ -397,17 +397,26 @@ class _TopicManager extends State<TopicManager> {
         }
         return AlertDialog(
           title: Text(topicDetail.name + '分区详情'),
-          content: DataTable(
-            columns: [
-              DataColumn(label: Text('分区号'), numeric: true),
-              DataColumn(label: Text('leader分区')),
-              DataColumn(label: Text('所有副本')),
-              DataColumn(label: Text('isr副本')),
-              DataColumn(label: Text('最小偏移量')),
-              DataColumn(label: Text('最大偏移量')),
-              DataColumn(label: Text('消息数量')),
-            ],
-            rows: partitionRow,
+          content: Container(
+            width: double.maxFinite,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: DataTable(
+                  columns: [
+                    DataColumn(label: Text('分区号'), numeric: true),
+                    DataColumn(label: Text('leader分区')),
+                    DataColumn(label: Text('所有副本')),
+                    DataColumn(label: Text('isr副本')),
+                    DataColumn(label: Text('最小偏移量')),
+                    DataColumn(label: Text('最大偏移量')),
+                    DataColumn(label: Text('消息数量')),
+                  ],
+                  rows: partitionRow,
+                ),
+              ),
+            ),
           ),
           actions: <Widget>[
             TextButton(
