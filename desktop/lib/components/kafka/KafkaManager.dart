@@ -343,104 +343,140 @@ class _TopicManager extends State<TopicManager> {
                     }),
                 TextButton(
                   onPressed: () {
+                    int _partitionCounter = 1;
+                    int _replicaCounter = 1;
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         final _nameController = TextEditingController();
-                        final _addressController = TextEditingController();
-                        return SimpleDialog(
-                          title: Text('创建Topic'),
-                          children: <Widget>[
-                            Form(
-                              child: Column(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.max,
-                                children: <Widget>[
-                                  Row(
-                                    children: [
-                                      Flexible(flex: 1, child: Text("Topic名字：")),
-                                      Flexible(
-                                        flex: 2,
-                                        child: TextFormField(
-                                          controller: _nameController,
-                                          validator: (value) {
-                                            if (value == null ||
-                                                value.isEmpty) {
-                                              return '请输入名字';
-                                            }
-                                            return null;
-                                          },
-                                          decoration: InputDecoration(
-                                            hintText: '请输入名字',
+                        return StatefulBuilder(builder: (context, setSate) {
+                          return SimpleDialog(
+                            title: Text('创建Topic'),
+                            children: <Widget>[
+                              Form(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: <Widget>[
+                                    Row(
+                                      children: [
+                                        Flexible(
+                                            flex: 1, child: Text("Topic名字：")),
+                                        Flexible(
+                                          flex: 2,
+                                          child: TextFormField(
+                                            controller: _nameController,
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return '请输入名字';
+                                              }
+                                              return null;
+                                            },
+                                            decoration: InputDecoration(
+                                              hintText: '请输入名字',
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Flexible(flex: 1, child: Text("分区数量：")),
+                                        Flexible(
+                                          flex: 1,
+                                          child: FloatingActionButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                _partitionCounter++;
+                                              });
+                                              Log.i(
+                                                  "increate:$_partitionCounter");
+                                            },
+                                            child: Icon(Icons.add),
                                           ),
                                         ),
-                                      )
-                                    ],
+                                        Flexible(
+                                          flex: 1,
+                                          child: TextButton(
+                                            child: Text("$_partitionCounter"),
+                                            onPressed: () {
+                                              Log.i(
+                                                  "_partitionCounter:$_partitionCounter");
+                                            },
+                                          ),
+                                        ),
+                                        Flexible(
+                                          flex: 1,
+                                          child: FloatingActionButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                if (_partitionCounter > 0) {
+                                                  _partitionCounter--;
+                                                }
+                                              });
+                                              Log.i(
+                                                  "_decrementCounter:$_partitionCounter");
+                                            },
+                                            child: Icon(Icons.remove),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Flexible(flex: 1, child: Text("副本数量：")),
+                                        Flexible(
+                                          flex: 1,
+                                          child: FloatingActionButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                _replicaCounter++;
+                                              });
+                                            },
+                                            child: Icon(Icons.add),
+                                          ),
+                                        ),
+                                        Flexible(
+                                            flex: 1,
+                                            child: Text('$_replicaCounter')),
+                                        Flexible(
+                                          flex: 1,
+                                          child: FloatingActionButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                if (_replicaCounter > 0) {
+                                                  _replicaCounter--;
+                                                }
+                                              });
+                                            },
+                                            child: Icon(Icons.remove),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  TextButton(
+                                    child: Text('确定'),
+                                    onPressed: () {
+                                      Log.i("print ok");
+                                    },
                                   ),
-                                  Row(
-                                    children: [
-                                      Flexible(flex: 1, child: Text("分区数量：")),
-                                      Flexible(
-                                        flex: 2,
-                                        child: TextFormField(
-                                          controller: _addressController,
-                                          validator: (value) {
-                                            if (value == null ||
-                                                value.isEmpty) {
-                                              return '请输入地址';
-                                            }
-                                            return null;
-                                          },
-                                          decoration: InputDecoration(
-                                            hintText: '请输入地址',
-                                          ),
-                                        ),
-                                      )
-                                    ],
+                                  TextButton(
+                                    child: Text('取消'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
                                   ),
-                                  Row(
-                                    children: [
-                                      Flexible(flex: 1, child: Text("副本数量：")),
-                                      Flexible(
-                                        flex: 2,
-                                        child: TextFormField(
-                                          controller: _addressController,
-                                          validator: (value) {
-                                            if (value == null ||
-                                                value.isEmpty) {
-                                              return '请输入地址';
-                                            }
-                                            return null;
-                                          },
-                                          decoration: InputDecoration(
-                                            hintText: '请输入地址',
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  )
                                 ],
                               ),
-                            ),
-                            Row(
-                              children: [
-                                TextButton(
-                                  child: Text('确定'),
-                                  onPressed: () {
-                                    Log.i("print ok");
-                                  },
-                                ),
-                                TextButton(
-                                  child: Text('取消'),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                              ],
-                            ),
-                          ],
-                        );
+                            ],
+                          );
+                        });
                       },
                     );
                   },
