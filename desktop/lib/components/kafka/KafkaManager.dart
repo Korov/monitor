@@ -343,11 +343,11 @@ class _TopicManager extends State<TopicManager> {
                     }),
                 TextButton(
                   onPressed: () {
-                    int _partitionCounter = 1;
-                    int _replicaCounter = 1;
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
+                        int _partitionCounter = 1;
+                        int _replicaCounter = 1;
                         final _nameController = TextEditingController();
                         return StatefulBuilder(builder: (context, setSate) {
                           return SimpleDialog(
@@ -397,15 +397,8 @@ class _TopicManager extends State<TopicManager> {
                                           ),
                                         ),
                                         Flexible(
-                                          flex: 1,
-                                          child: TextButton(
-                                            child: Text("$_partitionCounter"),
-                                            onPressed: () {
-                                              Log.i(
-                                                  "_partitionCounter:$_partitionCounter");
-                                            },
-                                          ),
-                                        ),
+                                            flex: 1,
+                                            child: Text('$_partitionCounter')),
                                         Flexible(
                                           flex: 1,
                                           child: FloatingActionButton(
@@ -413,6 +406,7 @@ class _TopicManager extends State<TopicManager> {
                                               setState(() {
                                                 if (_partitionCounter > 0) {
                                                   _partitionCounter--;
+
                                                 }
                                               });
                                               Log.i(
