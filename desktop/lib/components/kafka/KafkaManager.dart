@@ -302,6 +302,20 @@ class _TopicManager extends State<TopicManager> {
     return topicDropdownList;
   }
 
+  Future<void> _addTopic(String brokerDropdownValue, String topic, int partition, int replica) async {
+    Map<String, String> body = {};
+    body['sourceId'] = brokerDropdownValue;
+    body['topic'] = topic;
+    body['partition'] = partition.toString();
+    body['replica'] = replica.toString();
+    Response response = await HttpUtils.post(
+        "http://localhost:8091/kafka/topic/create",
+        data: body);
+    response.data['data'];
+    Navigator.of(context).pop();
+    _queryKafkaTopic(brokerDropdownValue, null);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -346,10 +360,12 @@ class _TopicManager extends State<TopicManager> {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
+                        TextEditingController _nameController =
+                            TextEditingController();
                         int _partitionCounter = 1;
                         int _replicaCounter = 1;
-                        final _nameController = TextEditingController();
-                        return StatefulBuilder(builder: (context, setSate) {
+                        return StatefulBuilder(builder:
+                            (BuildContext context, StateSetter setState) {
                           return SimpleDialog(
                             title: Text('创建Topic'),
                             children: <Widget>[
@@ -390,8 +406,6 @@ class _TopicManager extends State<TopicManager> {
                                               setState(() {
                                                 _partitionCounter++;
                                               });
-                                              Log.i(
-                                                  "increate:$_partitionCounter");
                                             },
                                             child: Icon(Icons.add),
                                           ),
@@ -406,11 +420,8 @@ class _TopicManager extends State<TopicManager> {
                                               setState(() {
                                                 if (_partitionCounter > 0) {
                                                   _partitionCounter--;
-
                                                 }
                                               });
-                                              Log.i(
-                                                  "_decrementCounter:$_partitionCounter");
                                             },
                                             child: Icon(Icons.remove),
                                           ),
@@ -457,7 +468,11 @@ class _TopicManager extends State<TopicManager> {
                                   TextButton(
                                     child: Text('确定'),
                                     onPressed: () {
-                                      Log.i("print ok");
+                                      _addTopic(
+                                          brokerDropdownValue!,
+                                          _nameController.text,
+                                          _partitionCounter,
+                                          _replicaCounter);
                                     },
                                   ),
                                   TextButton(
