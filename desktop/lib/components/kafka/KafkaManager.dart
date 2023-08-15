@@ -52,7 +52,6 @@ class _KafkaManagerState extends State<KafkaManager> {
               icon: Icon(Icons.arrow_back),
               onPressed: () {
                 Cache.cachedRoute.remove("kafkaManager");
-                Log.i(Cache.cachedRoute);
                 Navigator.pop(context, "我是返回值");
               }),
         ],
@@ -280,13 +279,15 @@ class _TopicManager extends State<TopicManager> {
                   showTopicDetail(context, topicDetail);
                 },
               ),
-              IconButton(
-                icon: Icon(Icons.delete),
-                tooltip: 'Delete',
-                onPressed: () {
-                  Log.i("press delete");
-                },
-              ),
+              !isInternal
+                  ? IconButton(
+                      icon: Icon(Icons.delete),
+                      tooltip: 'Delete',
+                      onPressed: () {
+                        Log.i("press delete");
+                      },
+                    )
+                  : Container(),
               IconButton(
                 icon: Icon(Icons.people),
                 tooltip: 'Consumer',
