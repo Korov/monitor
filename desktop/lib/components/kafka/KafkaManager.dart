@@ -384,9 +384,13 @@ class _TopicManager extends State<TopicManager> {
         for (KafkaTopicPartitionModel partition in topicDetail.partitions) {
           partitionRow.add(DataRow(cells: [
             DataCell(Text(partition.partition.toString())),
-            DataCell(Text("leader")),
-            DataCell(Text("all replica")),
-            DataCell(Text("isr replica")),
+            DataCell(Text("broker:" + partition.leader.id.toString())),
+            DataCell(Text(partition.replicas
+                .map((event) => "broker:" + event.id.toString())
+                .reduce((previous, element) => previous + "," + element))),
+            DataCell(Text(partition.isr
+                .map((event) => "broker:" + event.id.toString())
+                .reduce((previous, element) => previous + "," + element))),
             DataCell(Text(partition.beginningOffset.toString())),
             DataCell(Text(partition.endOffset.toString())),
             DataCell(Text(
