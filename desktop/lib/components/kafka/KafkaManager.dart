@@ -275,7 +275,6 @@ class _TopicManager extends State<TopicManager> {
                 onPressed: () async {
                   KafkaTopicDescriptionModel topicDetail =
                       await _queryKafkaTopicDetail(brokerDropdownValue!, name);
-                  int ll = topicDetail.partitions.length;
                   showTopicDetail(context, topicDetail);
                 },
               ),
@@ -344,7 +343,106 @@ class _TopicManager extends State<TopicManager> {
                     }),
                 TextButton(
                   onPressed: () {
-                    Log.i("print button");
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        final _nameController = TextEditingController();
+                        final _addressController = TextEditingController();
+                        return SimpleDialog(
+                          title: Text('创建Topic'),
+                          children: <Widget>[
+                            Form(
+                              child: Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                  Row(
+                                    children: [
+                                      Flexible(flex: 1, child: Text("Topic名字：")),
+                                      Flexible(
+                                        flex: 2,
+                                        child: TextFormField(
+                                          controller: _nameController,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return '请输入名字';
+                                            }
+                                            return null;
+                                          },
+                                          decoration: InputDecoration(
+                                            hintText: '请输入名字',
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Flexible(flex: 1, child: Text("分区数量：")),
+                                      Flexible(
+                                        flex: 2,
+                                        child: TextFormField(
+                                          controller: _addressController,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return '请输入地址';
+                                            }
+                                            return null;
+                                          },
+                                          decoration: InputDecoration(
+                                            hintText: '请输入地址',
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Flexible(flex: 1, child: Text("副本数量：")),
+                                      Flexible(
+                                        flex: 2,
+                                        child: TextFormField(
+                                          controller: _addressController,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return '请输入地址';
+                                            }
+                                            return null;
+                                          },
+                                          decoration: InputDecoration(
+                                            hintText: '请输入地址',
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                TextButton(
+                                  child: Text('确定'),
+                                  onPressed: () {
+                                    Log.i("print ok");
+                                  },
+                                ),
+                                TextButton(
+                                  child: Text('取消'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
+                        );
+                      },
+                    );
                   },
                   child: Text("创建Topic"),
                 ),
