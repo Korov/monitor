@@ -40,7 +40,6 @@ dependencies:
     sdk: flutter
   logger: ^1.4.0
   dio: ^5.2.1+1
-  draggable_scrollbar: ^0.1.0
 
 flutter_intl:
   enabled: true
