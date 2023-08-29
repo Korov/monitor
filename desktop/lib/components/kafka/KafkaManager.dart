@@ -249,6 +249,19 @@ class _TopicManager extends State<TopicManager> {
     return topicDescription;
   }
 
+  Future<List<String>> _queryKafkaConsumers(
+      String? brokerId, String topicName) async {
+    String url =
+        "http://localhost:8091/kafka/consumer/query?sourceId=$brokerId&topic=$topicName";
+    Response response = await HttpUtils.get(url);
+    dynamic data = response.data['data'];
+    List<String> consumers = [];
+    for (var item in data) {
+      consumers.add(item);
+    }
+    return consumers;
+  }
+
   Future<void> _deleteKafkaTopic(String? brokerId, String topicName) async {
     String url =
         "http://localhost:8091/kafka/topic/delete?sourceId=$brokerId&topic=$topicName";
@@ -301,8 +314,10 @@ class _TopicManager extends State<TopicManager> {
               IconButton(
                 icon: Icon(Icons.people),
                 tooltip: 'Consumer',
-                onPressed: () {
-                  Log.i("press delete");
+                onPressed: () async {
+                  dynamic result =
+                      await _queryKafkaConsumers(brokerDropdownValue!, name);
+                  Log.i(result);
                 },
               )
             ],
@@ -508,11 +523,8 @@ class _TopicManager extends State<TopicManager> {
           ),
           Expanded(
               child: SingleChildScrollView(
-                  child: ConstrainedBox(
-            constraints: BoxConstraints(
-                minWidth: double.infinity,
-                maxWidth: double.infinity,
-                minHeight: 20.0),
+                  child: Container(
+            width: double.infinity,
             child: DataTable(
               columns: [
                 DataColumn(

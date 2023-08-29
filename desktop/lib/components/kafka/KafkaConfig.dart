@@ -60,29 +60,31 @@ class _KafkaConfigState extends State<KafkaConfig> {
         child: Column(
           children: <Widget>[
             Expanded(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
+
               child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
-                child: DataTable(
-                  sortColumnIndex: 1,
-                  sortAscending: true,
-                  columns: [
-                    DataColumn(
-                      label: Text('Cluster Name'),
-                    ),
-                    DataColumn(
-                        label: Text('Address'),
-                        numeric: true,
-                        onSort: (int columnIndex, bool ascending) {}),
-                    DataColumn(
-                      label: Text('Operation'),
-                    ),
-                  ],
-                  rows: _rows,
+                child: Container(
+                  width: double.infinity,
+                  child: DataTable(
+                    sortColumnIndex: 1,
+                    sortAscending: true,
+                    columns: [
+                      DataColumn(
+                        label: Text('Cluster Name'),
+                      ),
+                      DataColumn(
+                          label: Text('Address'),
+                          numeric: true,
+                          onSort: (int columnIndex, bool ascending) {}),
+                      DataColumn(
+                        label: Text('Operation'),
+                      ),
+                    ],
+                    rows: _rows,
+                  ),
                 ),
               ),
-            )),
+            ),
             Flex(
               direction: Axis.horizontal,
               children: [
