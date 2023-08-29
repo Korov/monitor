@@ -1,4 +1,5 @@
 {
+  "@@locale": "en_US",
   "kafka": "Kafka",
   "kafkaConfig": "Config",
   "kafkaManager": "Manager",
