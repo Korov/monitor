@@ -48,12 +48,14 @@ class _KafkaManagerState extends State<KafkaManager> {
         title: const Text("Kafka Manager"),
         actions: <Widget>[
           //导航栏右侧菜单
-          IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () {
-                Cache.cachedRoute.remove("kafkaManager");
-                Navigator.pop(context, "我是返回值");
-              }),
+          Cache.cachedRoute.length > 1
+              ? IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    Cache.cachedRoute.remove("kafkaManager");
+                    Navigator.pop(context, "我是返回值");
+                  })
+              : Container(),
         ],
       ),
       drawer: MenuDrawer(),
@@ -302,7 +304,8 @@ class _TopicManager extends State<TopicManager> {
     return topicDropdownList;
   }
 
-  Future<void> _addTopic(String brokerDropdownValue, String topic, int partition, int replica) async {
+  Future<void> _addTopic(String brokerDropdownValue, String topic,
+      int partition, int replica) async {
     Map<String, String> body = {};
     body['sourceId'] = brokerDropdownValue;
     body['topic'] = topic;

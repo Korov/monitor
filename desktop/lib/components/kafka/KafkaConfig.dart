@@ -35,7 +35,6 @@ class _KafkaConfigState extends State<KafkaConfig> {
   void initState() {
     super.initState();
     _updateTable();
-    Cache.cachedRoute.add("KafkaConfig");
   }
 
   @override
@@ -46,15 +45,14 @@ class _KafkaConfigState extends State<KafkaConfig> {
         title: Text("Kafka Config"),
         actions: <Widget>[
           //导航栏右侧菜单
-          IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () {
-                if(Cache.cachedRoute.length == 1) {
-                  return;
-                }
-                Cache.cachedRoute.remove("KafkaConfig");
-                Navigator.pop(context, "我是返回值");
-              }),
+          Cache.cachedRoute.length > 1
+              ? IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    Cache.cachedRoute.remove("KafkaConfig");
+                    Navigator.pop(context, "我是返回值");
+                  })
+              : Container(),
         ],
       ),
       drawer: MenuDrawer(),
