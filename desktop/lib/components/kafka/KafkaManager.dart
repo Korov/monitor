@@ -48,7 +48,7 @@ class _KafkaManagerState extends State<KafkaManager> {
         title: const Text("Kafka Manager"),
         actions: <Widget>[
           //导航栏右侧菜单
-          Cache.cachedRoute.length > 1
+          Cache.cachedRoute.length > 0
               ? IconButton(
                   icon: Icon(Icons.arrow_back),
                   onPressed: () {
@@ -249,6 +249,14 @@ class _TopicManager extends State<TopicManager> {
     return topicDescription;
   }
 
+  Future<void> _deleteKafkaTopic(String? brokerId, String topicName) async {
+    String url =
+        "http://localhost:8091/kafka/topic/delete?sourceId=$brokerId&topic=$topicName";
+    Response response = await HttpUtils.delete(url);
+    dynamic data = response.data['data'];
+    Log.i("delete broker:${brokerId}, topic:${topicName}, data:${data}");
+  }
+
   Future<List<DropdownMenuItem<String>>> _queryKafkaTopic(
       String? sourceId, String? keyword) async {
     String url = "http://localhost:8091/kafka/topic/query?sourceId=$sourceId";
@@ -284,8 +292,9 @@ class _TopicManager extends State<TopicManager> {
                   ? IconButton(
                       icon: Icon(Icons.delete),
                       tooltip: 'Delete',
-                      onPressed: () {
-                        Log.i("press delete");
+                      onPressed: () async {
+                        await _deleteKafkaTopic(brokerDropdownValue!, name);
+                        _queryKafkaTopic(brokerDropdownValue!, null);
                       },
                     )
                   : Container(),
@@ -498,7 +507,8 @@ class _TopicManager extends State<TopicManager> {
             ),
           ),
           Expanded(
-              child: ConstrainedBox(
+              child: SingleChildScrollView(
+                  child: ConstrainedBox(
             constraints: BoxConstraints(
                 minWidth: double.infinity,
                 maxWidth: double.infinity,
@@ -516,7 +526,7 @@ class _TopicManager extends State<TopicManager> {
               ],
               rows: topicRows,
             ),
-          )),
+          ))),
         ],
       ),
     );

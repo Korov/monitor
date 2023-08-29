@@ -45,7 +45,7 @@ class _KafkaConfigState extends State<KafkaConfig> {
         title: Text("Kafka Config"),
         actions: <Widget>[
           //导航栏右侧菜单
-          Cache.cachedRoute.length > 1
+          Cache.cachedRoute.length > 0
               ? IconButton(
                   icon: Icon(Icons.arrow_back),
                   onPressed: () {
@@ -59,29 +59,30 @@ class _KafkaConfigState extends State<KafkaConfig> {
       body: Center(
         child: Column(
           children: <Widget>[
-            ConstrainedBox(
-              constraints: BoxConstraints(
-                  minWidth: double.infinity,
-                  maxWidth: double.infinity,
-                  minHeight: 20.0),
-              child: DataTable(
-                sortColumnIndex: 1,
-                sortAscending: true,
-                columns: [
-                  DataColumn(
-                    label: Text('Cluster Name'),
-                  ),
-                  DataColumn(
-                      label: Text('Address'),
-                      numeric: true,
-                      onSort: (int columnIndex, bool ascending) {}),
-                  DataColumn(
-                    label: Text('Operation'),
-                  ),
-                ],
-                rows: _rows,
+            Expanded(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: DataTable(
+                  sortColumnIndex: 1,
+                  sortAscending: true,
+                  columns: [
+                    DataColumn(
+                      label: Text('Cluster Name'),
+                    ),
+                    DataColumn(
+                        label: Text('Address'),
+                        numeric: true,
+                        onSort: (int columnIndex, bool ascending) {}),
+                    DataColumn(
+                      label: Text('Operation'),
+                    ),
+                  ],
+                  rows: _rows,
+                ),
               ),
-            ),
+            )),
             Flex(
               direction: Axis.horizontal,
               children: [
