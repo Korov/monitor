@@ -7,3 +7,7 @@ class ConstantKey {
 class Cache {
   static Set<String> cachedRoute = {};
 }
+
+class Global {
+  static String uri = "http://debian.korov.online:8091";
+}

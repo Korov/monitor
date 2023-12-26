@@ -20,3 +20,7 @@ samples, guidance on mobile development, and a full API reference.
 ```bash
 flutter pub get
 ```
+
+`flutter devices` 可以看当前有那些已经连接的device
+
+`flutter run -d chrome` web运行

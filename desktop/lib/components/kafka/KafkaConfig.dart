@@ -60,7 +60,6 @@ class _KafkaConfigState extends State<KafkaConfig> {
         child: Column(
           children: <Widget>[
             Expanded(
-
               child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
                 child: Container(
@@ -190,8 +189,7 @@ class _KafkaConfigState extends State<KafkaConfig> {
   }
 
   Future<void> _updateTable() async {
-    Response response =
-        await HttpUtils.get("http://localhost:8091/kafka/query");
+    Response response = await HttpUtils.get("${Global.uri}/kafka/query");
     List data = response.data['data'];
     setState(() {
       _rows = [];
@@ -214,7 +212,7 @@ class _KafkaConfigState extends State<KafkaConfig> {
 
   Future<void> _deleteConfig(int id) async {
     Response response =
-        await HttpUtils.delete("http://localhost:8091/kafka/delete?id=$id");
+        await HttpUtils.delete("${Global.uri}/kafka/delete?id=$id");
     dynamic data = response.data['data'];
     Log.i(data);
     _updateTable();
@@ -225,7 +223,7 @@ class _KafkaConfigState extends State<KafkaConfig> {
     body['name'] = name;
     body['broker'] = address;
     Response response =
-        await HttpUtils.post("http://localhost:8091/kafka/add", data: body);
+        await HttpUtils.post("${Global.uri}/kafka/add", data: body);
     dynamic data = response.data['data'];
     Log.i(data);
     _updateTable();
