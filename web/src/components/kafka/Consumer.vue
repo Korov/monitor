@@ -91,6 +91,7 @@ import { ElMessage } from 'element-plus'
 import apiClient from '@/http-common'
 import DataTag from '@cp/kafka/DataTag.vue'
 import { Message } from '@/types'
+import { backendHost } from '../../../vite.config'
 
 export default defineComponent({
   name: 'Consumer',
@@ -166,7 +167,7 @@ export default defineComponent({
 
       if ('WebSocket' in window) {
         // let url = `ws://${address.value}/kafka/consumer/socket`
-        let url = `ws://localhost:8091/kafka/consumer/socket?topic=${props.topic}&broker=${props.broker}&group=${group.value}&reset=${mode.value}&partition=${partition.value}&offset=${offset.value}`
+        let url = `ws://${backendHost}:8091/kafka/consumer/socket?topic=${props.topic}&broker=${props.broker}&group=${group.value}&reset=${mode.value}&partition=${partition.value}&offset=${offset.value}`
         websocket = new WebSocket(url)
         initWebSocket()
       } else {

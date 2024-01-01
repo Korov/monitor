@@ -32,6 +32,7 @@ import { defineComponent, ref } from 'vue'
 import apiClient from '@/http-common'
 import { ElMessage } from 'element-plus'
 import { ZookeeperConfig } from '@/types'
+import { backendHost } from '../../../vite.config'
 
 interface Tree {
   label: string
@@ -44,13 +45,13 @@ export default defineComponent({
   setup() {
     const defaultProps = {
       children: 'children',
-      label: 'label',
+      label: 'label'
     }
 
     let sourceId = ref<number>()
     let sources = ref<ZookeeperConfig[]>([])
     let sourceMap: Map<number, ZookeeperConfig> = new Map<number, ZookeeperConfig>()
-    let zkHost = ref<String>('localhost:2183')
+    let zkHost = ref<String>(`${backendHost}:2183`)
     let zkPath = ref<String>('/')
     let recursion = ref<Boolean>(true)
 
@@ -85,8 +86,8 @@ export default defineComponent({
       {
         label: '',
         content: '',
-        children: [],
-      },
+        children: []
+      }
     ])
 
     function queryZkTree() {
@@ -97,7 +98,7 @@ export default defineComponent({
             let rootTree: Tree = {
               label: response.data.data.path,
               content: response.data.data.data,
-              children: new Array<Tree>(),
+              children: new Array<Tree>()
             }
             if (response.data.data.childNodes != null && response.data.data.childNodes.length > 0) {
               extractChildNode(rootTree, response.data.data.childNodes)
@@ -118,7 +119,7 @@ export default defineComponent({
         let childTree: Tree = {
           label: childNode.path,
           content: childNode.data,
-          children: new Array<Tree>(),
+          children: new Array<Tree>()
         }
         allChildTree.push(childTree)
         if (childNode.childNodes != null && childNode.childNodes.length > 0) {
@@ -137,9 +138,9 @@ export default defineComponent({
       queryZkTree,
       selectZookeeper,
       sources,
-      sourceId,
+      sourceId
     }
-  },
+  }
 })
 </script>
 

@@ -9,8 +9,12 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
 const resolve = (dir: string): string => path.resolve(__dirname, dir)
 
+export const backendHost = 'localhost'
+
 // https://vitejs.dev/config/
 export default defineConfig({
+  // const { VITE_APP_ENV, VITE_APP_BASE_PATH } = env,
+
   /**
    * 如果生产部署和开发路径不一样，可以在这里动态配置
    * @see https://cn.vitejs.dev/config/#base
@@ -25,7 +29,7 @@ export default defineConfig({
     port: 18091,
     proxy: {
       '^/api': {
-        target: 'http://localhost:8091',
+        target: `http://${backendHost}:8091`,
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
@@ -59,7 +63,7 @@ export default defineConfig({
   },
 
   css: {
-    
+
 
     /**
      * 预处理器选项可以在这里配置

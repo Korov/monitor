@@ -41,7 +41,7 @@ export function addDynamicMenuAndRoutes() {
         router.addRoute(childrenRouter.name, {
           name: childrenRouter.name,
           path: `${routerInfo.path}${childrenRouter.path}`,
-          component: modules[`${childrenRouter.component}`],
+          component: modules[`${childrenRouter.component}`]
         })
       })
     } else {
@@ -49,7 +49,7 @@ export function addDynamicMenuAndRoutes() {
         name: routerInfo.name,
         path: routerInfo.path,
         meta: routerInfo.meta || { title: 'default' },
-        redirect: routerInfo.redirect || { name: 'config' },
+        redirect: routerInfo.redirect || { name: 'config' }
       })
     }
   })
