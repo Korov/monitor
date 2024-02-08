@@ -1,5 +1,5 @@
 import 'package:desktop/components/MenuDrawer.dart';
-import 'package:desktop/utils/HttpUtils.dart';
+import 'package:desktop/utils/http_utils.dart';
 import 'package:desktop/utils/Log.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -74,7 +74,7 @@ class _KafkaManagerState extends State<KafkaManager> {
   }
 
   Future<void> _updateTable() async {
-    Response response = await http_utils.get("${Global.uri}/kafka/query");
+    Response response = await HttpUtils.get("${Global.uri}/kafka/query");
     List data = response.data['data'];
     setState(() {
       _rows = [];
@@ -97,7 +97,7 @@ class _KafkaManagerState extends State<KafkaManager> {
 
   Future<void> _deleteConfig(int id) async {
     Response response =
-        await http_utils.delete("${Global.uri}/kafka/delete?id=$id");
+        await HttpUtils.delete("${Global.uri}/kafka/delete?id=$id");
     dynamic data = response.data['data'];
     Log.i(data);
     _updateTable();
@@ -108,7 +108,7 @@ class _KafkaManagerState extends State<KafkaManager> {
     body['name'] = name;
     body['broker'] = address;
     Response response =
-        await http_utils.post("${Global.uri}/kafka/add", data: body);
+        await HttpUtils.post("${Global.uri}/kafka/add", data: body);
     dynamic data = response.data['data'];
     Log.i(data);
     _updateTable();
@@ -182,7 +182,7 @@ class _TopicManager extends State<TopicManager> {
   }
 
   Future<List<DropdownMenuItem<String>>> _queryAllKafka() async {
-    Response response = await http_utils.get("${Global.uri}/kafka/query");
+    Response response = await HttpUtils.get("${Global.uri}/kafka/query");
     List data = response.data['data'];
     setState(() {
       brokerDropdownList = [];
@@ -212,7 +212,7 @@ class _TopicManager extends State<TopicManager> {
       String? brokerId, String topicName) async {
     String url =
         "${Global.uri}/kafka/topic/detail/query?sourceId=$brokerId&topic=$topicName";
-    Response response = await http_utils.get(url);
+    Response response = await HttpUtils.get(url);
     dynamic data = response.data['data'];
     String name = data['name'];
     bool isInternal = data['internal'];
@@ -251,7 +251,7 @@ class _TopicManager extends State<TopicManager> {
       String? brokerId, String topicName) async {
     String url =
         "${Global.uri}/kafka/consumer/query?sourceId=$brokerId&topic=$topicName";
-    Response response = await http_utils.get(url);
+    Response response = await HttpUtils.get(url);
     dynamic data = response.data['data'];
     List<String> consumers = [];
     for (var item in data) {
@@ -263,7 +263,7 @@ class _TopicManager extends State<TopicManager> {
   Future<void> _deleteKafkaTopic(String? brokerId, String topicName) async {
     String url =
         "${Global.uri}/kafka/topic/delete?sourceId=$brokerId&topic=$topicName";
-    Response response = await http_utils.delete(url);
+    Response response = await HttpUtils.delete(url);
     dynamic data = response.data['data'];
     Log.i("delete broker:${brokerId}, topic:${topicName}, data:${data}");
   }
@@ -274,7 +274,7 @@ class _TopicManager extends State<TopicManager> {
     if (keyword != null) {
       url = url + "&keyword=$keyword";
     }
-    Response response = await http_utils.get(url);
+    Response response = await HttpUtils.get(url);
     List data = response.data['data'];
     setState(() {
       topicDropdownList.clear();
@@ -334,7 +334,7 @@ class _TopicManager extends State<TopicManager> {
     body['partition'] = partition.toString();
     body['replica'] = replica.toString();
     Response response =
-        await http_utils.post("${Global.uri}/kafka/topic/create", data: body);
+        await HttpUtils.post("${Global.uri}/kafka/topic/create", data: body);
     response.data['data'];
     Navigator.of(context).pop();
     _queryKafkaTopic(brokerDropdownValue, null);

@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
               key: const Key("kafkaManager"),
             )
       },
-      localizationsDelegates: [
+      localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,

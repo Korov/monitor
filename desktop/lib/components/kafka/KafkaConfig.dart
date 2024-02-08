@@ -1,6 +1,6 @@
 import 'package:desktop/components/MenuDrawer.dart';
 import 'package:desktop/utils/Constant.dart';
-import 'package:desktop/utils/HttpUtils.dart';
+import 'package:desktop/utils/http_utils.dart';
 import 'package:desktop/utils/Log.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -189,7 +189,7 @@ class _KafkaConfigState extends State<KafkaConfig> {
   }
 
   Future<void> _updateTable() async {
-    Response response = await http_utils.get("${Global.uri}/kafka/query");
+    Response response = await HttpUtils.get("${Global.uri}/kafka/query");
     List data = response.data['data'];
     setState(() {
       _rows = [];
@@ -212,7 +212,7 @@ class _KafkaConfigState extends State<KafkaConfig> {
 
   Future<void> _deleteConfig(int id) async {
     Response response =
-        await http_utils.delete("${Global.uri}/kafka/delete?id=$id");
+        await HttpUtils.delete("${Global.uri}/kafka/delete?id=$id");
     dynamic data = response.data['data'];
     Log.i(data);
     _updateTable();
@@ -223,7 +223,7 @@ class _KafkaConfigState extends State<KafkaConfig> {
     body['name'] = name;
     body['broker'] = address;
     Response response =
-        await http_utils.post("${Global.uri}/kafka/add", data: body);
+        await HttpUtils.post("${Global.uri}/kafka/add", data: body);
     dynamic data = response.data['data'];
     Log.i(data);
     _updateTable();

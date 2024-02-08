@@ -9,5 +9,5 @@ class Cache {
 }
 
 class Global {
-  static String uri = "http://localhost:8091";
+  static String uri = "http://localhost:3000";
 }
