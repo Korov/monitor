@@ -10,13 +10,13 @@ import '../../model/kafka_topic_model.dart';
 import '../../utils/constant.dart';
 
 class KafkaManager extends StatefulWidget {
-  KafkaManager({required Key key}) : super(key: key);
+  const KafkaManager({required Key key}) : super(key: key);
 
   @override
-  _KafkaManagerState createState() => _KafkaManagerState();
+  KafkaManagerState createState() => KafkaManagerState();
 }
 
-class _KafkaManagerState extends State<KafkaManager> {
+class KafkaManagerState extends State<KafkaManager> {
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
@@ -25,9 +25,9 @@ class _KafkaManagerState extends State<KafkaManager> {
     });
   }
 
-  List<Widget> _bottomNavPages = []; // 底部导航栏各个可切换页面组
+  final List<Widget> _bottomNavPages = []; // 底部导航栏各个可切换页面组
 
-  _KafkaManagerState();
+  KafkaManagerState();
 
   List<DataRow> _rows = [];
 
@@ -58,10 +58,10 @@ class _KafkaManagerState extends State<KafkaManager> {
               : Container(),
         ],
       ),
-      drawer: MenuDrawer(),
+      drawer: const MenuDrawer(),
       body: _bottomNavPages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Topic管理'),
           BottomNavigationBarItem(icon: Icon(Icons.business), label: '集群管理'),
           BottomNavigationBarItem(icon: Icon(Icons.school), label: 'Group管理'),
@@ -84,7 +84,7 @@ class _KafkaManagerState extends State<KafkaManager> {
           DataCell(Text(kafkaConfig.name)),
           DataCell(Text(kafkaConfig.broker)),
           DataCell(IconButton(
-            icon: Icon(Icons.delete),
+            icon: const Icon(Icons.delete),
             tooltip: 'Delete',
             onPressed: () {
               _deleteConfig(kafkaConfig.id);
@@ -102,75 +102,67 @@ class _KafkaManagerState extends State<KafkaManager> {
     Log.i(data);
     _updateTable();
   }
-
-  Future<void> _addConfig(String name, String address) async {
-    Map<String, String> body = {};
-    body['name'] = name;
-    body['broker'] = address;
-    Response response =
-        await HttpUtils.post("${Global.uri}/kafka/add", data: body);
-    dynamic data = response.data['data'];
-    Log.i(data);
-    _updateTable();
-  }
 }
 
 class GroupManager extends StatefulWidget {
-  GroupManager({
+  const GroupManager({
+    super.key,
     required this.text,
   });
 
   final String text;
 
   @override
-  _GroupManager createState() => _GroupManager();
+  GroupManagerInner createState() => GroupManagerInner();
 }
 
-class _GroupManager extends State<GroupManager> {
+class GroupManagerInner extends State<GroupManager> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Text("GroupManager"),
     );
   }
 }
 
 class ClusterManager extends StatefulWidget {
-  ClusterManager({
+  const ClusterManager({
+    super.key,
     required this.text,
   });
 
   final String text;
 
   @override
-  _ClusterManager createState() => _ClusterManager();
+  ClusterManagerInner createState() => ClusterManagerInner();
 }
 
-class _ClusterManager extends State<ClusterManager> {
+class ClusterManagerInner extends State<ClusterManager> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Text("ClusterManager"),
     );
   }
 }
 
 class TopicManager extends StatefulWidget {
-  TopicManager({
+  const TopicManager({
+    super.key,
     required this.text,
   });
 
   final String text;
 
   @override
-  _TopicManager createState() => _TopicManager();
+  TopicManagerInner createState() => TopicManagerInner();
 }
 
-class _TopicManager extends State<TopicManager> {
-  String? brokerDropdownValue = null;
+class TopicManagerInner extends State<TopicManager> {
+  String? brokerDropdownValue;
   List<DropdownMenuItem<String>> brokerDropdownList = [];
 
-  String? topicDropdownValue = null;
+  String? topicDropdownValue;
   List<DropdownMenuItem<String>> topicDropdownList = [];
 
   List<DataRow> topicRows = [];
@@ -195,7 +187,7 @@ class _TopicManager extends State<TopicManager> {
               Text(item['name']),
               Text(
                 item['broker'],
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.black45,
                 ),
               ),
@@ -265,14 +257,14 @@ class _TopicManager extends State<TopicManager> {
         "${Global.uri}/kafka/topic/delete?sourceId=$brokerId&topic=$topicName";
     Response response = await HttpUtils.delete(url);
     dynamic data = response.data['data'];
-    Log.i("delete broker:${brokerId}, topic:${topicName}, data:${data}");
+    Log.i("delete broker:$brokerId, topic:$topicName, data:$data");
   }
 
   Future<List<DropdownMenuItem<String>>> _queryKafkaTopic(
       String? sourceId, String? keyword) async {
     String url = "${Global.uri}/kafka/topic/query?sourceId=$sourceId";
     if (keyword != null) {
-      url = url + "&keyword=$keyword";
+      url = "$url&keyword=$keyword";
     }
     Response response = await HttpUtils.get(url);
     List data = response.data['data'];
@@ -291,7 +283,7 @@ class _TopicManager extends State<TopicManager> {
           DataCell(Row(
             children: [
               IconButton(
-                icon: Icon(Icons.description),
+                icon: const Icon(Icons.description),
                 tooltip: 'TopicDetail',
                 onPressed: () async {
                   KafkaTopicDescriptionModel topicDetail =

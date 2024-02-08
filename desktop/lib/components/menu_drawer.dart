@@ -46,7 +46,7 @@ class MenuDrawer extends StatelessWidget {
                   ExpansionTile(
                       title: Text(S.of(context).kafka),
                       initiallyExpanded: true,
-                      childrenPadding: EdgeInsets.only(left: 16.0),
+                      childrenPadding: const EdgeInsets.only(left: 16.0),
                       children: <Widget>[
                         ListTile(
                             title: Text(S.of(context).kafkaConfig),
@@ -85,7 +85,7 @@ class MenuDrawer extends StatelessWidget {
                         ExpansionTile(
                             title: Text(S.of(context).kafkaOperator),
                             initiallyExpanded: true,
-                            childrenPadding: EdgeInsets.only(left: 16.0),
+                            childrenPadding: const EdgeInsets.only(left: 16.0),
                             children: <Widget>[
                               ListTile(
                                   title: Text(S.of(context).kafkaProducer)),
@@ -96,7 +96,7 @@ class MenuDrawer extends StatelessWidget {
                   ExpansionTile(
                       title: Text(S.of(context).zookeeper),
                       initiallyExpanded: true,
-                      childrenPadding: EdgeInsets.only(left: 16.0),
+                      childrenPadding: const EdgeInsets.only(left: 16.0),
                       children: <Widget>[
                         ListTile(
                           title: Text(S.of(context).zookeeperConfig),
