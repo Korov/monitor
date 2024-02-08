@@ -1,5 +1,5 @@
-import 'package:desktop/components/kafka/KafkaConfig.dart';
-import 'package:desktop/components/kafka/KafkaManager.dart';
+import 'package:desktop/components/kafka/kafka_config.dart';
+import 'package:desktop/components/kafka/kafka_manager.dart';
 import 'package:desktop/utils/log.dart';
 import 'package:flutter/material.dart';
 

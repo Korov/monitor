@@ -2,8 +2,8 @@ import 'package:desktop/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'components/kafka/KafkaConfig.dart';
-import 'components/kafka/KafkaManager.dart';
+import 'components/kafka/kafka_config.dart';
+import 'components/kafka/kafka_manager.dart';
 import 'generated/i10n.dart';
 
 void main() {
