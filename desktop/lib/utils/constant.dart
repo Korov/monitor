@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ConstantKey {
-  static final kafkaKey = GlobalKey(debugLabel: "KafkaConfig");
+  static final kafkaConfig = GlobalKey(debugLabel: "KafkaConfig");
+  static final kafkaManager = GlobalKey(debugLabel: "KafkaManager");
 }
 
 class Cache {

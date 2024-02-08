@@ -7,11 +7,11 @@ import 'components/kafka/kafka_manager.dart';
 import 'generated/i10n.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const Monitor());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class Monitor extends StatelessWidget {
+  const Monitor({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,16 +19,16 @@ class MyApp extends StatelessWidget {
       title: 'Monitor',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.grey),
         useMaterial3: true,
       ),
       routes: {
         "KafkaConfig": (context) => KafkaConfig(
-              key: ConstantKey.kafkaKey,
+              key: ConstantKey.kafkaConfig,
               text: "",
             ),
         "KafkaManager": (context) => KafkaManager(
-              key: const Key("kafkaManager"),
+              key: ConstantKey.kafkaManager,
             )
       },
       localizationsDelegates: const [

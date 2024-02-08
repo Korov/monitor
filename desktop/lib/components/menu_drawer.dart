@@ -28,13 +28,11 @@ class MenuDrawer extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16.0),
                     child: ClipOval(
-                      child: Text(
-                        "add images",
-                      ),
+                      child: Icon(Icons.people_alt),
                     ),
                   ),
                   Text(
-                    "Wendux",
+                    "Admin",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   )
                 ],
@@ -51,14 +49,16 @@ class MenuDrawer extends StatelessWidget {
                         ListTile(
                             title: Text(S.of(context).kafkaConfig),
                             onTap: () async {
-                              if (Cache.cachedRoute.contains("KafkaConfig")) {
+                              if (Cache.cachedRoute.contains(
+                                  ConstantKey.kafkaConfig.toString())) {
                                 return;
                               }
-                              Cache.cachedRoute.add("KafkaConfig");
+                              Cache.cachedRoute
+                                  .add(ConstantKey.kafkaConfig.toString());
                               var result = await Navigator.pushNamed(
                                   context, "KafkaConfig",
                                   arguments: KafkaConfig(
-                                    key: ConstantKey.kafkaKey,
+                                    key: ConstantKey.kafkaConfig,
                                     text: "input param",
                                   ));
                               //输出`TipRoute`路由返回结果
@@ -67,16 +67,18 @@ class MenuDrawer extends StatelessWidget {
                         ListTile(
                             title: Text(S.of(context).kafkaManager),
                             onTap: () async {
-                              if (Cache.cachedRoute.contains("kafkaManager")) {
+                              if (Cache.cachedRoute.contains(
+                                  ConstantKey.kafkaManager.toString())) {
                                 return;
                               }
-                              Cache.cachedRoute.add("kafkaManager");
+                              Cache.cachedRoute
+                                  .add(ConstantKey.kafkaManager.toString());
                               await Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) {
                                     return KafkaManager(
-                                      key: const Key("kafkaManager"),
+                                      key: ConstantKey.kafkaManager,
                                     );
                                   },
                                 ),
