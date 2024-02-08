@@ -35,9 +35,9 @@ class KafkaManagerState extends State<KafkaManager> {
   void initState() {
     super.initState();
     _bottomNavPages
-      ..add(TopicManager(text: 'Topic管理'))
-      ..add(ClusterManager(text: '集群管理'))
-      ..add(GroupManager(text: 'Group管理'));
+      ..add(const TopicManager(text: 'Topic管理'))
+      ..add(const ClusterManager(text: '集群管理'))
+      ..add(const GroupManager(text: 'Group管理'));
   }
 
   @override
@@ -48,9 +48,9 @@ class KafkaManagerState extends State<KafkaManager> {
         title: const Text("Kafka Manager"),
         actions: <Widget>[
           //导航栏右侧菜单
-          Cache.cachedRoute.length > 0
+          Cache.cachedRoute.isNotEmpty
               ? IconButton(
-                  icon: Icon(Icons.arrow_back),
+                  icon: const Icon(Icons.arrow_back),
                   onPressed: () {
                     Cache.cachedRoute.remove("kafkaManager");
                     Navigator.pop(context, "我是返回值");
@@ -293,7 +293,7 @@ class TopicManagerInner extends State<TopicManager> {
               ),
               !isInternal
                   ? IconButton(
-                      icon: Icon(Icons.delete),
+                      icon: const Icon(Icons.delete),
                       tooltip: 'Delete',
                       onPressed: () async {
                         await _deleteKafkaTopic(brokerDropdownValue!, name);
@@ -302,7 +302,7 @@ class TopicManagerInner extends State<TopicManager> {
                     )
                   : Container(),
               IconButton(
-                icon: Icon(Icons.people),
+                icon: const Icon(Icons.people),
                 tooltip: 'Consumer',
                 onPressed: () async {
                   dynamic result =
@@ -343,7 +343,7 @@ class TopicManagerInner extends State<TopicManager> {
             child: Row(
               children: [
                 TapDropdownButton(
-                    hint: Text("请选择Kafka环境"),
+                    hint: const Text("请选择Kafka环境"),
                     value: brokerDropdownValue,
                     items: brokerDropdownList,
                     onChanged: (value) {
@@ -358,7 +358,7 @@ class TopicManagerInner extends State<TopicManager> {
                       return listValue;
                     }),
                 TapDropdownButton(
-                    hint: Text("请输入topic"),
+                    hint: const Text("请输入topic"),
                     value: topicDropdownValue,
                     items: topicDropdownList,
                     onChanged: (value) {
@@ -376,14 +376,14 @@ class TopicManagerInner extends State<TopicManager> {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
-                        TextEditingController _nameController =
+                        TextEditingController nameController =
                             TextEditingController();
-                        int _partitionCounter = 1;
-                        int _replicaCounter = 1;
+                        int partitionCounter = 1;
+                        int replicaCounter = 1;
                         return StatefulBuilder(builder:
                             (BuildContext context, StateSetter setState) {
                           return SimpleDialog(
-                            title: Text('创建Topic'),
+                            title: const Text('创建Topic'),
                             children: <Widget>[
                               Form(
                                 child: Column(
@@ -392,12 +392,12 @@ class TopicManagerInner extends State<TopicManager> {
                                   children: <Widget>[
                                     Row(
                                       children: [
-                                        Flexible(
+                                        const Flexible(
                                             flex: 1, child: Text("Topic名字：")),
                                         Flexible(
                                           flex: 2,
                                           child: TextFormField(
-                                            controller: _nameController,
+                                            controller: nameController,
                                             validator: (value) {
                                               if (value == null ||
                                                   value.isEmpty) {
@@ -405,7 +405,7 @@ class TopicManagerInner extends State<TopicManager> {
                                               }
                                               return null;
                                             },
-                                            decoration: InputDecoration(
+                                            decoration: const InputDecoration(
                                               hintText: '请输入名字',
                                             ),
                                           ),
@@ -414,64 +414,66 @@ class TopicManagerInner extends State<TopicManager> {
                                     ),
                                     Row(
                                       children: [
-                                        Flexible(flex: 1, child: Text("分区数量：")),
+                                        const Flexible(
+                                            flex: 1, child: Text("分区数量：")),
                                         Flexible(
                                           flex: 1,
                                           child: FloatingActionButton(
                                             onPressed: () {
                                               setState(() {
-                                                _partitionCounter++;
+                                                partitionCounter++;
                                               });
                                             },
-                                            child: Icon(Icons.add),
+                                            child: const Icon(Icons.add),
                                           ),
                                         ),
                                         Flexible(
                                             flex: 1,
-                                            child: Text('$_partitionCounter')),
+                                            child: Text('$partitionCounter')),
                                         Flexible(
                                           flex: 1,
                                           child: FloatingActionButton(
                                             onPressed: () {
                                               setState(() {
-                                                if (_partitionCounter > 0) {
-                                                  _partitionCounter--;
+                                                if (partitionCounter > 0) {
+                                                  partitionCounter--;
                                                 }
                                               });
                                             },
-                                            child: Icon(Icons.remove),
+                                            child: const Icon(Icons.remove),
                                           ),
                                         ),
                                       ],
                                     ),
                                     Row(
                                       children: [
-                                        Flexible(flex: 1, child: Text("副本数量：")),
+                                        const Flexible(
+                                            flex: 1, child: Text("副本数量：")),
                                         Flexible(
                                           flex: 1,
                                           child: FloatingActionButton(
                                             onPressed: () {
                                               setState(() {
-                                                _replicaCounter++;
+                                                replicaCounter++;
                                               });
                                             },
-                                            child: Icon(Icons.add),
+                                            child: const Icon(Icons.add),
                                           ),
                                         ),
                                         Flexible(
                                             flex: 1,
-                                            child: Text('$_replicaCounter')),
+                                            child: Text('$replicaCounter')),
                                         Flexible(
                                           flex: 1,
                                           child: FloatingActionButton(
                                             onPressed: () {
                                               setState(() {
-                                                if (_replicaCounter > 0) {
-                                                  _replicaCounter--;
+                                                if (replicaCounter > 0) {
+                                                  replicaCounter--;
                                                 }
                                               });
                                             },
-                                            child: Icon(Icons.remove),
+                                            child: const Icon(Icons.remove),
                                           ),
                                         ),
                                       ],
@@ -482,17 +484,17 @@ class TopicManagerInner extends State<TopicManager> {
                               Row(
                                 children: [
                                   TextButton(
-                                    child: Text('确定'),
+                                    child: const Text('确定'),
                                     onPressed: () {
                                       _addTopic(
                                           brokerDropdownValue!,
-                                          _nameController.text,
-                                          _partitionCounter,
-                                          _replicaCounter);
+                                          nameController.text,
+                                          partitionCounter,
+                                          replicaCounter);
                                     },
                                   ),
                                   TextButton(
-                                    child: Text('取消'),
+                                    child: const Text('取消'),
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                     },
@@ -505,7 +507,7 @@ class TopicManagerInner extends State<TopicManager> {
                       },
                     );
                   },
-                  child: Text("创建Topic"),
+                  child: const Text("创建Topic"),
                 ),
               ],
             ),
@@ -516,14 +518,14 @@ class TopicManagerInner extends State<TopicManager> {
             width: double.infinity,
             child: DataTable(
               columns: [
-                DataColumn(
+                const DataColumn(
                   label: Text('Topic Name'),
                 ),
                 DataColumn(
-                    label: Text('Topic Type'),
+                    label: const Text('Topic Type'),
                     numeric: true,
                     onSort: (int columnIndex, bool ascending) {}),
-                DataColumn(label: Text('Operation'))
+                const DataColumn(label: Text('Operation'))
               ],
               rows: topicRows,
             ),
@@ -542,13 +544,13 @@ class TopicManagerInner extends State<TopicManager> {
         for (KafkaTopicPartitionModel partition in topicDetail.partitions) {
           partitionRow.add(DataRow(cells: [
             DataCell(Text(partition.partition.toString())),
-            DataCell(Text("broker:" + partition.leader.id.toString())),
+            DataCell(Text("broker:${partition.leader.id}")),
             DataCell(Text(partition.replicas
-                .map((event) => "broker:" + event.id.toString())
-                .reduce((previous, element) => previous + "," + element))),
+                .map((event) => "broker:${event.id}")
+                .reduce((previous, element) => "$previous,$element"))),
             DataCell(Text(partition.isr
-                .map((event) => "broker:" + event.id.toString())
-                .reduce((previous, element) => previous + "," + element))),
+                .map((event) => "broker:${event.id}")
+                .reduce((previous, element) => "$previous,$element"))),
             DataCell(Text(partition.beginningOffset.toString())),
             DataCell(Text(partition.endOffset.toString())),
             DataCell(Text(
@@ -556,7 +558,7 @@ class TopicManagerInner extends State<TopicManager> {
           ]));
         }
         return AlertDialog(
-          title: Text(topicDetail.name + '分区详情'),
+          title: Text('${topicDetail.name}分区详情'),
           content: Container(
             width: double.maxFinite,
             child: SingleChildScrollView(
@@ -564,7 +566,7 @@ class TopicManagerInner extends State<TopicManager> {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: DataTable(
-                  columns: [
+                  columns: const [
                     DataColumn(label: Text('分区号'), numeric: true),
                     DataColumn(label: Text('leader分区')),
                     DataColumn(label: Text('所有副本')),
@@ -580,7 +582,7 @@ class TopicManagerInner extends State<TopicManager> {
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('确认'),
+              child: const Text('确认'),
               onPressed: () {
                 Navigator.of(context).pop();
               },

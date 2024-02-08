@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import '../../model/kafka_config.dart';
 
 class KafkaConfig extends StatefulWidget {
-  KafkaConfig({
+  const KafkaConfig({
     required Key key,
     required this.text,
   }) : super(key: key);
@@ -42,12 +42,12 @@ class _KafkaConfigState extends State<KafkaConfig> {
     return Scaffold(
       appBar: AppBar(
         //导航栏
-        title: Text("Kafka Config"),
+        title: const Text("Kafka Config"),
         actions: <Widget>[
           //导航栏右侧菜单
-          Cache.cachedRoute.length > 0
+          Cache.cachedRoute.isNotEmpty
               ? IconButton(
-                  icon: Icon(Icons.arrow_back),
+                  icon: const Icon(Icons.arrow_back),
                   onPressed: () {
                     Cache.cachedRoute.remove("KafkaConfig");
                     Navigator.pop(context, "我是返回值");
@@ -55,7 +55,7 @@ class _KafkaConfigState extends State<KafkaConfig> {
               : Container(),
         ],
       ),
-      drawer: MenuDrawer(),
+      drawer: const MenuDrawer(),
       body: Center(
         child: Column(
           children: <Widget>[
@@ -68,14 +68,14 @@ class _KafkaConfigState extends State<KafkaConfig> {
                     sortColumnIndex: 1,
                     sortAscending: true,
                     columns: [
-                      DataColumn(
+                      const DataColumn(
                         label: Text('Cluster Name'),
                       ),
                       DataColumn(
-                          label: Text('Address'),
+                          label: const Text('Address'),
                           numeric: true,
                           onSort: (int columnIndex, bool ascending) {}),
-                      DataColumn(
+                      const DataColumn(
                         label: Text('Operation'),
                       ),
                     ],
@@ -93,7 +93,7 @@ class _KafkaConfigState extends State<KafkaConfig> {
                           context: context,
                           builder: (BuildContext context) {
                             return SimpleDialog(
-                              title: Text('Add Kafka Address'),
+                              title: const Text('Add Kafka Address'),
                               children: <Widget>[
                                 Form(
                                   key: _formKey,
@@ -104,7 +104,8 @@ class _KafkaConfigState extends State<KafkaConfig> {
                                     children: <Widget>[
                                       Row(
                                         children: [
-                                          Flexible(flex: 1, child: Text("名字：")),
+                                          const Flexible(
+                                              flex: 1, child: Text("名字：")),
                                           Flexible(
                                             flex: 2,
                                             child: TextFormField(
@@ -116,7 +117,7 @@ class _KafkaConfigState extends State<KafkaConfig> {
                                                 }
                                                 return null;
                                               },
-                                              decoration: InputDecoration(
+                                              decoration: const InputDecoration(
                                                 hintText: '请输入名字',
                                               ),
                                             ),
@@ -125,7 +126,8 @@ class _KafkaConfigState extends State<KafkaConfig> {
                                       ),
                                       Row(
                                         children: [
-                                          Flexible(flex: 1, child: Text("地址：")),
+                                          const Flexible(
+                                              flex: 1, child: Text("地址：")),
                                           Flexible(
                                             flex: 2,
                                             child: TextFormField(
@@ -137,7 +139,7 @@ class _KafkaConfigState extends State<KafkaConfig> {
                                                 }
                                                 return null;
                                               },
-                                              decoration: InputDecoration(
+                                              decoration: const InputDecoration(
                                                 hintText: '请输入地址',
                                               ),
                                             ),
@@ -150,7 +152,7 @@ class _KafkaConfigState extends State<KafkaConfig> {
                                 Row(
                                   children: [
                                     TextButton(
-                                      child: Text('确定'),
+                                      child: const Text('确定'),
                                       onPressed: () {
                                         if (_formKey.currentState != null) {
                                           if (_formKey.currentState!
@@ -168,7 +170,7 @@ class _KafkaConfigState extends State<KafkaConfig> {
                                       },
                                     ),
                                     TextButton(
-                                      child: Text('取消'),
+                                      child: const Text('取消'),
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                       },
@@ -179,7 +181,7 @@ class _KafkaConfigState extends State<KafkaConfig> {
                             );
                           });
                     },
-                    child: Text("Add Environment")),
+                    child: const Text("Add Environment")),
               ],
             ),
           ],
@@ -199,7 +201,7 @@ class _KafkaConfigState extends State<KafkaConfig> {
           DataCell(Text(kafkaConfig.name)),
           DataCell(Text(kafkaConfig.broker)),
           DataCell(IconButton(
-            icon: Icon(Icons.delete),
+            icon: const Icon(Icons.delete),
             tooltip: 'Delete',
             onPressed: () {
               _deleteConfig(kafkaConfig.id);
