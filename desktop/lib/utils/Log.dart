@@ -6,7 +6,7 @@ class Log {
   );
 
   static void v(dynamic message) {
-    _logger.v(message);
+    _logger.t(message);
   }
 
   static void d(dynamic message) {
@@ -26,6 +26,6 @@ class Log {
   }
 
   static void wtf(dynamic message) {
-    _logger.wtf(message);
+    _logger.f(message);
   }
 }

@@ -1,10 +1,10 @@
 import 'package:desktop/components/kafka/KafkaConfig.dart';
 import 'package:desktop/components/kafka/KafkaManager.dart';
-import 'package:desktop/utils/Log.dart';
+import 'package:desktop/utils/log.dart';
 import 'package:flutter/material.dart';
 
 import '../generated/l10n.dart';
-import '../utils/Constant.dart';
+import '../utils/constant.dart';
 
 class MenuDrawer extends StatelessWidget {
   const MenuDrawer({

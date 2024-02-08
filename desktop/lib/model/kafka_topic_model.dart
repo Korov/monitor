@@ -9,14 +9,6 @@ class KafkaTopicModel {
         isInternal = json['isInternal'];
 }
 
-class KafkaTopicDescriptionModel {
-  String name;
-  bool isInternal;
-  List<KafkaTopicPartitionModel> partitions;
-
-  KafkaTopicDescriptionModel(this.name, this.isInternal, this.partitions);
-}
-
 class KafkaTopicPartitionModel {
   int partition;
   Node leader;
@@ -27,6 +19,14 @@ class KafkaTopicPartitionModel {
 
   KafkaTopicPartitionModel(this.partition, this.leader, this.replicas, this.isr,
       this.beginningOffset, this.endOffset);
+}
+
+class KafkaTopicDescriptionModel {
+  String name;
+  bool isInternal;
+  List<KafkaTopicPartitionModel> partitions;
+
+  KafkaTopicDescriptionModel(this.name, this.isInternal, this.partitions);
 }
 
 class Node {

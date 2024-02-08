@@ -1,13 +1,13 @@
 import 'package:desktop/components/MenuDrawer.dart';
 import 'package:desktop/utils/http_utils.dart';
-import 'package:desktop/utils/Log.dart';
+import 'package:desktop/utils/log.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import '../../customize/TapDropDown.dart';
-import '../../model/KafkaConfig.dart';
-import '../../model/KafkaTopicModel.dart';
-import '../../utils/Constant.dart';
+import '../../model/kafka_config.dart';
+import '../../model/kafka_topic_model.dart';
+import '../../utils/constant.dart';
 
 class KafkaManager extends StatefulWidget {
   KafkaManager({required Key key}) : super(key: key);

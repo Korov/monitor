@@ -1,11 +1,11 @@
 import 'package:desktop/components/MenuDrawer.dart';
-import 'package:desktop/utils/Constant.dart';
+import 'package:desktop/utils/constant.dart';
 import 'package:desktop/utils/http_utils.dart';
-import 'package:desktop/utils/Log.dart';
+import 'package:desktop/utils/log.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
-import '../../model/KafkaConfig.dart';
+import '../../model/kafka_config.dart';
 
 class KafkaConfig extends StatefulWidget {
   KafkaConfig({

@@ -1,4 +1,4 @@
-import 'package:desktop/utils/Log.dart';
+import 'package:desktop/utils/log.dart';
 import 'package:dio/dio.dart';
 
 enum HttpType { httpTypeGet, httpTypePost, httpTypeDelete, httpTypePut }
