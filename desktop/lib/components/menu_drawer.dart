@@ -8,8 +8,8 @@ import '../utils/constant.dart';
 
 class MenuDrawer extends StatelessWidget {
   const MenuDrawer({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

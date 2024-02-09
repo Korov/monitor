@@ -1,6 +1,8 @@
 import 'package:desktop/utils/constant.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:system_theme/system_theme.dart';
 
 import 'components/kafka/kafka_config.dart';
 import 'components/kafka/kafka_manager.dart';
@@ -15,12 +17,11 @@ class Monitor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return FluentApp(
       title: 'Monitor',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.grey),
-        useMaterial3: true,
+      theme: FluentThemeData(
+        accentColor: SystemTheme.accentColor.accent.toAccentColor(),
       ),
       routes: {
         "KafkaConfig": (context) => KafkaConfig(

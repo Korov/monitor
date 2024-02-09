@@ -52,7 +52,7 @@ class KafkaManagerState extends State<KafkaManager> {
               ? IconButton(
                   icon: const Icon(Icons.arrow_back),
                   onPressed: () {
-                    Cache.cachedRoute.remove("kafkaManager");
+                    Cache.cachedRoute.remove(ConstantKey.kafkaManager.toString());
                     Navigator.pop(context, "我是返回值");
                   })
               : Container(),

@@ -49,7 +49,7 @@ class _KafkaConfigState extends State<KafkaConfig> {
               ? IconButton(
                   icon: const Icon(Icons.arrow_back),
                   onPressed: () {
-                    Cache.cachedRoute.remove("KafkaConfig");
+                    Cache.cachedRoute.remove(ConstantKey.kafkaConfig.toString());
                     Navigator.pop(context, "我是返回值");
                   })
               : Container(),
@@ -62,7 +62,7 @@ class _KafkaConfigState extends State<KafkaConfig> {
             Expanded(
               child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
-                child: Container(
+                child: SizedBox(
                   width: double.infinity,
                   child: DataTable(
                     sortColumnIndex: 1,
