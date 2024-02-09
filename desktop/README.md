@@ -17,7 +17,7 @@ samples, guidance on mobile development, and a full API reference.
 
 # install
 
-IDEA中安装Flutter Intl插件，删除 `lib/generated` 之后就可以自动生成
+生成语言 `flutter pub run intl_utils:generate`
 
 ```bash
 flutter pub get
