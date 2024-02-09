@@ -4,7 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'components/kafka/kafka_config.dart';
 import 'components/kafka/kafka_manager.dart';
-import 'generated/i10n.dart';
+import 'generated/l10n.dart';
 
 void main() {
   runApp(const Monitor());

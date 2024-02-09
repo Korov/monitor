@@ -17,6 +17,8 @@ samples, guidance on mobile development, and a full API reference.
 
 # install
 
+IDEA中安装Flutter Intl插件，删除 `lib/generated` 之后就可以自动生成
+
 ```bash
 flutter pub get
 ```
