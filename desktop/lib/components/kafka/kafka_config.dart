@@ -1,4 +1,3 @@
-import 'package:desktop/components/menu_drawer.dart';
 import 'package:desktop/utils/constant.dart';
 import 'package:desktop/utils/http_utils.dart';
 import 'package:desktop/utils/log.dart';
@@ -55,7 +54,6 @@ class _KafkaConfigState extends State<KafkaConfig> {
               : Container(),
         ],
       ),
-      drawer: const MenuDrawer(),
       body: Center(
         child: Column(
           children: <Widget>[

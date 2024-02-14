@@ -1,4 +1,3 @@
-import 'package:desktop/components/menu_drawer.dart';
 import 'package:desktop/utils/http_utils.dart';
 import 'package:desktop/utils/log.dart';
 import 'package:dio/dio.dart';
@@ -52,13 +51,13 @@ class KafkaManagerState extends State<KafkaManager> {
               ? IconButton(
                   icon: const Icon(Icons.arrow_back),
                   onPressed: () {
-                    Cache.cachedRoute.remove(ConstantKey.kafkaManager.toString());
+                    Cache.cachedRoute
+                        .remove(ConstantKey.kafkaManager.toString());
                     Navigator.pop(context, "我是返回值");
                   })
               : Container(),
         ],
       ),
-      drawer: const MenuDrawer(),
       body: _bottomNavPages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[

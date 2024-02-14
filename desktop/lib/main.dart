@@ -6,7 +6,6 @@ import 'package:system_theme/system_theme.dart';
 
 import 'components/kafka/kafka_config.dart';
 import 'components/kafka/kafka_manager.dart';
-import 'components/menu_drawer.dart';
 import 'components/home.dart';
 import 'generated/l10n.dart';
 

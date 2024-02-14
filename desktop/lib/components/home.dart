@@ -1,43 +1,9 @@
+import 'package:desktop/components/kafka/kafka_config.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
-List<NavigationPaneItem> items = [
-  PaneItem(
-    icon: const Icon(FluentIcons.home),
-    title: const Text('Home'),
-    body: const Text('Home'),
-  ),
-  PaneItemSeparator(),
-  PaneItem(
-    icon: const Icon(FluentIcons.issue_tracking),
-    title: const Text('Track orders'),
-    infoBadge: const InfoBadge(source: Text('8')),
-    body: const Text('Track orders'),
-  ),
-  PaneItem(
-    icon: const Icon(FluentIcons.disable_updates),
-    title: const Text('Disabled Item'),
-    body: const Text('Disabled Item'),
-    enabled: false,
-  ),
-  PaneItemExpander(
-    icon: const Icon(FluentIcons.account_management),
-    title: const Text('Account'),
-    body: const Text('Account'),
-    items: [
-      PaneItemHeader(header: const Text('Apps')),
-      PaneItem(
-        icon: const Icon(FluentIcons.mail),
-        title: const Text('Mail'),
-        body: const Text('Mail'),
-      ),
-      PaneItem(
-        icon: const Icon(FluentIcons.calendar),
-        title: const Text('Calendar'),
-        body: const Text('Calendar'),
-      ),
-    ],
-  ),
-];
+import '../generated/l10n.dart';
+import '../utils/constant.dart';
+import 'kafka/kafka_manager.dart';
 
 class Home extends StatefulWidget {
   final String userName;
@@ -62,6 +28,55 @@ class HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    List<NavigationPaneItem> items = [
+      PaneItem(
+        icon: const Icon(FluentIcons.home),
+        title: Text(S.of(context).kafkaConfig),
+        body: KafkaConfig(
+          key: ConstantKey.kafkaConfig,
+          text: "input param",
+        ),
+      ),
+      PaneItem(
+        icon: const Icon(FluentIcons.home),
+        title: Text(S.of(context).kafkaManager),
+        body: KafkaManager(
+          key: ConstantKey.kafkaManager,
+        ),
+      ),
+      PaneItemSeparator(),
+      PaneItem(
+        icon: const Icon(FluentIcons.issue_tracking),
+        title: const Text('Track orders'),
+        infoBadge: const InfoBadge(source: Text('8')),
+        body: const Text('Track orders'),
+      ),
+      PaneItem(
+        icon: const Icon(FluentIcons.disable_updates),
+        title: const Text('Disabled Item'),
+        body: const Text('Disabled Item'),
+        enabled: false,
+      ),
+      PaneItemExpander(
+        icon: const Icon(FluentIcons.account_management),
+        title: const Text('Account'),
+        body: const Text('Account'),
+        items: [
+          PaneItemHeader(header: const Text('Apps')),
+          PaneItem(
+            icon: const Icon(FluentIcons.mail),
+            title: const Text('Mail'),
+            body: const Text('Mail'),
+          ),
+          PaneItem(
+            icon: const Icon(FluentIcons.calendar),
+            title: const Text('Calendar'),
+            body: const Text('Calendar'),
+          ),
+        ],
+      ),
+    ];
+
     return NavigationView(
       appBar: NavigationAppBar(
         title: Text(userName),
