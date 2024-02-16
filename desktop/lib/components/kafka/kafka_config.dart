@@ -39,21 +39,6 @@ class _KafkaConfigState extends State<KafkaConfig> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        //导航栏
-        title: const Text("Kafka Config"),
-        actions: <Widget>[
-          //导航栏右侧菜单
-          Cache.cachedRoute.isNotEmpty
-              ? IconButton(
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: () {
-                    Cache.cachedRoute.remove(ConstantKey.kafkaConfig.toString());
-                    Navigator.pop(context, "我是返回值");
-                  })
-              : Container(),
-        ],
-      ),
       body: Center(
         child: Column(
           children: <Widget>[

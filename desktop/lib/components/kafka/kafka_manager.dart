@@ -42,22 +42,6 @@ class KafkaManagerState extends State<KafkaManager> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        //导航栏
-        title: const Text("Kafka Manager"),
-        actions: <Widget>[
-          //导航栏右侧菜单
-          Cache.cachedRoute.isNotEmpty
-              ? IconButton(
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: () {
-                    Cache.cachedRoute
-                        .remove(ConstantKey.kafkaManager.toString());
-                    Navigator.pop(context, "我是返回值");
-                  })
-              : Container(),
-        ],
-      ),
       body: _bottomNavPages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
