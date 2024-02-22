@@ -1,10 +1,12 @@
 package org.korov.monitor.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.korov.monitor.MonitorApplicationTests;
+import org.korov.monitor.utils.JsonUtils;
 import org.korov.monitor.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -57,7 +59,7 @@ class KafkaControllerTest extends MonitorApplicationTests {
 
     @Test
     void queryKafkaTopicDetail() {
-        FluxExchangeResult<Result> result = webClient.get().uri("/kafka/topic/detail/query?sourceId=1&topic=monitor_topic")
+        FluxExchangeResult<Result> result = webClient.get().uri("/kafka/topic/detail/query?sourceId=1&topic=a")
                 .exchange().expectStatus().isOk()
                 .returnResult(Result.class);
         log.info(result.toString());
@@ -65,7 +67,7 @@ class KafkaControllerTest extends MonitorApplicationTests {
 
     @ParameterizedTest
     @ValueSource(strings = {
-            "{\"sourceId\":2,\"topic\":\"monitor_topic\",\"key\":\"aaa\",\"message\":\"testssss\",\"partition\":2}"
+            "{\"sourceId\":1,\"topic\":\"a\",\"key\":\"aaa\",\"message\":\"testssss\",\"partition\":0}"
     })
     void produceMessage(String content) {
         FluxExchangeResult<Result> result = webClient.post().uri("/kafka/message/produce")
@@ -92,6 +94,22 @@ class KafkaControllerTest extends MonitorApplicationTests {
     @Test
     void pageQueryKafkaSource() {
         FluxExchangeResult<Result> result = webClient.get().uri("/kafka/page/query")
+                .exchange().expectStatus().isOk()
+                .returnResult(Result.class);
+        log.info(result.toString());
+    }
+
+    @Test
+    void getGroupByTopic() throws JsonProcessingException {
+        FluxExchangeResult<Result> result = webClient.get().uri("/kafka/consumer/query?sourceId=1&topic=a")
+                .exchange().expectStatus().isOk()
+                .returnResult(Result.class);
+        log.info(JsonUtils.jsonPretty(result.toString()));
+    }
+
+    @Test
+    void getGroupDetail() {
+        FluxExchangeResult<Result> result = webClient.get().uri("/kafka/consumer/detail?sourceId=1&group=1")
                 .exchange().expectStatus().isOk()
                 .returnResult(Result.class);
         log.info(result.toString());

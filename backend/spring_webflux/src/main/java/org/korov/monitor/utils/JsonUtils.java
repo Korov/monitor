@@ -15,10 +15,19 @@ public class JsonUtils {
     private static final ObjectMapper DEFAULT_MAPPER = new ObjectMapper();
 
     static {
-        DEFAULT_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+        DEFAULT_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     public static String jsonString(Object object) throws JsonProcessingException {
         return DEFAULT_MAPPER.writeValueAsString(object);
+    }
+
+    public static String jsonPretty(Object object) throws JsonProcessingException {
+        return DEFAULT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(object);
+    }
+
+    public static String jsonPretty(String json) throws JsonProcessingException {
+        Object jsonObject = DEFAULT_MAPPER.readValue(json, Object.class);
+        return DEFAULT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
     }
 }
