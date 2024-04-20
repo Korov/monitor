@@ -1,7 +1,7 @@
 version: '3'
 services:
   mysql:
-    image: mysql:8.0.32
+    image: mysql:8.3.0
     container_name: monitor_mysql
     ports:
       - "3309:3306"
@@ -13,7 +13,7 @@ services:
     hostname: monitor_mysql.org
   zookeeper:
     container_name: monitor_zookeeper
-    image: zookeeper:3.8.1
+    image: zookeeper:3.9.2
     ports:
       - "2183:2181"
     environment:
@@ -21,7 +21,7 @@ services:
     hostname: monitor_zookeeper.org
   kafka:
     container_name: monitor_kafka
-    image: bitnami/kafka:3.4.0
+    image: bitnami/kafka:3.6.2
     hostname: monitor_kafka.org
     ports:
       - 9095:9095
@@ -41,7 +41,7 @@ services:
       KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: true
   redis:
     container_name: monitor_redis
-    image: redis:7.0.8
+    image: redis:7.2.4
     command:
           redis-server --save 60 1
     ports:
