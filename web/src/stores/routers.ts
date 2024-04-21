@@ -2,8 +2,8 @@ import { defineStore } from 'pinia'
 import { Router } from '@/types'
 
 const routerStore = defineStore('routerStore', {
-  state: (): { routers: Router[] } => ({
-    routers: [
+  state: (): { myRouters: Router[] } => ({
+    myRouters: [
       {
         path: '/',
         name: 'home',
@@ -82,8 +82,8 @@ const routerStore = defineStore('routerStore', {
   }),
 
   actions: {
-    getRouters(): Router[] {
-      return this.routers
+    getMyRouters(): Router[] {
+      return this.myRouters
     },
   },
 })

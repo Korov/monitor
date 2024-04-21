@@ -63,7 +63,7 @@ export default defineComponent({
       if (message.value == '') {
         ElMessage.error('请输入消息')
       }
-      const data = { sourceId: props.sourceId, topic: props.topic, message: message.value }
+      const data = {key: '', partition:0, sourceId: props.sourceId, topic: props.topic, message: message.value }
       if (props.messageKey != null && props.messageKey != '') {
         data['key'] = props.messageKey
       }

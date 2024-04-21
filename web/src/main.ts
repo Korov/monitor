@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import Home from '@/Home.vue'
-import router from '@/router'
+import myRouter from '@/myrouter'
 import ElementPlus, { ElMessage } from 'element-plus'
 import 'element-plus/dist/index.css'
 import VXETable from 'vxe-table'
@@ -17,7 +17,7 @@ import i18n from '@/locales/i18n'
 
 const app = createApp(Home)
   .use(createPinia()) // 启用 Pinia
-  .use(router)
+  .use(myRouter)
   .use(ElMessage)
   .use(ElementPlus)
   .use(VXETable)
@@ -35,17 +35,26 @@ const modules = import.meta.glob('@/components/**/*.vue')
 const routerStoreInfo = routerStore()
 
 export function addDynamicMenuAndRoutes() {
-  routerStoreInfo.getRouters().forEach((routerInfo) => {
+  console.log('call method addDynamicMenuAndRoutes')
+  routerStoreInfo.getMyRouters().forEach((routerInfo) => {
     if (routerInfo.children !== null) {
+      // 先把父路由加入，然后再添加子路由
+      myRouter.addRoute({
+        name: routerInfo.name,
+        path: routerInfo.path,
+        meta: routerInfo.meta || { title: 'default' },
+        redirect: routerInfo.redirect || { name: 'config' }
+      })
+
       routerInfo.children.forEach((childrenRouter) => {
-        router.addRoute(childrenRouter.name, {
+        myRouter.addRoute(routerInfo.name, {
           name: childrenRouter.name,
           path: `${routerInfo.path}${childrenRouter.path}`,
           component: modules[`${childrenRouter.component}`]
         })
       })
     } else {
-      router.addRoute(routerInfo.name, {
+      myRouter.addRoute(routerInfo.name, {
         name: routerInfo.name,
         path: routerInfo.path,
         meta: routerInfo.meta || { title: 'default' },
