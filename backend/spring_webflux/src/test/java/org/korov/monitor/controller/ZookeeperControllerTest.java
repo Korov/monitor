@@ -15,7 +15,7 @@ class ZookeeperControllerTest extends MonitorApplicationTests {
 
     @ParameterizedTest
     @ValueSource(strings = {
-            "localhost:2183"
+            "docker.korov.online:2183"
     })
     void queryKafkaSource(String content) {
         FluxExchangeResult<Result> result = webClient.get().uri(String.format("/zookeeper/tree?host=%s", content))

@@ -11,13 +11,13 @@ spring:
 #    auto: false
 #    proxy-target-class: false
   r2dbc:
-    url: r2dbcs:mysql://localhost:3309/monitor?useSSL=false&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
+    url: r2dbcs:mysql://docker.korov.online:3309/monitor?useSSL=false&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
     username: monitor
     password: monitor
 #  flyway:
 #    baseline-description: monitor migration
 #    baseline-on-migrate: true
-#    url: jdbc:mysql://localhost:3309/monitor?useSSL=false&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
+#    url: jdbc:mysql://docker.korov.online:3309/monitor?useSSL=false&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
 #    user: monitor
 #    password: monitor
 #    locations: classpath:dev/migration/mysql,classpath:db/migration/mysql
@@ -26,7 +26,7 @@ spring:
     change-log: classpath:/db/changelog/db.changelog-master.yaml
     database-change-log-lock-table: monitor-liquibase-log-lock
     database-change-log-table: monitor-liquibase-log
-    url: jdbc:mysql://localhost:3309/monitor?useSSL=false&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://docker.korov.online:3309/monitor?useSSL=false&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
     user: monitor
     password: monitor
   jpa:

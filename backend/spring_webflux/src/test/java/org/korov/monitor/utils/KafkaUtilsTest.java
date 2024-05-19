@@ -15,7 +15,7 @@ class KafkaUtilsTest {
 
     @Test
     void queryTopics() {
-        List<TopicVO> topicVOList = KafkaUtils.queryTopics("localhost:9095", null);
+        List<TopicVO> topicVOList = KafkaUtils.queryTopics("docker.korov.online:9095", null);
         log.info(String.valueOf(topicVOList.size()));
         for (TopicVO topicVO : topicVOList) {
             log.info(topicVO.toString());
@@ -24,25 +24,25 @@ class KafkaUtilsTest {
 
     @Test
     void getTopicDetail() {
-        TopicDescriptionVO description = KafkaUtils.getTopicDetail("localhost:9095", "monitor_topic");
+        TopicDescriptionVO description = KafkaUtils.getTopicDetail("docker.korov.online:9095", "monitor_topic");
         log.info(description.toString());
     }
 
     @Test
     void createTopic() throws ExecutionException, InterruptedException {
-        KafkaUtils.createTopic("localhost:9095", "monitor_topic112", 10, 1);
-        TopicDescriptionVO description = KafkaUtils.getTopicDetail("localhost:9095", "monitor_topic");
+        KafkaUtils.createTopic("docker.korov.online:9095", "monitor_topic112", 10, 1);
+        TopicDescriptionVO description = KafkaUtils.getTopicDetail("docker.korov.online:9095", "monitor_topic");
         log.info(description.toString());
     }
 
     @Test
     void deleteTopic() {
-        KafkaUtils.deleteTopic("localhost:9095", "monitor_topic112");
+        KafkaUtils.deleteTopic("docker.korov.online:9095", "monitor_topic112");
     }
 
     @Test
     void getConsumers() {
-        List<String> result = KafkaUtils.getConsumers("linux.korov.org:9095", "monitor_topic");
+        List<String> result = KafkaUtils.getConsumers("docker.korov.online:9095", "monitor_topic");
         for (String map : result) {
             log.info(map);
         }
@@ -55,6 +55,6 @@ class KafkaUtilsTest {
         request.setKey("aaa");
         request.setTopic("monitor_topic");
         request.setPartition(2);
-        KafkaUtils.produceMessage("linux.korov.org:9095", request);
+        KafkaUtils.produceMessage("docker.korov.online:9095", request);
     }
 }

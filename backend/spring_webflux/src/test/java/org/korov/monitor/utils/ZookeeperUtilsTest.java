@@ -16,7 +16,7 @@ import java.util.List;
  */
 @Slf4j
 class ZookeeperUtilsTest {
-    private static final String host = "localhost:2183";
+    private static final String host = "docker.korov.online:2183";
 
     @Test
     public void getZookeeper() throws IOException, InterruptedException, KeeperException {
@@ -51,7 +51,7 @@ class ZookeeperUtilsTest {
 
     @Test
     void getAllZnode() throws IOException, InterruptedException, KeeperException {
-        ZNode allNode = ZookeeperUtils.getAllZnode("localhost:2183", "/", false);
+        ZNode allNode = ZookeeperUtils.getAllZnode("docker.korov.online:2183", "/", false);
         log.info("debug");
     }
 

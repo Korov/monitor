@@ -1,2 +1,2 @@
 insert into kafka_source(id, name, broker)
-values (1, 'local', 'localhost:9095');
+values (1, 'local', 'docker.korov.online:9095');
