@@ -1,7 +1,7 @@
 version: '3'
 services:
   mysql:
-    image: mysql:8.3.0
+    image: mysql:8.4.0
     container_name: monitor_mysql
     ports:
       - "3309:3306"
@@ -21,7 +21,7 @@ services:
     hostname: monitor_zookeeper.org
   kafka:
     container_name: monitor_kafka
-    image: bitnami/kafka:3.6.2
+    image: bitnami/kafka:3.7.0
     hostname: monitor_kafka.org
     ports:
       - 9095:9095
