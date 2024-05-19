@@ -9,6 +9,7 @@ class HttpUtils {
 
   static Dio getHttpUtils() {
     _dioInstance ??= Dio();
+    _dioInstance.h
     return _dioInstance!;
   }
 
@@ -40,6 +41,11 @@ class HttpUtils {
   static Future _sendHttpRequest(HttpType type, String requestUrl,
       {Map<String, dynamic>? queryParameters, dynamic data}) async {
     try {
+      Options(
+        headers: {
+          Headers.acceptHeader: postData.length, // Set the content-length.
+        },
+      )
       switch (type) {
         case HttpType.httpTypeGet:
           return await getHttpUtils().get(requestUrl);

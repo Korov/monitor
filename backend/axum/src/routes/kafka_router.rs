@@ -1,5 +1,6 @@
 use futures_util::TryStreamExt;
 use std::{collections::HashMap, sync::Arc};
+use tower_http::cors::{CorsLayer};
 
 use super::entity::{AppState, KafkaSource, PageVO, Response};
 use axum::{
@@ -22,7 +23,7 @@ pub fn create_router(app_state: &Arc<AppState>) -> Router {
             "/kafka/delete",
             delete({
                 let shared_state = Arc::clone(app_state);
-                move |params| delte_kafka_source(params, shared_state)
+                move |params| delete_kafka_source(params, shared_state)
             }),
         )
         .route(
@@ -39,6 +40,7 @@ pub fn create_router(app_state: &Arc<AppState>) -> Router {
                 move |body| page_query_kafka_source(body, shared_state)
             }),
         )
+        .layer(CorsLayer::permissive())
 }
 
 async fn add_kafka_source(
@@ -61,7 +63,7 @@ async fn add_kafka_source(
     Json(response)
 }
 
-async fn delte_kafka_source(
+async fn delete_kafka_source(
     Query(params): Query<HashMap<String, String>>,
     state: Arc<AppState>,
 ) -> Json<Response<KafkaSource>> {
@@ -130,7 +132,7 @@ async fn page_query_kafka_source(
     }
     info!("start_page:{}, page_size:{}", start_page, page_size);
 
-    let total_future = sqlx::query_as::<_, (i64,)>("SELECT COUNT(*) as count FROM kafka_source")
+    let total_future = sqlx::query_as::<_, (i64, )>("SELECT COUNT(*) as count FROM kafka_source")
         .fetch_one(&state.db);
 
     let mut stream = sqlx::query_as::<_, KafkaSource>("SELECT * FROM kafka_source LIMIT ?,?")

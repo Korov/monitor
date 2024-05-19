@@ -174,7 +174,10 @@ class _KafkaConfigState extends State<KafkaConfig> {
   }
 
   Future<void> _updateTable() async {
-    Response response = await HttpUtils.get("${Global.uri}/kafka/query");
+    String url = "${Global.uri}/kafka/query";
+    Log.i(url);
+    Response response = await HttpUtils.get(url);
+    Log.i(response);
     List data = response.data['data'];
     setState(() {
       _rows = [];
