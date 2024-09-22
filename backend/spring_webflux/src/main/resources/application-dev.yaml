@@ -11,7 +11,7 @@ spring:
 #    auto: false
 #    proxy-target-class: false
   r2dbc:
-    url: r2dbcs:mysql://builder.korov.online:3309/monitor?useSSL=false&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
+    url: r2dbcs:mysql://docker.korov.online:3309/monitor?useSSL=false&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
     username: monitor
     password: monitor
 #  flyway:
@@ -26,7 +26,7 @@ spring:
     change-log: classpath:/db/changelog/db.changelog-master.yaml
     database-change-log-lock-table: monitor-liquibase-log-lock
     database-change-log-table: monitor-liquibase-log
-    url: jdbc:mysql://builder.korov.online:3309/monitor?useSSL=false&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://docker.korov.online:3309/monitor?useSSL=false&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
     user: monitor
     password: monitor
   jpa:
