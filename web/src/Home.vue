@@ -125,7 +125,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.module.scss';
+@use '@/styles/variables.module.scss' as *;
 
 .home {
   margin-right: 1px;

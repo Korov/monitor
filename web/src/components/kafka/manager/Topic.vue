@@ -326,7 +326,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-@import '@/styles/variables.module.scss';
+@use '@/styles/variables.module.scss' as *;
 
 .topicSelect {
   margin: 0 10px 0 5px;

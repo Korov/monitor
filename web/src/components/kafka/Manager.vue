@@ -38,7 +38,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-@import '@/styles/variables.module.scss';
+@use '@/styles/variables.module.scss' as *;
 
 .tabCard {
   background-color: #ffffff;
